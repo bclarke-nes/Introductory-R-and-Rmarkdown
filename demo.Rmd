@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
 date: "`r Sys.time()`"
@@ -258,3 +259,265 @@ c -> d
 
 
 
+=======
+---
+title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
+date: "`r Sys.time()`"
+output:
+  html_document:
+    toc: no
+    toc_depth: 2
+    number_sections: no
+    toc_float:
+      collapsed: no
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
+  word_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+# Introduction
+
+This is an example of a dynamic report, written in R and [Rmarkdown](http://rmarkdown.rstudio.com). It gives some example ways of automating common data-driven tasks. The idea is that this report can be a starting point for automating report writing processes. The idea is to replace (or speed up) manual report writing using Word and Excel). The demo gives some basic introduction to the workflow. It then walks through a series of example tasks based on a toy data set. The demo also covers ways of producing the report in a variety of formats including pdf, Word document, and html webpage.
+
+Working through the report will take a couple of hours.
+
+# Who this is for
+This is a test of git change
+
+It isn't intended to be a full introduction to working in R/Rmarkdown.
+
+Instead as a guide and support for those who are considering learning a little bit of R as a way out of writing manual reports.
+
+You might like to have a quick look at some of the excellent introductory R resources.
+# What you need 
+
++ working R and Rstudio installation
++ this file (demo.Rmd) and the two demo files (demo.csv, demo2.xlsx)
++ an idea of what you'd like your report to do
++ time and space. Don't do this demo under pressure! There's quite a lot to potentially think about, and you will need to go away and work out how to adapt this demonstration to fit your report.
+
+# How does all this work?
+
+Step by step through this doc
+
+## Usual workflow 
+
+```{R message=FALSE, warning=FALSE,echo=F}
+library(DiagrammeR)
+
+DiagrammeR::mermaid("
+graph TB
+
+  data(get data)
+  clean(clean up data)
+  analyse(analyse data)
+  visualise(produce graphs and tables)
+  produce(put new graphs and tables into report)
+  update(update report text)
+  check(check)
+  send(distribute the report)
+  
+data --> clean
+clean --> analyse
+analyse --> visualise
+visualise --> produce
+produce --> update
+update --> check
+check --> send
+")
+
+
+```
+
+## New workflow
+```{R message=FALSE, warning=FALSE,echo=F}
+library(DiagrammeR)
+
+DiagrammeR::mermaid("
+graph TB
+
+  data(get data)
+  clean(clean up data)
+  analyse(analyse, visualise, and report data)
+  check(check - still very important!)
+  send(distribute the report)
+  
+data --> clean
+clean --> analyse
+analyse --> check
+check --> send
+")
+
+
+```
+
+The big difference here then is a combined step where the analysis, visualisation, and production stages are merged together. As this demo will show, you can do all of this using R and Rmarkdown. You'll load the data, clean and analyse the data, and produce outputs (text, tables, graphs) straight into your report.
+
+# Is it worth it for me?
++ Much harder the first time, and slower
++ So if you have regular reports, especially complicated ones with lots of graphs, deffo
++ Local IG
+
+# Starting an Rmarkdown document
+
+There's a bit of preamble at the head of Rmarkdown documents that controls how they are built. For now, I'll suggest that you skip trying to figure it all out, and just use someone else's. The easiest option is to start a new Rmarkdown document direct from the RStudio menu `File >> New file >> R Markdown...`. Alternatively, you can copy the header from this document - so everything between the pair of three dashes: `---`:
+
+```{verbatim}
+---
+title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
+date: "`r Sys.time()`"
+output:
+  html_document:
+    toc: no
+    toc_depth: 2
+    number_sections: no
+    toc_float:
+      collapsed: no
+  word_document:
+    toc: yes
+    toc_depth: '2'
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+---
+```
+This gives a mini-header to your document, which is tweakable. You can change the title from `Dynamic report demo` to something more useful, or you can change the link to the header image (`https://i.imgur.com/5EhpPqK.png`) to something more suitable for your Team/board/organisation.
+
+More info on [YAML editing in chapter 2 of the excellent R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/rmarkdown-anatomy.html).
+
+Once you've got the header in place and tweaked to your liking, we're ready to move on to something more useful: getting data into your report.
+
+# Getting data into R
+
+This is easy to do in practice, but is a bit of a conceptual leap if you're used to collecting and receiving data in Excel. Instead of opening a data file directly with Excel so that you can inspect and analyse it, we instead load all the data in that file into R before we can use it.
+
+Because there are lots of different types of data out there, there are lots of ways of loading data into R.
+
+Let's look at the first R chunk of our doc:
+
+```{r setup, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+  library(tidyverse)
+  library(NHSRplotthedots)
+  library(lubridate)
+  demo <- read_csv("demo.csv") %>% mutate(date = dmy(date))
+  
+```
+Code chunks in Rmarkdown start and end with a triple backtick:
+
+![](https://i.imgur.com/o419Vw6.png)
+
+There are then a few options that you can set for the code chunk. Here:
+
++ r: telling Rmarkdown to interpret this code as R. There are other languages that you can use in Rmarkdown, which is one of the strengths of building reports in this way.
++ setup: the chunk label. This can be anything you like, but no duplicates are allowed. Very useful for navigation in more complicated reports
++ echo=TRUE: whether to show this code in the report. If this is set to FALSE, you'll just see the output of the code (more on this below)
++ eval=TRUE: whether or not to run the code. If eval=FALSE, the code won't do anything other than appear in the report (useful if you're explaining how something works - like this report!)
++ warning = FALSE: whether to show warnings in the report if something goes wrong with your code
++ message=FALSE: whether to show information messages about how your code is running
+
+Lots more info in the [Rmarkdown Cookbook](https://bookdown.org/yihui/rmarkdown/r-code.html)
+
+That chunk of R code is doing two different things:
++ the three lines starting ```library(...)``` load three packages that help you do your analysis. More info
+
+you can also use `knitr::opts_chunk$set`, which is a really powerful way of managing chunk options - but that's a bit beyond the scope of this demo.
+
+# Getting text to update to reflect data
+
+Let's have a look at the what's in demo.csv. We load this into the report in the setup chunk, using 
+
+  ```
+  demo <- read_csv("demo.csv") %>% mutate(date = dmy(date))
+  ```
+That gives us a tibble as follows:
+
+`r knitr::kable(head(demo))`
+
+(there are another 60 or so rows here that I've cut out to save space).
+
+This data will change as the data in the csv file changes. I'll encourage you to fiddle about with this, but if you're used to copy and pasting data tables about to update, this will be a great help.
+
+We can also produce summary text inline. For example, we can count up all of the count1 column (a total of `r sum(demo$count1)`). Or find out that the maximum value in count3 is `r max(demo$count3)`. Or we can say that on the first day of this range (`r demo[1,1]`), the value of count2 was `r demo[1,3]`. Or that the mean (average) of count3 was `r round(mean(demo$count3), 1)`.
+
+I'll say it again: **change the data, and all this stuff will update automatically**. No need to copy and paste at many locations. For example, you might like to include a date in your report describing which month the data is about. You can do this easily: the latest date in this data comes from `r month(max(demo$date), label=T, abbr=F)`. Change the data, and this report will update - go on, try it!
+
+# Doing data processing
+We can do useful stuff like add the columns together:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+demo <- demo %>%
+  mutate(total = count1 + count2 + count3) 
+
+knitr::kable(head(demo))
+
+```
+(again, just showing the first few rows of data).
+
+We can also summarise tables of data:
+
+`r knitr::kable(demo %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))))`
+
+or re-name columns in our tables:
+
+`r knitr::kable(demo %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))), col.names = c("Mean of count 1", "Mean of count 2", "Mean of count 3", "Mean of total"))`
+
+
+# Graphs
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(demo) +
+  geom_point(aes(x=count1, y=count2)) +
+  geom_smooth(aes(x=count1, y=count2), method='lm') +
+  labs(title="Scatter plot of count 1 against count 2 with linear regression") +
+  ylab("Count 2") +
+  xlab("Count 1")
+
+
+demo %>%
+  dplyr::select(!total) %>%
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names)) +
+  labs(title = "Stacked bar of counts by date", fill="Count type") +
+  xlab("Date") +
+  ylab("Count")
+
+DiagrammeR::grViz("
+digraph graph2 {
+
+// a graph statement, which applies to the whole graph
+graph [layout = dot]
+
+// node statements, which describe how each of the nodes work. Note the @@x - corresponding to substituted label text below
+node [shape = rectangle, width = 4, style = filled, fillcolor = beige]
+a [label = '@@1']
+b [label = '@@2']
+c [label = '@@3']
+d [label = '@@4']
+
+// edge statements, which describe how each of the nodes are connected
+a -> d
+b -> d
+c -> d
+
+}
+
+# Outside the main grViz bracket, the footnote-style substituted label text. [x] provides the text for @@x above.
+[1]: paste0('Count 1 total (sum = ', sum(demo$count1), ')')
+[2]: paste0('Count 2 total (sum = ', sum(demo$count2), ')')
+[3]: paste0('Count 3 total (sum = ', sum(demo$count3), ')')
+[4]: paste0('Total (sum = ', sum(demo$total), ')')
+")
+
+```
+
+```
+
+
+
+
+>>>>>>> b8351986e4b1c22723b378251bb2824b94cead5b
