@@ -24,6 +24,7 @@ This is an example of a dynamic report, written in R and [Rmarkdown](http://rmar
 Working through the report will take a couple of hours.
 
 # Who this is for
+This is a test of git change
 
 It isn't intended to be a full introduction to working in R/Rmarkdown.
 
