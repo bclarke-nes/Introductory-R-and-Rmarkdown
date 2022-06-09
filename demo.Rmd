@@ -24,7 +24,7 @@ This is an example of a dynamic report, written in R and [Rmarkdown](http://rmar
 
 Working through the report will take a couple of hours.
 
-This is a cloud change - and this is a local change
+This is a cloud change - and this is a local change - and this is a subsequent cloud change
 # Who this is for
 
 It isn't intended to be a full introduction to working in R/Rmarkdown.
