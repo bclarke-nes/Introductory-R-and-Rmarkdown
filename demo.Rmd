@@ -2,16 +2,16 @@
 title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
 date: "`r Sys.time()`"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
-    pandoc_args: ["--extract-media", "."]
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
   word_document:
     toc: yes
     toc_depth: '2'
@@ -136,7 +136,7 @@ Let's look at the first R chunk of our doc:
   library(NHSRplotthedots)
   library(lubridate)
   demo <- read_csv("demo.csv") %>% mutate(date = dmy(date))
-  
+
 ```
 Code chunks in Rmarkdown start and end with a triple backtick:
 
@@ -169,11 +169,11 @@ That gives us a tibble as follows:
 
 `r knitr::kable(head(demo))`
 
-(there are another 60 or so rows here that I've cut out to save space).
+(there are another `r nrow(demo) - 6` rows that I've cut out to save space).
 
 This data will change as the data in the csv file changes. I'll encourage you to fiddle about with this, but if you're used to copy and pasting data tables about to update, this will be a great help.
 
-We can also produce summary text inline. For example, we can count up all of the count1 column (a total of `r sum(demo$count1)`). Or find out that the maximum value in count3 is `r max(demo$count3)`. Or we can say that on the first day of this range (`r demo[1,1]`), the value of count2 was `r demo[1,3]`. Or that the mean (average) of count3 was `r round(mean(demo$count3), 1)`.
+We can also produce summary text inline. For example, we can count up all of the rows here, and say that we have a total of `r nrow(demo)` records. Or we can add all the entries in the count1 column (a total of `r sum(demo$count1)`). Or find out that the maximum value in count3 is `r max(demo$count3)`. Or we can say that on the first day of this range (`r demo[1,1]`), the value of count2 was `r demo[1,3]`. Or that the mean (average) of count3 was `r round(mean(demo$count3), 1)`.
 
 I'll say it again: **change the data, and all this stuff will update automatically**. No need to copy and paste at many locations. For example, you might like to include a date in your report describing which month the data is about. You can do this easily: the latest date in this data comes from `r month(max(demo$date), label=T, abbr=F)`. Change the data, and this report will update - go on, try it!
 
