@@ -2,16 +2,16 @@
 title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
 date: "`r Sys.time()`"
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
-    pandoc_args: ["--extract-media", "."]
   word_document:
     toc: yes
     toc_depth: '2'
@@ -21,8 +21,9 @@ output:
 
 This is an example of a dynamic report, written in R and [Rmarkdown](http://rmarkdown.rstudio.com). It gives some example ways of automating common data-driven tasks. The idea is that this report can be a starting point for automating report writing processes. The idea is to replace (or speed up) manual report writing using Word and Excel). The demo gives some basic introduction to the workflow. It then walks through a series of example tasks based on a toy data set. The demo also covers ways of producing the report in a variety of formats including pdf, Word document, and html webpage.
 
-# Who this is for
-Spend lots of time updating routine reports
+# Who is this demo for?
+Spend lots of time updating routine reports, such as:
+
 + monthly figures (admissions, cases, ...)
 + continuing data monitoring (users, learners...)
 
@@ -30,54 +31,35 @@ It isn't intended to be a full introduction to working in R/Rmarkdown from scrat
 
 Instead as a guide and support for those who are considering learning a little bit of R as a way out of writing manual reports.
 
+# How does it work
+
+Explain here a bit about R and Rmarkdown
+
 You might like to have a quick look at some of the excellent introductory R resources **add some resources**
 
 Working through the report will take a couple of hours.
 
 # What you need 
 
-+ working R and Rstudio installation
-+ this file (demo.Rmd) and the two demo files (demo.csv, demo2.xlsx)
-+ an idea of what you'd like your report to do
-+ time and space. Don't do this demo under pressure! There's quite a lot to potentially think about, and you will need to go away and work out how to adapt this demonstration to fit your report.
++ working R and Rstudio installation **or**
++ access to a RStudio Cloud account
+
+Easy to set-up and free for small-scale work. Likely not suitable for production work in health and care owing to information governance concerns, but by far the easiest way to get going from scratch if you've never worked with R before.
+
++ the source code for this report - [GitHub link](https://raw.githubusercontent.com/bclarke-nes/Dynamic-report-demo/master/demo.Rmd)
++ the demo data file [demo.csv](https://raw.githubusercontent.com/bclarke-nes/Dynamic-report-demo/master/demo.csv)
++ some experience of building reports manually
++ a good idea of what you'd like your report to do
++ time and space to complete the demo, and think about how it might be useful in your own practice
+
+My suggestion would be not to try and use this demo to change your way of writing reports under pressure. There's quite a lot to think about here, and you might need to spend a good bit of time working out how to adapt this demonstration to fit your report. Think of this as the start of a journey, rather than a destination.
 
 # How does all this work?
 
-Step by step through this doc
-
-## Usual workflow 
-
-```{R message=FALSE, warning=FALSE,echo=F}
-library(DiagrammeR)
-
-DiagrammeR::mermaid("
-graph TB
-
-  data(get data)
-  clean(clean up data)
-  analyse(analyse data)
-  visualise(produce graphs and tables)
-  produce(put new graphs and tables into report)
-  update(update report text)
-  check(check)
-  send(distribute the report)
-  
-data --> clean
-clean --> analyse
-analyse --> visualise
-visualise --> produce
-produce --> update
-update --> check
-check --> send
-")
+This demonstration will take you, step by step, through building a simple report in R and Rmarkdown. The big difference here from the usual way of building reports by hand is that you will combined the analysis, visualisation, and production stages of your report into a single step. As this demo will show, you can do all of this using R and Rmarkdown. You'll load the data, clean and analyse the data, and produce outputs (text, tables, graphs) straight into your report.
 
 
-```
-
-## New workflow
-```{R message=FALSE, warning=FALSE,echo=F}
-library(DiagrammeR)
-
+```{R message=FALSE, warning=FALSE,echo=F, fig.show='hold', out.width = "50%", fig.align = "default"}
 DiagrammeR::mermaid("
 graph TB
 
@@ -93,19 +75,19 @@ analyse --> check
 check --> send
 ")
 
-
 ```
 
-The big difference here then is a combined step where the analysis, visualisation, and production stages are merged together. As this demo will show, you can do all of this using R and Rmarkdown. You'll load the data, clean and analyse the data, and produce outputs (text, tables, graphs) straight into your report.
+
 
 # Is it worth it for me?
+
 + Much harder the first time, and slower
 + So if you have regular reports, especially complicated ones with lots of graphs, deffo
-+ Local IG
++ Local IG concerns
 
 # Starting an Rmarkdown document
 
-There's a bit of preamble at the head of Rmarkdown documents that controls how they are built. For now, I'll suggest that you skip trying to figure it all out, and just use someone else's. The easiest option is to start a new Rmarkdown document direct from the RStudio menu `File >> New file >> R Markdown...`. Alternatively, you can copy the header from this document - so everything between the pair of three dashes: `---`:
+There's a bit of preamble at the head of Rmarkdown documents that controls how they are built. For now, I'll suggest that you skip trying to figure it all out, and just use someone else's. The easiest option is to start a new Rmarkdown document direct from the RStudio menu `File >> New file >> R Markdown...`. Alternatively, you can copy the header from this document, and paste it at the top of your document. Everything between the pair of three dashes: `---` is concerned with setting up this Rmarkdown document:
 
 ```{verbatim}
 ---
@@ -126,9 +108,18 @@ output:
     toc_depth: '2'
 ---
 ```
-This gives a mini-header to your document, which is tweakable. You can change the title from `Dynamic report demo` to something more useful, or you can change the link to the header image (`https://i.imgur.com/5EhpPqK.png`) to something more suitable for your Team/board/organisation.
+This gives a mini-header to your document, which is tweakable. If you look at the very top of this page, you can see there's a KIND Learning Network header image, followed by the document title. You can easily change both of those by editing the URL and the title text in the following line:
+
+```{verbatim}
+title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
+```
 
 More info on [YAML editing in chapter 2 of the excellent R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/rmarkdown-anatomy.html).
+
+There are also options for several different output formats (html, word, and pdf). In RStudio, you can select which output format you'd like your report to be rendered as:
+
+![](https://i.imgur.com/HhM3NqK.png)
+Try these out now - this demo report should knit to each of the three formats without any problems. I'd recommend sticking with html while you're working on a report, though, just because it tends to render most quickly, and plays nicely with other aspects of the workflow while you're writing.
 
 Once you've got the header in place and tweaked to your liking, we're ready to move on to something more useful: getting data into your report.
 
