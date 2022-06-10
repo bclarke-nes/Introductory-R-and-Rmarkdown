@@ -19,27 +19,47 @@ output:
 
 # Introduction
 
-This is an example of a dynamic report, written in R and [Rmarkdown](http://rmarkdown.rstudio.com). It gives some example ways of automating common data-driven tasks. The idea is that this report can be a starting point for automating report writing processes. The idea is to replace (or speed up) manual report writing using Word and Excel). The demo gives some basic introduction to the workflow. It then walks through a series of example tasks based on a toy data set. The demo also covers ways of producing the report in a variety of formats including pdf, Word document, and html webpage.
+This is an example of a dynamic report, written in [R](https://www.r-project.org/) and [Rmarkdown](http://rmarkdown.rstudio.com). It gives some example ways of automating common data-driven tasks. This report is intended as a starting point for automating your report writing processes. The idea is to replace (or speed up) manual report writing. The demo gives some basic introduction to the workflow. It then walks through a series of example tasks based on a toy data set. The demo also covers ways of producing the report in a variety of formats including pdf, Word document, and html webpage.
 
-# Who is this demo for?
-Spend lots of time updating routine reports, such as:
+## Who is this demo for?
+This demo is intended for someone who:
 
-+ monthly figures (admissions, cases, ...)
-+ continuing data monitoring (users, learners...)
++ is currently spending lots of work time updating routine reports in health, care, or housing
++ **and** would like to reduce the time spent on this routine work over the medium-term (months)
++ **and** currently have the time to spend doing a complete overhaul of your report(s) 
++ **and** with a bit of coding experience **or** open to gaining some as part of this process
++ **and** with an hour or two now to work through this demo
 
-It isn't intended to be a full introduction to working in R/Rmarkdown from scratch.
+## What this demo is not
 
-Instead as a guide and support for those who are considering learning a little bit of R as a way out of writing manual reports.
++ it's not a full introduction to working in R/Rmarkdown. R is deep (like most analytic platforms), and this demonstration barely scratches the surface
++ it's not an introduction to everything that you might like to do with a data-driven report either. Instead, it covers some simple examples of common tasks as a way of familiarising you with a different workflow
++ it's definitely not a production-ready replacement for your existing reports. Instead, it's a learning resource, rather than a pre-packed replacement
 
-# How does it work
+## Is it worth it for me?
 
-Explain here a bit about R and Rmarkdown
+That's a metaphysical question!
 
-You might like to have a quick look at some of the excellent introductory R resources **add some resources**
++ Much harder the first time, and slower
++ So if you have regular reports, especially complicated ones with lots of graphs, deffo
++ Local IG concerns
 
-Working through the report will take a couple of hours.
+## How does it work
 
-# What you need 
+[R](https://www.r-project.org/) is a programming language designed for statistical work
+
+[Rmarkdown](http://rmarkdown.rstudio.com) is a simple markup language
+
+Closely related to other kinds of markdown - you might well have used this before without really knowing what it was called. If you've ever posted on a wordpress site or web forum with basic text formatting options available, the chances are that you've already done at least a tiny bit of markdown. Just to give you an example, surrounding a word with asterisks formats it in *italics*. Or putting a dash before a word:
+
+- puts it as a list item
+
+This kind of very basic formatting is known as Markdown. While it's simple, it's usually sufficient to allow the production of neat and clear documents that are easy to ready. Rmarkdown is just Markdown with a few extras to allow you to embed R code directly into the text that you're writing. That R code allows you to do more-or-less any data analysis that you might like and include the results in your markdown-formatted document. If this is all new to you, you might like to have a quick look at some of the excellent introductory R/Rmarkdown resources:
+
++ [Rstudio's quick tour of Rmarkdown](https://rmarkdown.rstudio.com/authoring_quick_tour.html) is a great place to start if this is all new to you
++ If you're already somewhat familiar with working in R, you might prefer to start with the [Rmarkdown chapter in the *R for Data Science* book](https://r4ds.had.co.nz/r-markdown.html)
+
+## What you need to work through the demo
 
 + working R and Rstudio installation **or**
 + access to a RStudio Cloud account
@@ -54,7 +74,7 @@ Easy to set-up and free for small-scale work. Likely not suitable for production
 
 My suggestion would be not to try and use this demo to change your way of writing reports under pressure. There's quite a lot to think about here, and you might need to spend a good bit of time working out how to adapt this demonstration to fit your report. Think of this as the start of a journey, rather than a destination.
 
-# How does all this work?
+## Workflow overview
 
 This demonstration will take you, step by step, through building a simple report in R and Rmarkdown. The big difference here from the usual way of building reports by hand is that you will combined the analysis, visualisation, and production stages of your report into a single step. As this demo will show, you can do all of this using R and Rmarkdown. You'll load the data, clean and analyse the data, and produce outputs (text, tables, graphs) straight into your report.
 
@@ -66,7 +86,7 @@ graph TB
   data(get data)
   clean(clean up data)
   analyse(analyse, visualise, and report data)
-  check(check - still very important!)
+  check(check - very important!)
   send(distribute the report)
   
 data --> clean
@@ -77,86 +97,71 @@ check --> send
 
 ```
 
-
-
-# Is it worth it for me?
-
-+ Much harder the first time, and slower
-+ So if you have regular reports, especially complicated ones with lots of graphs, deffo
-+ Local IG concerns
-
 # Starting an Rmarkdown document
 
-There's a bit of preamble at the head of Rmarkdown documents that controls how they are built. For now, I'll suggest that you skip trying to figure it all out, and just use someone else's. The easiest option is to start a new Rmarkdown document direct from the RStudio menu `File >> New file >> R Markdown...`. Alternatively, you can copy the header from this document, and paste it at the top of your document. Everything between the pair of three dashes: `---` is concerned with setting up this Rmarkdown document:
+There's a bit of preamble at the head of Rmarkdown documents that controls how they are built. For now, I'll suggest that you skip trying to figure it all out, and just use the header from this document. I'll give more details about setting up your Rmarkdown document at the end of this demo. 
 
-```{verbatim}
----
-title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
-date: "`r Sys.time()`"
-output:
-  html_document:
-    toc: no
-    toc_depth: 2
-    number_sections: no
-    toc_float:
-      collapsed: no
-  word_document:
-    toc: yes
-    toc_depth: '2'
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
----
-```
-This gives a mini-header to your document, which is tweakable. If you look at the very top of this page, you can see there's a KIND Learning Network header image, followed by the document title. You can easily change both of those by editing the URL and the title text in the following line:
-
-```{verbatim}
-title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
-```
-
-More info on [YAML editing in chapter 2 of the excellent R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/rmarkdown-anatomy.html).
-
-There are also options for several different output formats (html, word, and pdf). In RStudio, you can select which output format you'd like your report to be rendered as:
-
-![](https://i.imgur.com/HhM3NqK.png)
-Try these out now - this demo report should knit to each of the three formats without any problems. I'd recommend sticking with html while you're working on a report, though, just because it tends to render most quickly, and plays nicely with other aspects of the workflow while you're writing.
-
-Once you've got the header in place and tweaked to your liking, we're ready to move on to something more useful: getting data into your report.
-
-# Getting data into R
-
-This is easy to do in practice, but is a bit of a conceptual leap if you're used to collecting and receiving data in Excel. Instead of opening a data file directly with Excel so that you can inspect and analyse it, we instead load all the data in that file into R before we can use it.
-
-Because there are lots of different types of data out there, there are lots of ways of loading data into R.
-
-Let's look at the first R chunk of our doc:
+Once you've got the header in place, we need to do a tiny bit of setting R up properly. 
 
 ```{r setup, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
   library(tidyverse)
-  library(NHSRplotthedots)
   library(lubridate)
-  demo <- read_csv("demo.csv") %>% mutate(date = dmy(date))
-
+  library(NHSRplotthedots)
 ```
-Code chunks in Rmarkdown start and end with a triple backtick:
 
-![](https://i.imgur.com/o419Vw6.png)
+We load three packages (link to eventual NHS-R statement on tools and packages) here to help us do some useful work with our data. These are all *very* useful for health and care projects, so we'll briefly introduce them here:
 
-There are then a few options that you can set for the code chunk. Here:
++ [tidyverse](https://www.tidyverse.org/) - large ecosystem of tools designed for data science
++ [lubridate](https://lubridate.tidyverse.org/) - helps with handling dates and times
++ [NHSRplotthedots](https://github.com/nhs-r-community/NHSRplotthedots)  - NHS-R community tool for making XmR charts
 
-+ r: telling Rmarkdown to interpret this code as R. There are other languages that you can use in Rmarkdown, which is one of the strengths of building reports in this way.
-+ setup: the chunk label. This can be anything you like, but no duplicates are allowed. Very useful for navigation in more complicated reports
-+ echo=TRUE: whether to show this code in the report. If this is set to FALSE, you'll just see the output of the code (more on this below)
-+ eval=TRUE: whether or not to run the code. If eval=FALSE, the code won't do anything other than appear in the report (useful if you're explaining how something works - like this report!)
-+ warning = FALSE: whether to show warnings in the report if something goes wrong with your code
-+ message=FALSE: whether to show information messages about how your code is running
+You may need to install some or all of these packages. If you need to do this, you can add the line ```install.packages("PACKAGENAME")``` to your file, run that line (ctrl + enter), and then remove the line of code. Or install via ```Tools > Install packages...```.
 
-Lots more info in the [Rmarkdown Cookbook](https://bookdown.org/yihui/rmarkdown/r-code.html)
+Now that's working, we can skip ahead to the interesting part where we get some data into our project.
 
-That chunk of R code is doing two different things:
-+ the three lines starting ```library(...)``` load three packages that help you do your analysis. More info
+# Get data
 
-you can also use `knitr::opts_chunk$set`, which is a really powerful way of managing chunk options - but that's a bit beyond the scope of this demo.
+This ~~feels~~ is easy to do in practice. Instead of opening a data file directly (as we might when using Excel), and then inspecting and analysing it, we instead load all the data in that file. We load the data using the following command:
+
+```{r get data, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+demo <- read_csv("demo.csv") 
+```
+
++ ```read_csv``` is the function that opens the .csv data file
++ ```demo.csv``` is the path to our data file
++ ```<-``` assigns the data that read_csv pulls out of the file to...
++ ```demo``` - the tibble that contains our data
+
+Because there are lots of different types of data out there, there are lots of ways of loading data into R. ```read_csv``` is the most commonly-used one, because .csv files are widely used to share data. The other big one for this kind of work is tidyverse's ```read_excel```, which works similarly to ```read_csv```. Rather than explain how this works, I'll encourage you to read the relevant manual pages, which you can do with the command ```?read_excel``` (as before, run this using ctrl+enter in RStudio).
+
+At the end of this process, we can have a look at the first few rows of our data using the ```head()``` command:
+
+```{r inspect data 1, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
+head(demo)
+```
+This is a tibble - the data structure used by the package ```tidyverse```. In this tibble (called ```demo```), each row contains a date, and three columns of count values from those dates. We can ask R to tell us other properties of ```demo``` too. For example, we can find the total number of rows with:
+
+```{r inspect data 2, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
+nrow(demo)
+```
+
+For now, though, there's an important problem with our tibble: our dates aren't proper dates yet. ```read_csv``` doesn't know that the values in the date column actually are dates. We can tell that by looking at the ```<<chr>>```, which stands for character, which is the way that R refers to text values. We want that to be a date, and doing that conversion will be our next exercise.
+
+# Clean up data
+
+Time for another R chunk:
+
+```{r clean up data, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+demo <- demo %>% mutate(date = dmy(date))
+```
+
+There's a bit to unpack here. It makes most sense (to my mind, at least) to read this code backwards. From right to left, then:
+
++ ```dmy(date)```  is a lubridate command which takes whatever's in the bracket, and tries to convert it into a proper date. It works by assuming that it'll be a day value (d), followed by a month (m), followed by a year (y). There are also related commands like ```ymd()``` to be used when the dates given in our data are formatted differently.
++ ```mutate(date =...)``` takes the result of the ```dmy()``` above, and uses it in a tidyverse command ```mutate```. This is a really important and powerful tool, which makes new columns in tibbles from existing columns. Here, we tell ```mutate``` to make a new column called ```date``` by taking the result of the ```dmy(date)``` above.
++ ``` %>%``` [the pipe!](https://r4ds.had.co.nz/pipes.html) This is a way of chaining commands
+
+
 
 # Getting text to update to reflect data
 
@@ -247,3 +252,71 @@ c -> d
 
 ```
 
+# Rmarkdown document settings
+
+The easiest option is to start a new Rmarkdown document direct from the RStudio menu `File >> New file >> R Markdown...`. Alternatively, you can copy the header from this document, and paste it at the top of your document. Everything between the pair of three dashes: `---` is concerned with setting up this Rmarkdown document:
+
+```{verbatim}
+---
+title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
+date: "`r Sys.time()`"
+output:
+  html_document:
+    toc: no
+    toc_depth: 2
+    number_sections: no
+    toc_float:
+      collapsed: no
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
+  word_document:
+    toc: yes
+    toc_depth: '2'
+---
+```
+You might notice that there are a couple of differences between the header from this document and the default version that RStudio gives you. I've added a link to the KIND Learning Network banner image as part of the title. If you're thinking about adapting this report to suit your purposes, you can easily change both of those by editing the URL (and the title text) in the following line:
+
+```{verbatim}
+title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
+```
+
+More info on [YAML editing in chapter 2 of the excellent R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/rmarkdown-anatomy.html).
+
+Most of this header block is made up of options for the different output formats (html, word, and pdf). In RStudio, you can select which output format you'd like your report to be rendered as:
+
+![](https://i.imgur.com/HhM3NqK.png)
+Try these out now - this demo report should knit to each of the three formats without any problems. I'd recommend sticking with html while you're working on a report, though, just because it tends to render most quickly, and plays nicely with other aspects of the workflow while you're writing.
+
+One thing to watch out for when tweaking these options: indentation and white-space matters. Each of the three output formats (html_document, pdf_document, and word_document) are indented from the *output:* line, and each of the output format options are indented too. A common cause of documents not knitting (see below) are small errors in the indenting in the header.
+
+You might notice another tweak that I've made to the pdf output options for this document, which is to add the line:
+```{verbatim}
+    pandoc_args: ["--extract-media", "."]
+```
+
+
+# So what's next?
+
+## Alternatives
+In the R/Rmarkdown universe, [Flexdashboard](https://pkgs.rstudio.com/flexdashboard/) looks great: there's an [example](https://www.themillerlab.io/post/flexdashboards/mcc_fake_cohort_dashboard_for_post.html#outcomes-by-stage) and a  [walkthrough by the Miller Lab](https://www.themillerlab.io/post/flexdashboards/)
+
+# More on R code chunks
+
+Code chunks in Rmarkdown start and end with a triple backtick:
+
+![](https://i.imgur.com/o419Vw6.png)
+
+There are then a few options that you can set for the code chunk. Here:
+
++ r: telling Rmarkdown to interpret this code as R. There are other languages that you can use in Rmarkdown, which is one of the strengths of building reports in this way.
++ setup: the chunk label. This can be anything you like, but no duplicates are allowed. Very useful for navigation in more complicated reports
++ echo=TRUE: whether to show this code in the report. If this is set to FALSE, you'll just see the output of the code (more on this below)
++ eval=TRUE: whether or not to run the code. If eval=FALSE, the code won't do anything other than appear in the report (useful if you're explaining how something works - like this report!)
++ warning = FALSE: whether to show warnings in the report if something goes wrong with your code
++ message=FALSE: whether to show information messages about how your code is running
+
+Lots more info in the [Rmarkdown Cookbook](https://bookdown.org/yihui/rmarkdown/r-code.html)
+
+you can also use `knitr::opts_chunk$set`, which is a really powerful way of managing chunk options - but that's a bit beyond the scope of this demo.
