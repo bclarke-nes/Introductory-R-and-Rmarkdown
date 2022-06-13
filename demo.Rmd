@@ -16,6 +16,29 @@ output:
     toc: yes
     toc_depth: '2'
 ---
+# Resource aims and objectives 
+
+To give an introduction to writing dynamic reports using RStudio Cloud. Designed for those without previous programming experience, this [approximately] 2 hour interactive session uses R and Rmarkdown to put together a simple dynamic report. The session is specifically designed for a health and care audience, and will:
+
+-	Give an introduction to why we should write dynamic reports
+-	What kinds of report are most suitable to automate
+-	Give a basic overview of R/Rmarkdown/RStudio Cloud
+-	Cover basic data handling jobs including loading data from .csv and .xlsx files, and some basics of data cleaning
+-	Cover simple data analysis tasks including ranges, averages, dates and times
+-	Include some basic examples of graphs (bar, line, XmR/run charts) 
+-	Show how these can be integrated into a simple report format that will update as the underlying data changes
+
+By the end of this session, the user should:
+
+-	Have gained a basic understanding of R, and how Rstudio Cloud and Rmarkdown can be used to generate reports
+-	Be familiar with the advantages and disadvantages of working in this way compared to traditional manual report writing in Word and Excel
+-	Be able to confidently navigate the parts of an Rmarkdown document
+-	Be able to recognise some simple R code, and with suitable assistance interpret it
+-	Be able to seek suitable help for their R code needs
+-	Produce and tweak simple descriptive statistical measures in R
+-	Produce and tweak simple visualisations in R using ggplot2 and nhsplotthedots
+-	Be confident adding dynamic text elements to an Rmarkdown document
+
 
 # Introduction
 
