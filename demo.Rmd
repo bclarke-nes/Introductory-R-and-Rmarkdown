@@ -260,7 +260,7 @@ That's a little bit harder to read, but breaks down nicely:
 We can also add some extra instructions to `kable` to re-name the columns in our table to keep things clear for the reader of our report:
 
 ```{r processing 3, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
-knitr::kable(demo %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))), col.names = c("Mean of count 1", "Mean of count 2", "Mean of count 3", "Mean of total"))`
+knitr::kable(demo %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))), col.names = c("Mean of count 1", "Mean of count 2", "Mean of count 3", "Mean of total"))
 ```
 
 We've added the line `col.names = c("Mean of count 1", "Mean of count 2", "Mean of count 3", "Mean of total")` just before the last bracket from the previous command. This tells kable to rename our table's columns to read properly.
@@ -268,7 +268,47 @@ We've added the line `col.names = c("Mean of count 1", "Mean of count 2", "Mean 
 **Question here about depth** Many many other kinds of data processing are possible, it's what R was built for. I worry though that this is getting too involved for an introductory session. Would like feedback - might consider breaking into a separate training resource here??
 
 ## Drawing graphs
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+Graphs are a really important part of report writing. There are lots of ways of drawing graphs in R, but the three that we'll demonstrate here are:
+
+- a widely-used general purpose graph package called `ggplot2` for most common types of graph (bar, column, line, scatter...)
+- an NHS-specific package called `NHSplotthedots` for producing XmR/run charts
+- a diagram-drawing package called `DiagrammeR` which we'll use to draw a dynamic flowchart
+
+### ggplot2
+Let's start with a minimal example using our demo tibble:
+
+```{r graph 1, echo=TRUE, message=FALSE, warning=FALSE}
+
+ggplot(demo) +
+  geom_point(aes(x=count1, y=count2))
+
+```
+
+Here, the code works as follows:
+
+- `ggplot(demo)` - we tell ggplot2 to use the demo tibble as a data source
+- `geom_point` tells ggplot2 that we want an XY scatter plot
+- the crux of the code is the `(aes(x=count1, y=count2))`. This tells R which columns in the demo tibble it should use to plot the points specified in `geom_point`
+- finally, the `+` then chains together commands to produce a single plot
+
+There are lots and lots of other `geom_xxx` options. A couple of commonly-used examples are geom_col and geom_line:
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+
+ggplot(demo) +
+  geom_col(aes(x=count1, y=count2))
+
+```
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+
+ggplot(demo) +
+  geom_line(aes(x=count1, y=count2))
+
+```
+
+We can also add, using `+` other elements to ggplot2 graphs. Going back to our first XY scatter, we can add labels and regression lines as follows:
+
+```{r graph 2, echo=TRUE, message=FALSE, warning=FALSE}
 
 ggplot(demo) +
   geom_point(aes(x=count1, y=count2)) +
@@ -276,7 +316,10 @@ ggplot(demo) +
   labs(title="Scatter plot of count 1 against count 2 with linear regression") +
   ylab("Count 2") +
   xlab("Count 1")
+```
 
+### Getting the right data for ggplot2 graphs
+```{r graph 3, echo=TRUE, message=FALSE, warning=FALSE}
 
 demo %>%
   dplyr::select(!total) %>%
