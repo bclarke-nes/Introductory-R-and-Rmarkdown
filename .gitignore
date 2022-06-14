@@ -3,6 +3,8 @@
 /*.docx
 /*.pdf
 /img/
+/*.aux
+/*.out
 
 # History files
 .Rhistory
