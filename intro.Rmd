@@ -1,0 +1,141 @@
+---
+title: "![](https://i.imgur.com/5EhpPqK.png) Producing dynamic reports"
+date: "`r Sys.time()`"
+subtitle: "Introduction"
+output:
+  html_document:
+    toc: no
+    toc_depth: 2
+    number_sections: no
+    toc_float:
+      collapsed: no
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
+  word_document:
+    toc: yes
+    toc_depth: '2'
+---
+# About this resource {.tabset}
+## Introduction
+
+Dynamic reports are data-driven documents that update depending on the underlying data.
+
+This resource aims to give a brief introduction to writing dynamic reports using R. Designed for those without previous programming experience, this [approximately] 2 hour interactive session uses R, RStudio Cloud, and Rmarkdown to put together a simple dynamic report. The session is specifically designed for a health and care audience.
+
+This resource will teach you how to write a dynamic report in [R](https://www.r-project.org/) and [Rmarkdown](http://rmarkdown.rstudio.com). It gives some example ways of automating common data-driven tasks. This report is intended as a starting point for automating your report writing processes. The idea is to replace (or speed up) manual report writing. The demo gives some basic introduction to the workflow. It then walks through a series of example tasks based on a toy data set. The demo also covers ways of producing the report in a variety of formats including pdf, Word document, and html webpage.
+
+### Who is this demo for?
+This demo is intended for someone who:
+
++ is currently spending lots of work time updating routine reports in health, care, or housing
++ **and** would like to reduce the time spent on this routine work over the medium-term (months)
++ **and** currently have the time to spend doing a complete overhaul of your report(s) 
++ **and** are open to gaining some basic programming experience
++ **and** with about two hours now to work through this demo
+
+### What this demo is not
+
++ it's not a full introduction to working in R/Rmarkdown. R is deep (like most analytic platforms), and this demonstration barely scratches the surface
++ it's not an introduction to everything that you might like to do with a data-driven report either. Instead, it covers some simple examples of common tasks as a way of familiarising you with a different workflow
++ it's definitely not a production-ready replacement for your existing reports. Instead, it's a learning resource, rather than a pre-packed replacement
+
+### Is it worth it for me?
+
+That's a metaphysical question, but there are strengths and weaknesses of dynamic reports compared to traditionally-produced static reports.
+
+![](https://i.imgur.com/1GhhzM2.png)
+
+#### Strengths
+
++ fidelity. If you're report is working properly, you won't have copy + paste errors.
++ standardisation. If you have lots of similar reports to write, taking this dynamic approach simplifies taking a standard approach to formatting, analysis, and so on. Especially true if you have lots of graphs to produce.
++ reproducibility. If someone else looks at the source code for your report, they can see exactly how your figures are produced.
++ efficiency. Again assuming that everything works properly, updating a dynamic report with new data is much quicker than updating a comparable report by hand.
+
+#### Weaknesses
+
++ particularly if you are new to this kind of work, writing a new dynamic report takes longer than a traditional report the first time.
++ errors. You may swap small frequent errors for large, subtle ones.
++ Local IG concerns
+
+### How does it work
+
+We'll use three tools to write the report. First, we'll use the web service RStudio Cloud. This allows us to run R without installing any software or making any changes to our computer. Next, we'll use the markup language Rmarkdown to add some text and images to our report. Finally, we'll use the [R](https://www.r-project.org/) programming language to do some simple data handling, analysis, and visualisation.
+
++ [Rstudio's quick tour of Rmarkdown](https://rmarkdown.rstudio.com/authoring_quick_tour.html) is a great place to start if this is all new to you
++ If you're already somewhat familiar with working in R, you might prefer to start with the [Rmarkdown chapter in the *R for Data Science* book](https://r4ds.had.co.nz/r-markdown.html)
+
+## Getting started
+
+This demo assumes that you'll be working in RStudio Cloud. RStudio Cloud is a web service that allows you to run R without installing any software. It's easy to set-up and free for small-scale work like this demo.
+
+This makes it by far the easiest way to get going from scratch if you've never worked with R before. Note that because it's a web service, it requires you to upload your data to their servers, which might makes it unsuitable for production work in health and care owing to information governance concerns. That said, it's easy to tranfer projects from RStudio Cloud to an installed version of R, so don't worry that what you learn here will be tied to the cloud forever. 
+
+My suggestion would be not to try and use this demo to change your way of writing reports under pressure. There's quite a lot to think about here, and you might need to spend a good bit of time working out how to adapt this demonstration to fit your report. Think of this as the start of a journey, rather than a destination.
+
+### Speedy version for the confident
++ sign-in to [RStudio Cloud](https://rstudio.cloud/)
++ create a new project from the Git Repository at https://github.com/bclarke-nes/Dynamic-report-demo 
++ open the demo.Rmd file
+
+### Rstudio Cloud quick-start
+
+1. Go to [https://rstudio.cloud/](https://rstudio.cloud/)
+2. If you have an account, log in and go to step xxxx
+3. If not, create an account ![](https://i.imgur.com/2p1w6ts.png) and sign-in
+4. Create a new project from a Git repository: ![]()
+
+
+4. Download the source code for this report - [GitHub link](https://raw.githubusercontent.com/bclarke-nes/Dynamic-report-demo/master/demo.Rmd) and the demo data file [demo.csv](https://raw.githubusercontent.com/bclarke-nes/Dynamic-report-demo/master/demo.csv) [right-click, save as for both]
+5. Add a new project on RStudio Cloud by clicking ```New Project >> New RStudio Project```: ![](https://i.imgur.com/ajnIoHQ.png)
+6. Name the new workspace something suitable
+
+the Rmd and csv files to the project workspace
+
+## Workflow overview
+
+This demonstration will take you, step by step, through building a simple report in R and Rmarkdown. The big difference here from the usual way of building reports by hand is that you will combined the analysis, visualisation, and production stages of your report into a single step. As this demo will show, you can do all of this using R and Rmarkdown. You'll load the data, clean and analyse the data, and produce outputs (text, tables, graphs) straight into your report.
+
+
+```{R message=FALSE, warning=FALSE,echo=F, fig.show='hold', out.width = "50%", fig.align = "default"}
+DiagrammeR::mermaid("
+graph TB
+
+data(get data)
+clean(clean up data)
+analyse(analyse, visualise, and report data)
+check(check - very important!)
+send(distribute the report)
+
+data --> clean
+clean --> analyse
+analyse --> check
+check --> send
+")
+
+```
+
+## Aims and objectives
+
+This session will: 
+
+-	Give an introduction to why we should write dynamic reports
+-	What kinds of report are most suitable to automate
+-	Give a basic overview of R/Rmarkdown/RStudio Cloud
+-	Cover basic data handling jobs including loading data from .csv and .xlsx files, and some basics of data cleaning
+-	Cover simple data analysis tasks including ranges, averages, dates and times
+-	Include some basic examples of graphs (bar, line, XmR/run charts) 
+-	Show how these can be integrated into a simple report format that will update as the underlying data changes
+
+By the end of this session, the user should:
+
+-	Have gained a basic understanding of R, and how Rstudio Cloud and Rmarkdown can be used to generate reports
+-	Be familiar with the advantages and disadvantages of working in this way compared to traditional manual report writing in Word and Excel
+-	Be able to confidently navigate the parts of an Rmarkdown document
+-	Be able to recognise some simple R code, and with suitable assistance interpret it
+-	Be able to seek suitable help for their R code needs
+-	Produce and tweak simple descriptive statistical measures in R
+-	Produce and tweak simple visualisations in R using ggplot2 and nhsplotthedots
+-	Be confident adding dynamic text elements to an Rmarkdown document

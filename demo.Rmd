@@ -1,6 +1,7 @@
 ---
-title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
+title: "![](https://i.imgur.com/5EhpPqK.png) Producing dynamic reports"
 date: "`r Sys.time()`"
+subtitle: "Demonstration"
 output:
   html_document:
     toc: no
@@ -16,109 +17,6 @@ output:
     toc: yes
     toc_depth: '2'
 ---
-# Resource aims and objectives 
-
-To give an introduction to writing dynamic reports using RStudio Cloud. Designed for those without previous programming experience, this [approximately] 2 hour interactive session uses R and Rmarkdown to put together a simple dynamic report. The session is specifically designed for a health and care audience, and will:
-
--	Give an introduction to why we should write dynamic reports
--	What kinds of report are most suitable to automate
--	Give a basic overview of R/Rmarkdown/RStudio Cloud
--	Cover basic data handling jobs including loading data from .csv and .xlsx files, and some basics of data cleaning
--	Cover simple data analysis tasks including ranges, averages, dates and times
--	Include some basic examples of graphs (bar, line, XmR/run charts) 
--	Show how these can be integrated into a simple report format that will update as the underlying data changes
-
-By the end of this session, the user should:
-
--	Have gained a basic understanding of R, and how Rstudio Cloud and Rmarkdown can be used to generate reports
--	Be familiar with the advantages and disadvantages of working in this way compared to traditional manual report writing in Word and Excel
--	Be able to confidently navigate the parts of an Rmarkdown document
--	Be able to recognise some simple R code, and with suitable assistance interpret it
--	Be able to seek suitable help for their R code needs
--	Produce and tweak simple descriptive statistical measures in R
--	Produce and tweak simple visualisations in R using ggplot2 and nhsplotthedots
--	Be confident adding dynamic text elements to an Rmarkdown document
-
-
-# Introduction
-
-This is an example of a dynamic report, written in [R](https://www.r-project.org/) and [Rmarkdown](http://rmarkdown.rstudio.com). It gives some example ways of automating common data-driven tasks. This report is intended as a starting point for automating your report writing processes. The idea is to replace (or speed up) manual report writing. The demo gives some basic introduction to the workflow. It then walks through a series of example tasks based on a toy data set. The demo also covers ways of producing the report in a variety of formats including pdf, Word document, and html webpage.
-
-## Who is this demo for?
-This demo is intended for someone who:
-
-+ is currently spending lots of work time updating routine reports in health, care, or housing
-+ **and** would like to reduce the time spent on this routine work over the medium-term (months)
-+ **and** currently have the time to spend doing a complete overhaul of your report(s) 
-+ **and** with a bit of coding experience **or** open to gaining some as part of this process
-+ **and** with an hour or two now to work through this demo
-
-## What this demo is not
-
-+ it's not a full introduction to working in R/Rmarkdown. R is deep (like most analytic platforms), and this demonstration barely scratches the surface
-+ it's not an introduction to everything that you might like to do with a data-driven report either. Instead, it covers some simple examples of common tasks as a way of familiarising you with a different workflow
-+ it's definitely not a production-ready replacement for your existing reports. Instead, it's a learning resource, rather than a pre-packed replacement
-
-## Is it worth it for me?
-
-That's a metaphysical question!
-
-+ Much harder the first time, and slower
-+ So if you have regular reports, especially complicated ones with lots of graphs, deffo
-+ Local IG concerns
-
-## How does it work
-
-[R](https://www.r-project.org/) is a programming language designed for statistical work
-
-[Rmarkdown](http://rmarkdown.rstudio.com) is a simple markup language
-
-Closely related to other kinds of markdown - you might well have used this before without really knowing what it was called. If you've ever posted on a wordpress site or web forum with basic text formatting options available, the chances are that you've already done at least a tiny bit of markdown. Just to give you an example, surrounding a word with asterisks formats it in *italics*. Or putting a dash before a word:
-
-- puts it as a list item
-
-This kind of very basic formatting is known as Markdown. While it's simple, it's usually sufficient to allow the production of neat and clear documents that are easy to ready. Rmarkdown is just Markdown with a few extras to allow you to embed R code directly into the text that you're writing. That R code allows you to do more-or-less any data analysis that you might like and include the results in your markdown-formatted document. If this is all new to you, you might like to have a quick look at some of the excellent introductory R/Rmarkdown resources:
-
-+ [Rstudio's quick tour of Rmarkdown](https://rmarkdown.rstudio.com/authoring_quick_tour.html) is a great place to start if this is all new to you
-+ If you're already somewhat familiar with working in R, you might prefer to start with the [Rmarkdown chapter in the *R for Data Science* book](https://r4ds.had.co.nz/r-markdown.html)
-
-## What you need to work through the demo
-
-+ working R and Rstudio installation **or**
-+ access to a RStudio Cloud account
-
-Easy to set-up and free for small-scale work. Likely not suitable for production work in health and care owing to information governance concerns, but by far the easiest way to get going from scratch if you've never worked with R before.
-
-+ the source code for this report - [GitHub link](https://raw.githubusercontent.com/bclarke-nes/Dynamic-report-demo/master/demo.Rmd)
-+ the demo data file [demo.csv](https://raw.githubusercontent.com/bclarke-nes/Dynamic-report-demo/master/demo.csv)
-+ some experience of building reports manually
-+ a good idea of what you'd like your report to do
-+ time and space to complete the demo, and think about how it might be useful in your own practice
-
-My suggestion would be not to try and use this demo to change your way of writing reports under pressure. There's quite a lot to think about here, and you might need to spend a good bit of time working out how to adapt this demonstration to fit your report. Think of this as the start of a journey, rather than a destination.
-
-## Workflow overview
-
-This demonstration will take you, step by step, through building a simple report in R and Rmarkdown. The big difference here from the usual way of building reports by hand is that you will combined the analysis, visualisation, and production stages of your report into a single step. As this demo will show, you can do all of this using R and Rmarkdown. You'll load the data, clean and analyse the data, and produce outputs (text, tables, graphs) straight into your report.
-
-
-```{R message=FALSE, warning=FALSE,echo=F, fig.show='hold', out.width = "50%", fig.align = "default"}
-DiagrammeR::mermaid("
-graph TB
-
-  data(get data)
-  clean(clean up data)
-  analyse(analyse, visualise, and report data)
-  check(check - very important!)
-  send(distribute the report)
-  
-data --> clean
-clean --> analyse
-analyse --> check
-check --> send
-")
-
-```
 
 # Starting an Rmarkdown document
 
@@ -141,6 +39,50 @@ We load three packages (link to eventual NHS-R statement on tools and packages) 
 You may need to install some or all of these packages. If you need to do this, you can add the line ```install.packages("PACKAGENAME")``` to your file, run that line (ctrl + enter), and then remove the line of code. Or install via ```Tools > Install packages...```.
 
 Now that's working, we can skip ahead to the interesting part where we get some data into our project.
+
+# A crash course in Rmarkdown
+
+[Rmarkdown](http://rmarkdown.rstudio.com) is a simple markup language. You might have used it before without really knowing what it was called. If you've ever posted on a Wordpress site or web forum with basic text formatting options available, the chances are that you've already done at least a tiny bit of markdown. Just to give you an example, surrounding a word with asterisks - like ```*italics*``` formats it in *italics*. Pairs of asterisks either side of the word formats that word - like ```**bold``` - formats the text as **bold**. And so on. 
+
+This kind of very basic formatting is known as Markdown. While it's simple, it's usually sufficient to allow the production of neat and clear documents that are easy to ready. Rmarkdown is just Markdown with a few extras to allow you to embed R code directly into the text that you're writing. That R code allows you to do more-or-less any data analysis that you might like and include the results in your markdown-formatted document. If this is all new to you, you might like to have a quick look at some of the excellent introductory R/Rmarkdown resources:
+
+*italics*: ```*italics*```
+**bold**: ```**bold**```
+
+[links](https://raw.githubusercontent.com/bclarke-nes/Dynamic-report-demo/master/demo.Rmd)
+
+Heading levels
+
+```
+# Level 1
+## Level 2
+### Level 3
+...
+
+```
+
+# Level 1
+## Level 2
+### Level 3
+...
+
+
+```![Linking images](https://i.imgur.com/5EhpPqK.png)```
+![Linking images](https://i.imgur.com/5EhpPqK.png)
+
+```
+- dashes at the start of lines make bullet-points
+- like so
+```
+- dashes at the start of lines make bullet-points
+- like so
+
+```
+1. Numbers at the start of lines make numbered lists
+2. like so
+```
+1. Numbers at the start of lines make numbered lists
+2. Like so
 
 # Get data
 
