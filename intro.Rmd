@@ -3,19 +3,19 @@ title: "![](https://i.imgur.com/5EhpPqK.png) Producing dynamic reports"
 date: "`r Sys.time()`"
 subtitle: "Introduction"
 output:
+  word_document:
+    toc: yes
+    toc_depth: '2'
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
-    pandoc_args: ["--extract-media", "."]
-  word_document:
-    toc: yes
-    toc_depth: '2'
 ---
 # About this resource {.tabset}
 ## Introduction
@@ -90,9 +90,10 @@ My suggestion would be not to try and use this demo to change your way of writin
 
 4. Download the source code for this report - [GitHub link](https://raw.githubusercontent.com/bclarke-nes/Dynamic-report-demo/master/demo.Rmd) and the demo data file [demo.csv](https://raw.githubusercontent.com/bclarke-nes/Dynamic-report-demo/master/demo.csv) [right-click, save as for both]
 5. Add a new project on RStudio Cloud by clicking ```New Project >> New RStudio Project```: ![](https://i.imgur.com/ajnIoHQ.png)
-6. Name the new workspace something suitable
+6. New project with demo files: ![](https://i.imgur.com/0AW7UVt.png)
+7. Open the demo.Rmd file from the Files pane
 
-the Rmd and csv files to the project workspace
+
 
 ## Workflow overview
 

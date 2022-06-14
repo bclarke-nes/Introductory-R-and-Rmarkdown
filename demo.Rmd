@@ -9,19 +9,37 @@ output:
     number_sections: no
     toc_float:
       collapsed: no
+  word_document:
+    toc: yes
+    toc_depth: '2'
   pdf_document:
     toc: yes
     toc_depth: '2'
     pandoc_args: ["--extract-media", "."]
-  word_document:
-    toc: yes
-    toc_depth: '2'
 ---
+# Introduction{.tabset}
+This is our dynamic report. The report will teach you how to make the report.
 
-# Starting an Rmarkdown document
++ work through in order
++ ask questions if you get stuck
++ ask about how you might adapt this to suit your needs
+
+## Getting set-up
+
+### Starting an Rmarkdown document
 
 There's a bit of preamble at the head of Rmarkdown documents that controls how they are built. For now, I'll suggest that you skip trying to figure it all out, and just use the header from this document. I'll give more details about setting up your Rmarkdown document at the end of this demo. 
 
+### Knitting
+We definitely don't want our end users to see our RMarkdown code. So the .Rmd file that you've been working on needs to be converted into a suitable output format. We call that conversion *knitting* (after the R package *knitr* that manages the conversion). To knit your file, you can either:
+
+- select the Knit option from the menu at the top of the code pane. You can select any of the output formats, although I'd suggest sticking with HTML (webpage) while working through the demo. ![](https://i.imgur.com/HhM3NqK.png)
+- alternatively, press ctrl+shift+k to knit to the last used format
+
+The first time that you knit your document in RStudio Cloud, you may get a warning about required packages. Just agree - you'll need them to knit your document properly.
+![](https://i.imgur.com/6pfFbXk.png)
+
+### Getting R ready
 Once you've got the header in place, we need to do a tiny bit of setting R up properly. 
 
 ```{r setup, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
@@ -38,18 +56,19 @@ We load three packages (link to eventual NHS-R statement on tools and packages) 
 
 You may need to install some or all of these packages. If you need to do this, you can add the line ```install.packages("PACKAGENAME")``` to your file, run that line (ctrl + enter), and then remove the line of code. Or install via ```Tools > Install packages...```.
 
-Now that's working, we can skip ahead to the interesting part where we get some data into our project.
+Now that's working, we can skip ahead to the interesting part where we get start to work on our report..
 
-# A crash course in Rmarkdown
+## Rmarkdown
 
 [Rmarkdown](http://rmarkdown.rstudio.com) is a simple markup language. You might have used it before without really knowing what it was called. If you've ever posted on a Wordpress site or web forum with basic text formatting options available, the chances are that you've already done at least a tiny bit of markdown. Just to give you an example, surrounding a word with asterisks - like ```*italics*``` formats it in *italics*. Pairs of asterisks either side of the word formats that word - like ```**bold``` - formats the text as **bold**. And so on. 
 
 This kind of very basic formatting is known as Markdown. While it's simple, it's usually sufficient to allow the production of neat and clear documents that are easy to ready. Rmarkdown is just Markdown with a few extras to allow you to embed R code directly into the text that you're writing. That R code allows you to do more-or-less any data analysis that you might like and include the results in your markdown-formatted document. If this is all new to you, you might like to have a quick look at some of the excellent introductory R/Rmarkdown resources:
 
 *italics*: ```*italics*```
+
 **bold**: ```**bold**```
 
-[links](https://raw.githubusercontent.com/bclarke-nes/Dynamic-report-demo/master/demo.Rmd)
+[links](https://google.com): ```[links](https://google.com)```
 
 Heading levels
 
@@ -60,12 +79,6 @@ Heading levels
 ...
 
 ```
-
-# Level 1
-## Level 2
-### Level 3
-...
-
 
 ```![Linking images](https://i.imgur.com/5EhpPqK.png)```
 ![Linking images](https://i.imgur.com/5EhpPqK.png)
@@ -84,9 +97,13 @@ Heading levels
 1. Numbers at the start of lines make numbered lists
 2. Like so
 
-# Get data
+Do have a look at the Rmarkdown in the code pane, and feel free to play around with it. Once you've had a look at some of the Rmarkdown in practice, we're ready to move on to get some data.
 
-This ~~feels~~ is easy to do in practice. Instead of opening a data file directly (as we might when using Excel), and then inspecting and analysing it, we instead load all the data in that file. We load the data using the following command:
+## Get data
+
+This ~~feels~~ is easy to do in practice. Instead of opening a data file directly (as we might when using Excel), and then inspecting and analysing it, we instead load all the data in that file into R. 
+
+We load the data using the following command:
 
 ```{r get data, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
 demo <- read_csv("demo.csv") 
@@ -97,22 +114,53 @@ demo <- read_csv("demo.csv")
 + ```<-``` assigns the data that read_csv pulls out of the file to...
 + ```demo``` - the tibble that contains our data
 
-Because there are lots of different types of data out there, there are lots of ways of loading data into R. ```read_csv``` is the most commonly-used one, because .csv files are widely used to share data. The other big one for this kind of work is tidyverse's ```read_excel```, which works similarly to ```read_csv```. Rather than explain how this works, I'll encourage you to read the relevant manual pages, which you can do with the command ```?read_excel``` (as before, run this using ctrl+enter in RStudio).
+Explain chunks
+
+Because there are lots of different types of data out there, there are lots of ways of loading data into R. ```read_csv``` is the most commonly-used one, because .csv files - **c**omma **s**eparated **v**alues - are widely used to share data. The other main function used to load data is tidyverse's ```read_excel```, which works similarly to ```read_csv```. 
+
+Rather than explain how this works here, I'll encourage you to read the relevant manual pages, which you can do with the command ```?read_excel```. You can run this using ctrl+enter in RStudio.
 
 At the end of this process, we can have a look at the first few rows of our data using the ```head()``` command:
 
 ```{r inspect data 1, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
 head(demo)
 ```
-This is a tibble - the data structure used by the package ```tidyverse```. In this tibble (called ```demo```), each row contains a date, and three columns of count values from those dates. We can ask R to tell us other properties of ```demo``` too. For example, we can find the total number of rows with:
+This command shows us the first few rows of our data. From the .csv file, we have converted the data into a *tibble*, which is the name for the data structure used by the package ```tidyverse```. In this tibble (called ```demo```), each row contains four columns. One holds date, and the remaining three hold of counts of some imagined values from those dates. We can ask R to tell us other properties of the ```demo``` tibble too. For example, we can count the total number of rows with:
 
 ```{r inspect data 2, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
 nrow(demo)
 ```
 
-For now, though, there's an important problem with our tibble: our dates aren't proper dates yet. ```read_csv``` doesn't know that the values in the date column actually are dates. We can tell that by looking at the ```<<chr>>```, which stands for character, which is the way that R refers to text values. We want that to be a date, and doing that conversion will be our next exercise.
+Or we can pull out the column headings with:
 
-# Clean up data
+```{r inspect data 3, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
+colnames(demo)
+```
+Note that in the couple of examples above, we've just asked R to show us the number of rows/column names. We can also save these findings, which we might do if we want to use them later for another purpose. Just for instance, we can make a new variable *demo_length* containing the number of rows in data with:
+
+```{r inspect data 4, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
+demo_length <- nrow(demo)
+```
+
+And we can refer back to the value of *demo_length* whenever we like:
+```{r inspect data 5, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
+demo_length
+```
+
+Or do things to that value - like multiplying it by five:
+```{r inspect data 6, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
+demo_length * 5
+```
+
+We can also create new variables from more complicated operations on our original tibble. For instance, we can extract a whole column using ```tibble$column```, and then add all the entries in that variable together using ```sum()```:
+
+```{r inspect data 7, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
+sum_count3 <- sum(demo$count3)
+sum_count3
+```
+I think that's enough demonstrating for now. There's one an important problem with our tibble: our dates aren't proper dates yet. ```read_csv``` doesn't know that the values in the date column actually are dates. We can tell that by looking at the ```<<chr>>```, which stands for character in when we looked at ```head(demo)``` above. Character is the way that R refers to text values. But we definitely want those values to be stored properly as dates, and doing that conversion will be our next exercise.
+
+## Clean up data
 
 Time for another R chunk:
 
@@ -124,51 +172,102 @@ There's a bit to unpack here. It makes most sense (to my mind, at least) to read
 
 + ```dmy(date)```  is a lubridate command which takes whatever's in the bracket, and tries to convert it into a proper date. It works by assuming that it'll be a day value (d), followed by a month (m), followed by a year (y). There are also related commands like ```ymd()``` to be used when the dates given in our data are formatted differently.
 + ```mutate(date =...)``` takes the result of the ```dmy()``` above, and uses it in a tidyverse command ```mutate```. This is a really important and powerful tool, which makes new columns in tibbles from existing columns. Here, we tell ```mutate``` to make a new column called ```date``` by taking the result of the ```dmy(date)``` above.
-+ ``` %>%``` [the pipe!](https://r4ds.had.co.nz/pipes.html) This is a way of chaining commands
++ ``` %>%``` [the pipe!](https://r4ds.had.co.nz/pipes.html) This is a way of chaining commands together. In this case, writing ```demo %>% mutate...``` tells R to take the demo tibble, and do the mutate command to it. The advantage here is that we can string ```%>%```s together, to do many operations in sequence on some set of data.
++ finally, we assign the modified demo tibble back on top of itself using ```<-```. Essentially, ```demo <- demo ...``` tells R to overwrite the starting version of demo with the updated version containing proper dates.
 
+That simple exercise introduces several new concepts. **Question:** pause here? Explain again? Another exercise?
 
+Now that we have some data loaded and cleaned up, we're ready to use it to start writing our report.
 
-# Getting text to update to reflect data
+## Getting text to update to reflect data
 
-Let's have a look at the what's in demo.csv. We load this into the report in the setup chunk, using 
+As a refresher, let's have a look at the first few rows of the demo tibble using ```head()```, and also print out the total number of rows using ```nrow(demo)```:
 
-  ```
-  demo <- read_csv("demo.csv") %>% mutate(date = dmy(date))
-  ```
-That gives us a tibble as follows:
+```{r update text 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+head(demo)
+nrow(demo)
+```
 
-`r knitr::kable(head(demo))`
+This data will change as the data in the demo.csv file changes. You can show yourself how this works as follows:
 
-(there are another `r nrow(demo) - 6` rows that I've cut out to save space).
+1. Knit this document now (menu at top middle of code pane or ctrl+shift+k)
+2. Have a look at this section again - you should see that our original data has 68 rows
+3. Now edit the demo.csv file. To do this, click on the demo.csv file in the `Files` pane, and select `View File`. This should open the data file in the code pane. 
+4. Now delete a couple of rows of your choice, before saving and closing the file.
+4. Now re-knit the document again. The data now has `r nrow(demo)` rows, rather than the original 68 rows.
 
-This data will change as the data in the csv file changes. I'll encourage you to fiddle about with this, but if you're used to copy and pasting data tables about to update, this will be a great help.
+### Some ways of getting data into your report
 
-We can also produce summary text inline. For example, we can count up all of the rows here, and say that we have a total of `r nrow(demo)` records. Or we can add all the entries in the count1 column (a total of `r sum(demo$count1)`). Or find out that the maximum value in count3 is `r max(demo$count3)`. Or we can say that on the first day of this range (`r demo[1,1]`), the value of count2 was `r demo[1,3]`. Or that the mean (average) of count3 was `r round(mean(demo$count3), 1)`.
+The raw R output that we've been using so far is useful, but looks pretty nasty. Ideally, we'd like to be able to format this text so that it fits into our report properly.
 
-I'll say it again: **change the data, and all this stuff will update automatically**. No need to copy and paste at many locations. For example, you might like to include a date in your report describing which month the data is about. You can do this easily: the latest date in this data comes from `r month(max(demo$date), label=T, abbr=F)`. Change the data, and this report will update - go on, try it!
+#### Inline text
 
-# Doing data processing
-We can do useful stuff like add the columns together:
+We can include R variables and data inline in our text by wrapping an R command in backticks: `` `r '\x60r some_command()\x60'` ``. 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+When I first started using R, I don't think that I'd ever used the backtick key - usually at the extreme top left of most keyboards, often below the `Escape` key. Backticks are definitely different from the apostrophe ('), and it's important to not get the two confused when you're working with R.
+
+If you haven't already, do follow along with the source code - particularly to find out how the last few commands are managed.
+
+<!-- And note that we can write comments in our RMarkdown file which won't be displayed. This one is here to advise you to ignore the horrible messing about with \x60r etc that I've done in the paragraph below to get backticks to display properly in RMarkdown. -->
+
+For example, we can count up all of the rows here, and by using the expression `` `r '\x60r nrow(demo)\x60'` ``
+find out that we have a total of `r nrow(demo)` rows in our tibble. Or by wrapping the command `sum(demo$count1)` we can add all the entries in the count1 column to give a total of `r sum(demo$count1)`. Or `max(demo$count3)` will let us discover that the maximum value in count3 is `r max(demo$count3)`. Or we can say that on the first day of this range (`r demo[1,1]`), the value of count2 was `r demo[1,3]`. Or that the mean (average) of count3 was `r round(mean(demo$count3), 1)`.
+
+<!-- The square brackets in demo[1,3] allow us to pull out data from specified places in a tibble. The general syntax is [row,column]. -->
+
+#### Using knitr
+
+Sometimes our reports need to contain larger chunks of data than are comfortable to manage using inline text. The most obvious example is the data table. We have some R commands that are extremely helpful for writing data tables in reports. `knitr::kable` is the most useful of all, because it allows us to produce nicely formatted tables with the very minimum of fooling about. So the first few rows of our demo tibble look like this:
+
+```{r data table 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+knitr::kable(head(demo))
+```
+I've included an example showing some of the other tweaks that might be useful to you with kable. I'd recommend having a look at ?kable to get a sense of the possible scope for tweaking tables in this way:
+
+```{r data table 2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+knitr::kable(head(demo))
+```
+
+I'll say it again: **change the data, and all this stuff will update automatically**. For example, you might like to include a date in your report describing which month the data is about. You can do this easily: the latest date in this data comes from `r month(max(demo$date), label=T, abbr=F)`. Change the data, re-knit the report, and bask in the glory of a updated report - go on, try it!
+
+## Doing data processing
+Most of the use that we get from data driven reports comes from the analysis that we do on the data. This is a very brief introduction to some basic analysis using R. We can do useful operations to our data like adding the columns together:
+
+```{r processing 1, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
 demo <- demo %>%
   mutate(total = count1 + count2 + count3) 
 
 knitr::kable(head(demo))
-
 ```
-(again, just showing the first few rows of data).
+
+Most of the details here should be familiar from previous parts. We use the pipe `>%>` to pass the `demo` tibble to `mutate`. `mutate` creates a new column (`total`) by adding together the three `count` columns, and we then reassign our updated tibble to `demo`. That's then displayed nicely by `knitr::kable`.
 
 We can also summarise tables of data:
 
-`r knitr::kable(demo %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))))`
+```{r processing 2, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+knitr::kable(demo %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))))
+```
 
-or re-name columns in our tables:
+That's a little bit harder to read, but breaks down nicely:
 
-`r knitr::kable(demo %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))), col.names = c("Mean of count 1", "Mean of count 2", "Mean of count 3", "Mean of total"))`
+- we find the average of columns using `mean(.x, na.rm=T)`. The `.x` tells R to use whatever data is passed from the previous command, while the `na.rm=T` part tells R to ignore any missing data.
+- `~round()` just rounds the mean values to the nearest whole number
+- `across(where(is.numeric)` tells R that we want to use all the columns (so work `across()` all the columns) that contain numbers (`where(is.numeric)`)
+- `summarise()` - crunch the results down into a single row
+- `demo %>%` take the data in the demo tibble
+- finally, `knitr::kable` displays a nice table containing the results
 
+We can also add some extra instructions to `kable` to re-name the columns in our table to keep things clear for the reader of our report:
 
-# Graphs
+```{r processing 3, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+knitr::kable(demo %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))), col.names = c("Mean of count 1", "Mean of count 2", "Mean of count 3", "Mean of total"))`
+```
+
+We've added the line `col.names = c("Mean of count 1", "Mean of count 2", "Mean of count 3", "Mean of total")` just before the last bracket from the previous command. This tells kable to rename our table's columns to read properly.
+
+**Question here about depth** Many many other kinds of data processing are possible, it's what R was built for. I worry though that this is getting too involved for an introductory session. Would like feedback - might consider breaking into a separate training resource here??
+
+## Drawing graphs
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 ggplot(demo) +
@@ -217,7 +316,9 @@ c -> d
 
 ```
 
-# Rmarkdown document settings
+## More details
+
+### Rmarkdown document settings
 
 The easiest option is to start a new Rmarkdown document direct from the RStudio menu `File >> New file >> R Markdown...`. Alternatively, you can copy the header from this document, and paste it at the top of your document. Everything between the pair of three dashes: `---` is concerned with setting up this Rmarkdown document:
 
@@ -262,12 +363,12 @@ You might notice another tweak that I've made to the pdf output options for this
 ```
 
 
-# So what's next?
+### So what's next?
 
-## Alternatives
+#### Alternatives
 In the R/Rmarkdown universe, [Flexdashboard](https://pkgs.rstudio.com/flexdashboard/) looks great: there's an [example](https://www.themillerlab.io/post/flexdashboards/mcc_fake_cohort_dashboard_for_post.html#outcomes-by-stage) and a  [walkthrough by the Miller Lab](https://www.themillerlab.io/post/flexdashboards/)
 
-# More on R code chunks
+### More on R code chunks
 
 Code chunks in Rmarkdown start and end with a triple backtick:
 
