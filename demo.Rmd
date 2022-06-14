@@ -58,7 +58,7 @@ You may need to install some or all of these packages. If you need to do this, y
 
 Now that's working, we can skip ahead to the interesting part where we get start to work on our report..
 
-## Rmarkdown
+## Using Rmarkdown
 
 [Rmarkdown](http://rmarkdown.rstudio.com) is a simple markup language. You might have used it before without really knowing what it was called. If you've ever posted on a Wordpress site or web forum with basic text formatting options available, the chances are that you've already done at least a tiny bit of markdown. Just to give you an example, surrounding a word with asterisks - like ```*italics*``` formats it in *italics*. Pairs of asterisks either side of the word formats that word - like ```**bold``` - formats the text as **bold**. And so on. 
 
@@ -99,7 +99,7 @@ Heading levels
 
 Do have a look at the Rmarkdown in the code pane, and feel free to play around with it. Once you've had a look at some of the Rmarkdown in practice, we're ready to move on to get some data.
 
-## Get data
+## Getting data
 
 This ~~feels~~ is easy to do in practice. Instead of opening a data file directly (as we might when using Excel), and then inspecting and analysing it, we instead load all the data in that file into R. 
 
@@ -160,7 +160,7 @@ sum_count3
 ```
 I think that's enough demonstrating for now. There's one an important problem with our tibble: our dates aren't proper dates yet. ```read_csv``` doesn't know that the values in the date column actually are dates. We can tell that by looking at the ```<<chr>>```, which stands for character in when we looked at ```head(demo)``` above. Character is the way that R refers to text values. But we definitely want those values to be stored properly as dates, and doing that conversion will be our next exercise.
 
-## Clean up data
+## Cleaning data
 
 Time for another R chunk:
 
@@ -179,7 +179,7 @@ That simple exercise introduces several new concepts. **Question:** pause here? 
 
 Now that we have some data loaded and cleaned up, we're ready to use it to start writing our report.
 
-## Getting text to update to reflect data
+## Updating text
 
 As a refresher, let's have a look at the first few rows of the demo tibble using ```head()```, and also print out the total number of rows using ```nrow(demo)```:
 
@@ -230,7 +230,7 @@ knitr::kable(head(demo))
 
 I'll say it again: **change the data, and all this stuff will update automatically**. For example, you might like to include a date in your report describing which month the data is about. You can do this easily: the latest date in this data comes from `r month(max(demo$date), label=T, abbr=F)`. Change the data, re-knit the report, and bask in the glory of a updated report - go on, try it!
 
-## Doing data processing
+## Data processing
 Most of the use that we get from data driven reports comes from the analysis that we do on the data. This is a very brief introduction to some basic analysis using R. We can do useful operations to our data like adding the columns together:
 
 ```{r processing 1, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
@@ -267,14 +267,14 @@ We've added the line `col.names = c("Mean of count 1", "Mean of count 2", "Mean 
 
 **Question here about depth** Many many other kinds of data processing are possible, it's what R was built for. I worry though that this is getting too involved for an introductory session. Would like feedback - might consider breaking into a separate training resource here??
 
-## Drawing graphs
+## Drawing graphs{.tabset}
 Graphs are a really important part of report writing. There are lots of ways of drawing graphs in R, but the three that we'll demonstrate here are:
 
 - a widely-used general purpose graph package called `ggplot2` for most common types of graph (bar, column, line, scatter...)
 - an NHS-specific package called `NHSplotthedots` for producing XmR/run charts
 - a diagram-drawing package called `DiagrammeR` which we'll use to draw a dynamic flowchart
 
-### ggplot2
+### ggplot2 introduction
 Let's start with a minimal example using our demo tibble:
 
 ```{r graph 1, echo=TRUE, message=FALSE, warning=FALSE}
@@ -318,7 +318,9 @@ ggplot(demo) +
   xlab("Count 1")
 ```
 
-### Getting the right data for ggplot2 graphs
+### more advanced ggplot2
+The secret to most useful visualisations is to get the data into the right format. Here's an example, based on using `dplyr` from the tidyverse to select parts of the data (i.e. excluding the total column), and then reformatting the demo tibble data. This allows ggplot2 to then plot counts for each day, using the `fill` option to set each type of count as a different colour.
+
 ```{r graph 3, echo=TRUE, message=FALSE, warning=FALSE}
 
 demo %>%
@@ -329,7 +331,15 @@ demo %>%
   labs(title = "Stacked bar of counts by date", fill="Count type") +
   xlab("Date") +
   ylab("Count")
+```
 
+### NHSplot the dots
+(to add - or possibly not given the size of this thing)
+
+### DiagrammeR
+This is an interesting example of a very different kind of dynamic graph. Here, the structure of the graph remains the same, but the numerical counts will update as the data changes.
+
+```{r graph 4, echo=TRUE, message=FALSE, warning=FALSE}
 DiagrammeR::grViz("
 digraph graph2 {
 

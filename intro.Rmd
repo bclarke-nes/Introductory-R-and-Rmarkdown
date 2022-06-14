@@ -31,7 +31,7 @@ This demo is intended for someone who:
 
 + is currently spending lots of work time updating routine reports in health, care, or housing
 + **and** would like to reduce the time spent on this routine work over the medium-term (months)
-+ **and** currently have the time to spend doing a complete overhaul of your report(s) 
++ **and** has some time to spend reworking this report-writing process 
 + **and** are open to gaining some basic programming experience
 + **and** with about two hours now to work through this demo
 
@@ -43,22 +43,23 @@ This demo is intended for someone who:
 
 ### Is it worth it for me?
 
-That's a metaphysical question, but there are strengths and weaknesses of dynamic reports compared to traditionally-produced static reports.
-
 ![](https://i.imgur.com/1GhhzM2.png)
+
+That's a metaphysical question, but there are strengths and weaknesses of dynamic reports compared to traditionally-produced static reports.
 
 #### Strengths
 
-+ fidelity. If you're report is working properly, you won't have copy + paste errors.
-+ standardisation. If you have lots of similar reports to write, taking this dynamic approach simplifies taking a standard approach to formatting, analysis, and so on. Especially true if you have lots of graphs to produce.
-+ reproducibility. If someone else looks at the source code for your report, they can see exactly how your figures are produced.
-+ efficiency. Again assuming that everything works properly, updating a dynamic report with new data is much quicker than updating a comparable report by hand.
++ **fidelity**. If you're report is working properly, you won't have copy + paste errors.
++ **standardisation**. If you have lots of similar reports to write, taking this dynamic approach simplifies taking a standard approach to formatting, analysis, and so on. Especially true if you have lots of graphs to produce.
++ **reproducibility**. If someone else looks at the source code for your report, they can see exactly how your figures are produced.
++ **efficiency**. Again assuming that everything works properly, updating a dynamic report with new data is much quicker than updating a comparable report by hand.
 
 #### Weaknesses
 
-+ particularly if you are new to this kind of work, writing a new dynamic report takes longer than a traditional report the first time.
-+ errors. You may swap small frequent errors for large, subtle ones.
-+ Local IG concerns
++ **investment**. Particularly if you are new to this kind of work, writing a new dynamic report takes longer than a traditional report the first time. There's plenty to learn, and it can be hard to find that space to rework an existing process.
++ **errors**. While dynamic reports is a great way of avoiding minor errors from copying and pasting, it can introduce entirely new sources of error from reworking your analysis. Reports, particularly early on, need frequent careful checking to ensure that you haven't swapped small frequent errors for large, subtle ones.
++ **Information Governance concerns** about data management.
++ **novelty**. Changing processes is often controversial, with a degree of resistance. QI methods might be helpful if you think this is likely to be a substantial concern for your project.
 
 ### How does it work
 
@@ -76,24 +77,24 @@ This makes it by far the easiest way to get going from scratch if you've never w
 My suggestion would be not to try and use this demo to change your way of writing reports under pressure. There's quite a lot to think about here, and you might need to spend a good bit of time working out how to adapt this demonstration to fit your report. Think of this as the start of a journey, rather than a destination.
 
 ### Speedy version for the confident
-+ sign-in to [RStudio Cloud](https://rstudio.cloud/)
-+ create a new project from the Git Repository at https://github.com/bclarke-nes/Dynamic-report-demo 
-+ open the demo.Rmd file
+
+1. sign-in to [RStudio Cloud](https://rstudio.cloud/)
+2. create a new project from the Git Repository at https://github.com/bclarke-nes/Dynamic-report-demo 
+3. open the demo.Rmd file
 
 ### Rstudio Cloud quick-start
 
 1. Go to [https://rstudio.cloud/](https://rstudio.cloud/)
-2. If you have an account, log in and go to step xxxx
-3. If not, create an account ![](https://i.imgur.com/2p1w6ts.png) and sign-in
-4. Create a new project from a Git repository: ![]()
+2. If you have an account, log in. Otherwise, select create an account, follow the steps, and then sign-in
+![](https://i.imgur.com/2p1w6ts.png) 
 
+4. Add a new project on RStudio Cloud by clicking ```New Project >> New RStudio Project >> New Project from a Git repository```. When prompted, enter the URL `https://github.com/bclarke-nes/Dynamic-report-demo`
+![](https://i.imgur.com/ajnIoHQ.png)
 
-4. Download the source code for this report - [GitHub link](https://raw.githubusercontent.com/bclarke-nes/Dynamic-report-demo/master/demo.Rmd) and the demo data file [demo.csv](https://raw.githubusercontent.com/bclarke-nes/Dynamic-report-demo/master/demo.csv) [right-click, save as for both]
-5. Add a new project on RStudio Cloud by clicking ```New Project >> New RStudio Project```: ![](https://i.imgur.com/ajnIoHQ.png)
-6. New project with demo files: ![](https://i.imgur.com/0AW7UVt.png)
-7. Open the demo.Rmd file from the Files pane
+5. That will give you a new project containing the files needed for this demonstration: 
+![](https://i.imgur.com/0AW7UVt.png)
 
-
+6. Open the demo.Rmd file from the Files pane
 
 ## Workflow overview
 
