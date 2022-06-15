@@ -3,6 +3,12 @@ title: "![](https://i.imgur.com/5EhpPqK.png) Producing dynamic reports"
 date: "`r Sys.time()`"
 subtitle: "Introduction"
 output:
+  html_document:
+    toc: no
+    toc_depth: 2
+    number_sections: no
+    toc_float:
+      collapsed: no
   word_document:
     toc: yes
     toc_depth: '2'
@@ -10,26 +16,20 @@ output:
     toc: yes
     toc_depth: '2'
     pandoc_args: ["--extract-media", "."]
-  html_document:
-    toc: no
-    toc_depth: 2
-    number_sections: no
-    toc_float:
-      collapsed: no
 ---
 # About this resource {.tabset}
 ## Introduction
 
-Dynamic reports are data-driven documents that update depending on the underlying data.
+Dynamic reports are data-driven documents that can be periodically updated as their underlying data changes.
 
-This resource aims to give a brief introduction to writing dynamic reports using R. Designed for those without previous programming experience, this [approximately] 2 hour interactive session uses R, RStudio Cloud, and Rmarkdown to put together a simple dynamic report. The session is specifically designed for a health and care audience.
+This resource is a brief introduction to writing dynamic reports using [R](https://www.r-project.org/), [Rmarkdown](http://rmarkdown.rstudio.com), and [RStudio Cloud](https://rstudio.cloud). It is a two hour interactive session designed for those without previous programming experience who work in health and care. It gives a general introduction to the tools, and then some useful examples of frequently-met data-driven tasks. It is intended as a starting point for automating your report writing processes, with the aim of replacing, enhancing, or simplifying, manual report writing. The demonstration also covers ways of producing the report in a variety of formats including .pdf, .docx (Word format), and .html (webpage).
 
-This resource will teach you how to write a dynamic report in [R](https://www.r-project.org/) and [Rmarkdown](http://rmarkdown.rstudio.com). It gives some example ways of automating common data-driven tasks. This report is intended as a starting point for automating your report writing processes. The idea is to replace (or speed up) manual report writing. The demo gives some basic introduction to the workflow. It then walks through a series of example tasks based on a toy data set. The demo also covers ways of producing the report in a variety of formats including pdf, Word document, and html webpage.
+**QUESTION** Useful to include a list of report types here?
 
 ### Who is this demo for?
 This demo is intended for someone who:
 
-+ is currently spending lots of work time updating routine reports in health, care, or housing
++ is currently spending lots of time manually updating reports in health, care, or housing
 + **and** would like to reduce the time spent on this routine work over the medium-term (months)
 + **and** has some time to spend reworking this report-writing process 
 + **and** are open to gaining some basic programming experience
@@ -37,34 +37,39 @@ This demo is intended for someone who:
 
 ### What this demo is not
 
-+ it's not a full introduction to working in R/Rmarkdown. R is deep (like most analytic platforms), and this demonstration barely scratches the surface
++ it's not a full introduction to working in R/Rmarkdown. R is deep (like most analytic platforms), and this demonstration covers only a little bit of the available functionality
 + it's not an introduction to everything that you might like to do with a data-driven report either. Instead, it covers some simple examples of common tasks as a way of familiarising you with a different workflow
-+ it's definitely not a production-ready replacement for your existing reports. Instead, it's a learning resource, rather than a pre-packed replacement
++ it's definitely not a production-ready replacement for your existing reports. It's a learning resource, rather than a pre-packed replacement
++ it won't teach you how to make real-time dashboards. If you need your report to update more than about once a day, you should consider building a dashboard instead (Power BI, R/Shiny, DASH)
 
 ### Is it worth it for me?
 
 ![](https://i.imgur.com/1GhhzM2.png)
 
-That's a metaphysical question, but there are strengths and weaknesses of dynamic reports compared to traditionally-produced static reports.
+That's a metaphysical question, and not one that we can provide firm answers to! But there are strengths and weaknesses of dynamic reports compared to traditionally-produced static reports:
 
 #### Strengths
 
-+ **fidelity**. If you're report is working properly, you won't have copy + paste errors.
-+ **standardisation**. If you have lots of similar reports to write, taking this dynamic approach simplifies taking a standard approach to formatting, analysis, and so on. Especially true if you have lots of graphs to produce.
-+ **reproducibility**. If someone else looks at the source code for your report, they can see exactly how your figures are produced.
++ **fidelity**. A dynamic report means no manual updating of text, graphs, and figures. No more copy and paste problems (see the Teams chat message above)
++ **standardisation**. If you have lots of similar reports to write, this dynamic approach simplifies the process of making your reports look alike by applying a standard approach to formatting, analysis, and so on. This is a huge time-saver, especially true if you have lots of graphs to produce.
++ **reproducibility**. If someone else looks at the source code for your report, they can see exactly how your figures are produced. That means that, when it's time to hand over production of your report to a colleague, you won't need to explain how to build the report. It's all contained in the source-code.
 + **efficiency**. Again assuming that everything works properly, updating a dynamic report with new data is much quicker than updating a comparable report by hand.
 
 #### Weaknesses
 
-+ **investment**. Particularly if you are new to this kind of work, writing a new dynamic report takes longer than a traditional report the first time. There's plenty to learn, and it can be hard to find that space to rework an existing process.
++ **set-up cost**. Particularly if you are new to this kind of work, writing a new dynamic report takes much longer than a traditional report. There's plenty to learn, and it can be hard to find that time needed to learn, and to rework an established process.
 + **errors**. While dynamic reports is a great way of avoiding minor errors from copying and pasting, it can introduce entirely new sources of error from reworking your analysis. Reports, particularly early on, need frequent careful checking to ensure that you haven't swapped small frequent errors for large, subtle ones.
-+ **Information Governance concerns** about data management.
-+ **novelty**. Changing processes is often controversial, with a degree of resistance. QI methods might be helpful if you think this is likely to be a substantial concern for your project.
++ **Information Governance and data protection concerns** about the platforms used to write these kinds of reports. 
++ **novelty**. Changing processes is often controversial, with a degree of resistance. For example, there's a strong lock-in to the Microsoft Office suite (Word and Excel especially) for report writing. Suggesting something new can be daunting. Change management and QI methods might be helpful if you think this is likely to be a substantial concern for your project.
 
 ### How does it work
 
 We'll use three tools to write the report. First, we'll use the web service RStudio Cloud. This allows us to run R without installing any software or making any changes to our computer. Next, we'll use the markup language Rmarkdown to add some text and images to our report. Finally, we'll use the [R](https://www.r-project.org/) programming language to do some simple data handling, analysis, and visualisation.
 
+Just in case you'd like to look into how these tools work in advance of the session, we would recommend:
+
++ an introductory R webinar - **will link to John MacKintosh webinar recording here**
++ a quick [introduction to RStudio Cloud from R bloggers](https://www.r-bloggers.com/2022/02/rstudio-cloud-how-to-get-started-for-free/)
 + [Rstudio's quick tour of Rmarkdown](https://rmarkdown.rstudio.com/authoring_quick_tour.html) is a great place to start if this is all new to you
 + If you're already somewhat familiar with working in R, you might prefer to start with the [Rmarkdown chapter in the *R for Data Science* book](https://r4ds.had.co.nz/r-markdown.html)
 
