@@ -106,6 +106,7 @@ You'll need to do a little bit of preparation before the training session. I'd a
 ![](https://i.imgur.com/0AW7UVt.png)
 
 6. Open the demo.Rmd file from the Files pane
+7. A word of reassurance. If you haven't done any coding before, your first sight of the RStudio Cloud interface might be a shock. Don't worry about this - we'll go through some tips at the start of the session for setting up RStudio to make it more friendly. 
 
 ## Aims and objectives
 

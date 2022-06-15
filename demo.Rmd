@@ -18,61 +18,73 @@ output:
     pandoc_args: ["--extract-media", "."]
 ---
 # Introduction{.tabset}
-This is our dynamic report. The report will teach you how to make the report.
+This is our dynamic report training resource. The main objective of this training resource is to demonstrate how to build a report like this one. In this session, we will work through the report step-by-step. It's interactive - so do please ask questions, or for extra clarification if anything isn't as clear as you'd like it to be. It's also very useful for everyone in the group if you can reflect on how this demonstration report might be adapted to suit your needs.
 
-+ work through in order
-+ ask questions if you get stuck
-+ ask about how you might adapt this to suit your needs
+Most of this demonstration is just about following-along. It's useful to try and switch between the code pane and the viewer pane to see how the report works. You might find it helpful to minimise the Console and Environment panes for this tutorial as they're less important at this stage.
+
+### What to do if things go wrong?
+There are lots of minor problems that we might encounter while working through this report. First, this is *normal and to be expected*. Please don't worry if things don't work first time - we will be able to work through any problems that you might encounter and hopefully resolve them fairly easily. Second, we'll give some advice below about good strategies for solving problems - this is a key part of the learning journey in this field.
 
 ## Getting set-up
+First thing first: we will work through knitting this document at the start of the session. We definitely don't want our end users to see our RMarkdown code. So the .Rmd file that we are working on needs to be converted into a suitable output format. We call that conversion *knitting* (after the R package `knitr` that manages the conversion). To knit your file, you can either:
 
-### Starting an Rmarkdown document
+- select the Knit option from the menu at the top of the code pane. You can select any of the output formats, although I'd suggest sticking with .html (webpage) while working through the demo. ![](https://i.imgur.com/HhM3NqK.png)
+- alternatively, press `ctrl+shift+k` while your cursor is in the code pane to knit to the last used format
 
-There's a bit of preamble at the head of Rmarkdown documents that controls how they are built. For now, I'll suggest that you skip trying to figure it all out, and just use the header from this document. I'll give more details about setting up your Rmarkdown document at the end of this demo. 
+Knitting is controlled by the preamble at the head of .Rmd. For now, I'll suggest that you skip trying to figure it all out in favour of spending our time on some of the more interesting areas of this demonstration. I'll give more details about setting up your Rmarkdown document at the end of this document in the **More details** section.
 
-### Knitting
-We definitely don't want our end users to see our RMarkdown code. So the .Rmd file that you've been working on needs to be converted into a suitable output format. We call that conversion *knitting* (after the R package *knitr* that manages the conversion). To knit your file, you can either:
-
-- select the Knit option from the menu at the top of the code pane. You can select any of the output formats, although I'd suggest sticking with HTML (webpage) while working through the demo. ![](https://i.imgur.com/HhM3NqK.png)
-- alternatively, press ctrl+shift+k to knit to the last used format
-
-The first time that you knit your document in RStudio Cloud, you may get a warning about required packages. Just agree - you'll need them to knit your document properly.
+The first time that you knit your document in RStudio Cloud, you may get a warning about required packages. Just agree to this, as you'll need the packages to knit your document properly.
 ![](https://i.imgur.com/6pfFbXk.png)
 
 ### Getting R ready
-Once you've got the header in place, we need to do a tiny bit of setting R up properly.
-
-**preview in viewer pane**
+Once you've got the header in place, we need to do a tiny bit of setting R up properly. R uses packages, which are plug-ins that offer useful functions. We need to add these packages to R to help us do some of the tasks in this demonstration. We'll add them in the chunk of R code below:
 
 ```{r setup, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
   library(tidyverse)
   library(lubridate)
   library(NHSRplotthedots)
+  library(readxl)
   # library(tidyr)
   # library(readr)
   # library(DiagrammeR)
   # library(ggplot2)
   # library(dplyr)
 
+
+# There's a problem currently with RStudio Cloud and tidyverse. If tidyverse installation fails, we'll need to install five packages individually. If that's the case, comment out the `library(tidyverse)` line by adding a # at the start of the line. Then uncomment, by removing the #s, the five lines installing tidyr, readr, DiagrammeR, ggplot2, and dplyr. You'll then need to install the packages, following the instructions in the demonstration report but using a different list of packages for installation as follows:
+
+#                                 tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl
+
+# Also comments are useful - add comments as you work! R comments start with a #, comments in RMarkdown start <!-- and end -->
+
 ```
 
-We load three packages (link to eventual NHS-R statement on tools and packages) here to help us do some useful work with our data. These are all *very* useful for health and care projects, so we'll briefly introduce them here:
+We load several packages (link to eventual NHS-R statement on tools and packages) here to help us do some useful work with our data. These are all *very* useful for health and care projects, so we'll briefly introduce them here:
 
-+ [tidyverse](https://www.tidyverse.org/) - large ecosystem of tools designed for data science
++ [tidyverse](https://www.tidyverse.org/) - this is a large ecosystem of tools designed for data science. Specifically in this demonstration, we use tidyr, readr, DiagrammeR, ggplot2, and dplyr. We also use readxl to open Excel files
 + [lubridate](https://lubridate.tidyverse.org/) - helps with handling dates and times
 + [NHSRplotthedots](https://github.com/nhs-r-community/NHSRplotthedots)  - NHS-R community tool for making XmR charts
 
-You may need to install some or all of these packages. If you need to do this, you can add the line ```install.packages("PACKAGENAME")``` to your file, run that line (ctrl + enter), and then remove the line of code. Or install via ```Tools > Install packages...```.
+You may need to install some or all of these packages. You should do this by:
+1. navigating to `Tools >> Install Packages'
+![](https://i.imgur.com/f93MaFt.png)
 
-Now that's working, we can skip ahead to the interesting part where we get start to work on our report..
-
-(you might need to scroll back up the page to access the next tab in this demo).
+2. pasting the following list of packages into the box: ```tidyverse,lubridate,NHSRplotthedots```
+3. if there are problems, please refer to the note in the code for this section 
 
 ## Using Rmarkdown
 
 [Rmarkdown](http://rmarkdown.rstudio.com) is a simple markup language. You might have used it before without really knowing what it was called. If you've ever posted on a Wordpress site or web forum with basic text formatting options available, the chances are that you've already done at least a tiny bit of markdown. Just to give you an example, surrounding a word with asterisks - like ```*italics*``` formats it in *italics*. Pairs of asterisks either side of the word formats that word - like ```**bold**``` - formats the text as **bold**. And so on. 
 
-This kind of very basic formatting is known as Markdown. While it's simple, it's usually sufficient to allow the production of neat and clear documents that are easy to ready. Rmarkdown is just Markdown with a few extras to allow you to embed R code directly into the text that you're writing. That R code allows you to do more-or-less any data analysis that you might like and include the results in your markdown-formatted document. If this is all new to you, you might like to have a quick look at some of the excellent introductory R/Rmarkdown resources:
+This kind of very basic formatting is known as Markdown. While it's simple, it's usually sufficient to allow the production of neat and clear documents that are easy to ready. Rmarkdown is just Markdown with a few extras to allow you to embed R code directly into the text that you're writing. That R code allows you to do more-or-less any data analysis that you might like and include the results in your markdown-formatted document. There's a quick reference sheet at the foot of this section.
+
+### Suggested exercises
+
+1. Change the image above to something less dull (like https://i.imgur.com/RkMmLXm.png)
+2. Change THIS TEXT to bold, and THIS TEXT to italic
+3. Add some bullet points below here describing your morning
+
+Do have a look at the Rmarkdown in the code pane, and feel free to play around with it. Once you've had a look at some of the Rmarkdown in practice, we're ready to move on to get some data.
 
 ### RMarkdown quick reference
 
@@ -109,52 +121,104 @@ Heading levels
 1. Numbers at the start of lines make numbered lists
 2. Like so
 
-### Suggested exercises
-
-1. Change the image above to something less dull
-2. Change THIS TEXT to bold
-3. Add a level-2 header below
-
-Do have a look at the Rmarkdown in the code pane, and feel free to play around with it. Once you've had a look at some of the Rmarkdown in practice, we're ready to move on to get some data.
-
 ## Getting data
 
-This ~~feels~~ is easy to do in practice. Instead of opening a data file directly (as we might when using Excel), and then inspecting and analysing it, we instead load all the data in that file into R. 
+Once we've got a sense of how we're going to write our report using RMarkdown, it's time to start thinking about the data that we are going to use to make our report update. Luckily, getting data into R is easy. Instead of opening a data file directly (as we might when using Excel), and then inspecting and analysing it, we instead load all the data in that file into R. 
+
+I've provided some demo data, which you can see in the file pane (demo.csv). The format of this data is pretty simple: it gives three different values each measured on a single date as shown below. This might be similar to the kind of data that you'd see in your work - like admissions figures, service engagement statistics, or inquiry measures.
+
+| date       | count1 | count2 | count3 |
+| ---------- |:------:|:------:|:------:|
+| 01/05/2022 |   11   |   93   |   82   |
+| 02/05/2022 |   15   |   114  |   99   | 
+| 03/05/2022 |   ...  |   ...  |   ...  |
 
 We load the data using the following command:
 
 ```{r get data, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
 demo <- read_csv("demo.csv")
-
 ```
+Definitely worth us pausing here to explain what all this means. Usually in R, you do things by applying *commands* to objects like data. To break this command down into steps:
 
-+ ```read_csv``` is the function that opens the .csv data file
-+ ```demo.csv``` is the path to our data file
-+ ```<-``` assigns the data that read_csv pulls out of the file to...
-+ ```demo``` - the tibble that contains our data
++ ```read_csv``` is the main command, which opens a .csv data file, and reads its contents
++ ```demo.csv``` is where we well `read.csv` which .csv file to open by specifying the file's path
++ ```<-``` then assigns the data that `read_csv` pulls out of the file to...
++ ```demo``` - the *tibble* that contains our data. We'll explain what a tibble is below, but for now you can just think of it as the way that R stores data
 
-**Explain chunks**
+If you look at the code pane, you'll see that this R command is wrapped-up in backticks, with a lot of options in {curly brackets}. This is a way of marking our R code, and telling RStudio Cloud that we want it to be intpreted as R, rather than RMarkdown. We call these ```chunks```. In what's ahead, one of the most common problems come from chunks, and so one of the first things to check if a command doesn't work as expected is that it's properly in place in a chunk.
 
 Because there are lots of different types of data out there, there are lots of ways of loading data into R. ```read_csv``` is the most commonly-used one, because .csv files - **c**omma **s**eparated **v**alues - are widely used to share data. The other main function used to load data is readr's ```read_excel```, which works similarly to ```read_csv```. 
 
-**More emphasis on the help section - make them look it up in the code window, make it a task**
-Rather than explain how this works here, I'll encourage you to read the relevant manual pages, which you can do with the command ```?read_excel```. You can run this using ctrl+enter in RStudio.
+Let's try a couple of tasks now to help you get the hang of loading data. There are two empty R chunks below. Can you fill in the gaps to make the right thing happen?
 
-At the end of this process, we can have a look at the first few rows of our data using the ```head()``` command:
+### Data exercise 1
+Can you load the data from the data.csv file into a tibble called ```demo2```?
+
+```{r data ex1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+# Write your code in the line below. Hint: the structure of the command will be the same as the chunk above - but the name of the tibble will be different
+
+
+```
+
+### Data exercise 2
+Can you load the data from the data2.xlsx file into the ```demo2``` tibble using read_excel?
+
+```{r data ex2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+# Write your code in the line below. This will overwrite the contents of demo2 with new data.
+
+
+
+# Hint: whenever you're in a chunk, you can get help on a command by typing a question mark, then the name of the command, then ctrl-enter. For example, you can type ?read_excel on a new line for help with reading .xlsx files.
+```
+
+Once we've loaded our data, we can use it in other commands. One of the most useful commands is `head()`, which lets us look at the first few rows of a data object:
 
 ```{r inspect data 1, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
 head(demo)
 ```
-This command shows us the first few rows of our data. From the .csv file, we have converted the data into a *tibble*, which is the name for the data structure used by the package ```tidyverse```. In this tibble (called ```demo```), each row contains four columns. One holds date, and the remaining three hold of counts of some imagined values from those dates. We can ask R to tell us other properties of the ```demo``` tibble too. For example, we can count the total number of rows with:
+
+### Data exercise 3
+Can you look at the head of your `demo2` tibble? How do demo and demo2 differ?
+
+```{r data ex3, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+# Write your code in the line below
+
+```
+
+### A note on tibbles
+From the .csv file, we have converted the data into a *tibble*, which is the name for the data structure used by the package ```tidyverse```. In this tibble (called ```demo```), each row contains four columns. One holds date, and the remaining three hold of counts of some imagined values from those dates. 
+
+There's potentially lots to say about tibbles. If this is new territory for you, the [relevant chapter in *R for Data Science*](https://r4ds.had.co.nz/tibbles.html) is a great place to start. Or if you'd prefer something much more terse, the high-level introduction on the [tidyverse site](https://tibble.tidyverse.org/) would be good too.
+
+### Back to our data
+
+Once we've loaded our data, we can begin to do all kinds of interesting things with it. Most of that will have to wait for the section after next - we'll need to do some data tidying first before we can do most of the really interesting work. But just to whet your appetite, here are a couple of examples of operations that we can do on our data.
+
+A common finding that we often need to report in data-driven work is about length. Just how many dates do we have data for? Happily, this is one of the easiest things to discover using R, because we can count the total number of rows in our tibble using the the `nrow()` command:
 
 ```{r inspect data 2, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
 nrow(demo)
 ```
+### Data exercise 4
+Does `demo2` have the same number of rows as `demo`?
+
+```{r data ex4, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+# Write your code in the line below
+
+```
+
 
 Or we can pull out the column headings with:
-
 ```{r inspect data 3, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
 colnames(demo)
+```
+
+### Data exercise 5
+Again, does `demo2` have the same column headings as `demo`?
+
+```{r data ex5, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+# Write your code in the line below
+
 ```
 Note that in the couple of examples above, we've just asked R to show us the number of rows/column names. We can also save these findings, which we might do if we want to use them later for another purpose. Just for instance, we can make a new variable *demo_length* containing the number of rows in data with:
 
