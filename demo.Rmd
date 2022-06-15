@@ -40,12 +40,20 @@ The first time that you knit your document in RStudio Cloud, you may get a warni
 ![](https://i.imgur.com/6pfFbXk.png)
 
 ### Getting R ready
-Once you've got the header in place, we need to do a tiny bit of setting R up properly. 
+Once you've got the header in place, we need to do a tiny bit of setting R up properly.
+
+**preview in viewer pane**
 
 ```{r setup, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
   library(tidyverse)
   library(lubridate)
   library(NHSRplotthedots)
+  # library(tidyr)
+  # library(readr)
+  # library(DiagrammeR)
+  # library(ggplot2)
+  # library(dplyr)
+
 ```
 
 We load three packages (link to eventual NHS-R statement on tools and packages) here to help us do some useful work with our data. These are all *very* useful for health and care projects, so we'll briefly introduce them here:
@@ -58,11 +66,15 @@ You may need to install some or all of these packages. If you need to do this, y
 
 Now that's working, we can skip ahead to the interesting part where we get start to work on our report..
 
+(you might need to scroll back up the page to access the next tab in this demo).
+
 ## Using Rmarkdown
 
-[Rmarkdown](http://rmarkdown.rstudio.com) is a simple markup language. You might have used it before without really knowing what it was called. If you've ever posted on a Wordpress site or web forum with basic text formatting options available, the chances are that you've already done at least a tiny bit of markdown. Just to give you an example, surrounding a word with asterisks - like ```*italics*``` formats it in *italics*. Pairs of asterisks either side of the word formats that word - like ```**bold``` - formats the text as **bold**. And so on. 
+[Rmarkdown](http://rmarkdown.rstudio.com) is a simple markup language. You might have used it before without really knowing what it was called. If you've ever posted on a Wordpress site or web forum with basic text formatting options available, the chances are that you've already done at least a tiny bit of markdown. Just to give you an example, surrounding a word with asterisks - like ```*italics*``` formats it in *italics*. Pairs of asterisks either side of the word formats that word - like ```**bold**``` - formats the text as **bold**. And so on. 
 
 This kind of very basic formatting is known as Markdown. While it's simple, it's usually sufficient to allow the production of neat and clear documents that are easy to ready. Rmarkdown is just Markdown with a few extras to allow you to embed R code directly into the text that you're writing. That R code allows you to do more-or-less any data analysis that you might like and include the results in your markdown-formatted document. If this is all new to you, you might like to have a quick look at some of the excellent introductory R/Rmarkdown resources:
+
+### RMarkdown quick reference
 
 *italics*: ```*italics*```
 
@@ -97,6 +109,12 @@ Heading levels
 1. Numbers at the start of lines make numbered lists
 2. Like so
 
+### Suggested exercises
+
+1. Change the image above to something less dull
+2. Change THIS TEXT to bold
+3. Add a level-2 header below
+
 Do have a look at the Rmarkdown in the code pane, and feel free to play around with it. Once you've had a look at some of the Rmarkdown in practice, we're ready to move on to get some data.
 
 ## Getting data
@@ -106,7 +124,8 @@ This ~~feels~~ is easy to do in practice. Instead of opening a data file directl
 We load the data using the following command:
 
 ```{r get data, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
-demo <- read_csv("demo.csv") 
+demo <- read_csv("demo.csv")
+
 ```
 
 + ```read_csv``` is the function that opens the .csv data file
@@ -114,10 +133,11 @@ demo <- read_csv("demo.csv")
 + ```<-``` assigns the data that read_csv pulls out of the file to...
 + ```demo``` - the tibble that contains our data
 
-Explain chunks
+**Explain chunks**
 
-Because there are lots of different types of data out there, there are lots of ways of loading data into R. ```read_csv``` is the most commonly-used one, because .csv files - **c**omma **s**eparated **v**alues - are widely used to share data. The other main function used to load data is tidyverse's ```read_excel```, which works similarly to ```read_csv```. 
+Because there are lots of different types of data out there, there are lots of ways of loading data into R. ```read_csv``` is the most commonly-used one, because .csv files - **c**omma **s**eparated **v**alues - are widely used to share data. The other main function used to load data is readr's ```read_excel```, which works similarly to ```read_csv```. 
 
+**More emphasis on the help section - make them look it up in the code window, make it a task**
 Rather than explain how this works here, I'll encourage you to read the relevant manual pages, which you can do with the command ```?read_excel```. You can run this using ctrl+enter in RStudio.
 
 At the end of this process, we can have a look at the first few rows of our data using the ```head()``` command:
