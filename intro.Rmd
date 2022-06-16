@@ -3,15 +3,15 @@ title: "![](https://i.imgur.com/5EhpPqK.png) Producing dynamic reports"
 date: "`r Sys.time()`"
 subtitle: "Introduction"
 output:
+  word_document:
+    toc: yes
+    toc_depth: '2'
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
-  word_document:
-    toc: yes
-    toc_depth: '2'
   pdf_document:
     toc: yes
     toc_depth: '2'
