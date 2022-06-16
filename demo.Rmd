@@ -3,15 +3,15 @@ title: "![](https://i.imgur.com/5EhpPqK.png) Producing dynamic reports"
 date: "`r Sys.time()`"
 subtitle: "Demonstration"
 output:
-  word_document:
-    toc: yes
-    toc_depth: '2'
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
+  word_document:
+    toc: yes
+    toc_depth: '2'
   pdf_document:
     toc: yes
     toc_depth: '2'
@@ -236,40 +236,114 @@ Or do things to that value - like multiplying it by five:
 demo_length * 5
 ```
 
+### Data exercise 6
+Can you calculate and display the difference in length between `demo` and `demo2`?
+
+```{r data ex6, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+# Write your code in the line below
+
+```
+
 We can also create new variables from more complicated operations on our original tibble. For instance, we can extract a whole column using ```tibble$column```, and then add all the entries in that variable together using ```sum()```:
 
 ```{r inspect data 7, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
 sum_count3 <- sum(demo$count3)
 sum_count3
 ```
-I think that's enough demonstrating for now. There's one an important problem with our tibble: our dates aren't proper dates yet. ```read_csv``` doesn't know that the values in the date column actually are dates. We can tell that by looking at the ```<<chr>>```, which stands for character in when we looked at ```head(demo)``` above. Character is the way that R refers to text values. But we definitely want those values to be stored properly as dates, and doing that conversion will be our next exercise.
+I think that's enough demonstrating the basics of loading data for now. There's one an important problem with our `demo` tibble: our dates aren't proper dates yet. `read_csv` doesn't know that the values in the date column actually are dates. We can tell that by looking `head(demo)`, which shows that the type of data in the `date` column is `<<chr>>`. This stands for `character`, which is the way that R refers to text values. We definitely want those values to be stored properly as dates, and doing that conversion will be the next part of this demonstration.
 
 ## Cleaning data
 
 Time for another R chunk:
 
 ```{r clean up data, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
-demo <- demo %>% mutate(date = dmy(date))
+demo_dates <- demo %>% mutate(date = dmy(date))
 ```
 
 There's a bit to unpack here. It makes most sense (to my mind, at least) to read this code backwards. From right to left, then:
 
 + ```dmy(date)```  is a lubridate command which takes whatever's in the bracket, and tries to convert it into a proper date. It works by assuming that it'll be a day value (d), followed by a month (m), followed by a year (y). There are also related commands like ```ymd()``` to be used when the dates given in our data are formatted differently.
-+ ```mutate(date =...)``` takes the result of the ```dmy()``` above, and uses it in a tidyverse command ```mutate```. This is a really important and powerful tool, which makes new columns in tibbles from existing columns. Here, we tell ```mutate``` to make a new column called ```date``` by taking the result of the ```dmy(date)``` above.
-+ ``` %>%``` [the pipe!](https://r4ds.had.co.nz/pipes.html) This is a way of chaining commands together. In this case, writing ```demo %>% mutate...``` tells R to take the demo tibble, and do the mutate command to it. The advantage here is that we can string ```%>%```s together, to do many operations in sequence on some set of data.
-+ finally, we assign the modified demo tibble back on top of itself using ```<-```. Essentially, ```demo <- demo ...``` tells R to overwrite the starting version of demo with the updated version containing proper dates.
++ `mutate(date =...)` takes the result of the `dmy()` above, and uses it in a command named `mutate`. `mutate` makes new columns in tibbles from existing columns. Here, we tell `mutate` to make a new column called `date` by taking the result of the `dmy(date)` above.
++ ` %>%` [the pipe!](https://r4ds.had.co.nz/pipes.html) This is a way of chaining commands together. In this case, writing `demo %>% mutate...` tells R to take the demo tibble, and do the mutate command to it. The advantage here is that we can string several `%>%`s together, to do many operations in sequence on some set of data.
++ finally, we assign the modified demo tibble to a new tibble `demo_dates` using `<-`.
 
-That simple exercise introduces several new concepts. **Question:** pause here? Explain again? Another exercise?
+That simple exercise introduces several new concepts, so we'll pause here to work through some exercises to reinforce the new material.
 
+### Exercise 1
+
+Let's take our `demo2` tibble, and inspect its `head()` to see what type of data is stored in it to find out whether or not we'll need to modify the date column in the same way:
+
+```{r clean ex 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+
+```
+
+### Other major clean-ups
+
+#### Missing and incorrect data
+
+Sometimes we'll have missing or anomalous data in the files that we load into R. This can cause all kinds of subtle problems in R. Our `demo` tibble (and derivatives like `demo_dates` etc) have no missing data, so to demonstrate we'll load some new, faulty data into `demo3`, and try to tidy it up. The first part of this should be very familiar - we load data using `read_csv()`, then mutate the date column to give us proper dates. We then look at the `head()` of the data:
+
+```{r clean 2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+demo3 <- read_csv("demo3.csv") %>% mutate(date = dmy(date)) 
+head(demo3)
+```
+Right away we can see a few problems:
+
+- there's missing data in the count1 column (`NA`)
+- the count2 column is `<chr>`, rather than `<dbl>` - *double* is R's way of referring to numeric data
+- the title of the last column seems to have gotten scrambled
+
+Let's deal with the missing data. Let's see what we're dealing with:
+
+```{r clean 3, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+demo3 %>% filter(if_any(c(date, count1, count2, cnont3), ~ is.na(.)))
+
+```
+Don't worry too much about the details of the code above. We're just looking through `demo3` using the `filter` command, which shows rows that match some condition. We tell `filter` to look across the date, count1, count2, and count3 columns using `if_any`, and then specify that `filter` should look for any rows with missing data using `is.na`. We could also do this one column at a time:
+
+```{r clean 4, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+demo3 %>% filter(is.na(date))
+
+```
+
+##### Exercise 2
+
+Using the code above as a starting point, can you confirm the missing data in count1 and count2?
+
+```{r clean ex 2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+# Add your code below
+
+```
+How about finding non-number values in count2?
+```{r clean 5, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+demo3 %>% filter(!str_detect(count2,"^\\s*[0-9]*\\s*$"))
+```
+
+Or converting count2 to numeric. This will just force conversation, so we'll change that "None" into a proper `NA`:
+
+```{r clean 6, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+demo3 %>% mutate(count2 = as.numeric(count2))
+```
+
+#### Renaming columns
+Let's change that `cnont3` into something more seemly - like `count3`. I'll give you some tips, and then leave you to do the actual renaming as an exercise. We'll use the command `rename()` to do the renaming. It's a pretty simple command, so rather than explain it fully, let me refer you to the [manual page](https://dplyr.tidyverse.org/reference/rename.html) - or you can run `?rename()` in the R chunk below:
+
+
+```{r clean ex 3, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+# Add your code below - I've included head(demo3) afterwards so that you can check the renaming has worked properly.
+
+
+head(demo3)
+```
 Now that we have some data loaded and cleaned up, we're ready to use it to start writing our report.
 
 ## Updating text
 
-As a refresher, let's have a look at the first few rows of the demo tibble using ```head()```, and also print out the total number of rows using ```nrow(demo)```:
+As a refresher, let's have a look at the first few rows of the demo tibble using ```head()```, and also print out the total number of rows using ```nrow(demo_dates)```:
 
 ```{r update text 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
-head(demo)
-nrow(demo)
+head(demo_dates)
+nrow(demo_dates)
 ```
 
 This data will change as the data in the demo.csv file changes. You can show yourself how this works as follows:
@@ -278,7 +352,7 @@ This data will change as the data in the demo.csv file changes. You can show you
 2. Have a look at this section again - you should see that our original data has 68 rows
 3. Now edit the demo.csv file. To do this, click on the demo.csv file in the `Files` pane, and select `View File`. This should open the data file in the code pane. 
 4. Now delete a couple of rows of your choice, before saving and closing the file.
-4. Now re-knit the document again. The data now has `r nrow(demo)` rows, rather than the original 68 rows.
+4. Now re-knit the document again. The data now has `r nrow(demo_dates)` rows, rather than the original 68 rows.
 
 ### Some ways of getting data into your report
 
@@ -286,16 +360,18 @@ The raw R output that we've been using so far is useful, but looks pretty nasty.
 
 #### Inline text
 
+<!-- trying to get RMarkdown to actually display backticks is a faff that requires a workaround using \x60 as a synonym for the backtick symbol - so do please excuse the unintelligible symbols in this section-->
+
 We can include R variables and data inline in our text by wrapping an R command in backticks: `` `r '\x60r some_command()\x60'` ``. 
 
-When I first started using R, I don't think that I'd ever used the backtick key - usually at the extreme top left of most keyboards, often below the `Escape` key. Backticks are definitely different from the apostrophe ('), and it's important to not get the two confused when you're working with R.
+When I first started using R, I don't think that I'd ever used the backtick (`` `r '\x60'` ``) key - usually at the extreme top left of most keyboards, often below the `Escape` key. Backticks are definitely different from the apostrophe ('), and it's important to not get the two confused when you're working with R.
 
 If you haven't already, do follow along with the source code - particularly to find out how the last few commands are managed.
 
 <!-- And note that we can write comments in our RMarkdown file which won't be displayed. This one is here to advise you to ignore the horrible messing about with \x60r etc that I've done in the paragraph below to get backticks to display properly in RMarkdown. -->
 
-For example, we can count up all of the rows here, and by using the expression `` `r '\x60r nrow(demo)\x60'` ``
-find out that we have a total of `r nrow(demo)` rows in our tibble. Or by wrapping the command `sum(demo$count1)` we can add all the entries in the count1 column to give a total of `r sum(demo$count1)`. Or `max(demo$count3)` will let us discover that the maximum value in count3 is `r max(demo$count3)`. Or we can say that on the first day of this range (`r demo[1,1]`), the value of count2 was `r demo[1,3]`. Or that the mean (average) of count3 was `r round(mean(demo$count3), 1)`.
+For example, we can count up all of the rows here, and by using the expression `` `r '\x60r nrow(demo_dates)\x60'` ``
+find out that we have a total of `r nrow(demo_dates)` rows in our tibble. Or by wrapping the command `sum(demo_dates$count1)` we can add all the entries in the count1 column to give a total of `r sum(demo_dates$count1)`. Or `max(demo_dates$count3)` will let us discover that the maximum value in count3 is `r max(demo$count3)`. Or we can say that on the first day of this range (`r demo_dates[1,1]`), the value of count2 was `r demo_dates[1,3]`. Or that the mean (average) of count3 was `r round(mean(demo_dates$count3), 1)`.
 
 <!-- The square brackets in demo[1,3] allow us to pull out data from specified places in a tibble. The general syntax is [row,column]. -->
 
@@ -304,32 +380,32 @@ find out that we have a total of `r nrow(demo)` rows in our tibble. Or by wrappi
 Sometimes our reports need to contain larger chunks of data than are comfortable to manage using inline text. The most obvious example is the data table. We have some R commands that are extremely helpful for writing data tables in reports. `knitr::kable` is the most useful of all, because it allows us to produce nicely formatted tables with the very minimum of fooling about. So the first few rows of our demo tibble look like this:
 
 ```{r data table 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
-knitr::kable(head(demo))
+knitr::kable(head(demo_dates))
 ```
 I've included an example showing some of the other tweaks that might be useful to you with kable. I'd recommend having a look at ?kable to get a sense of the possible scope for tweaking tables in this way:
 
 ```{r data table 2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
-knitr::kable(head(demo))
+knitr::kable(head(demo_dates))
 ```
 
-I'll say it again: **change the data, and all this stuff will update automatically**. For example, you might like to include a date in your report describing which month the data is about. You can do this easily: the latest date in this data comes from `r month(max(demo$date), label=T, abbr=F)`. Change the data, re-knit the report, and bask in the glory of a updated report - go on, try it!
+I'll say it again: **change the data, and all this stuff will update automatically**. For example, you might like to include a date in your report describing which month the data is about. You can do this easily: the latest date in this data comes from `r month(max(demo_dates$date), label=T, abbr=F)`. Change the data, re-knit the report, and bask in the glory of a updated report - go on, try it!
 
 ## Data processing
 Most of the use that we get from data driven reports comes from the analysis that we do on the data. This is a very brief introduction to some basic analysis using R. We can do useful operations to our data like adding the columns together:
 
 ```{r processing 1, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
-demo <- demo %>%
+demo_total <- demo_dates %>%
   mutate(total = count1 + count2 + count3) 
 
-knitr::kable(head(demo))
+knitr::kable(head(demo_total))
 ```
 
-Most of the details here should be familiar from previous parts. We use the pipe `>%>` to pass the `demo` tibble to `mutate`. `mutate` creates a new column (`total`) by adding together the three `count` columns, and we then reassign our updated tibble to `demo`. That's then displayed nicely by `knitr::kable`.
+Most of the details here should be familiar from previous parts. We use the pipe `>%>` to pass the `demo` tibble to `mutate`. `mutate` creates a new column (`total`) by adding together the three `count` columns, and we then assign our updated tibble to a new tibble named `demo_total`, which we display nicely via `knitr::kable`.
 
 We can also summarise tables of data:
 
 ```{r processing 2, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
-knitr::kable(demo %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))))
+knitr::kable(demo_total %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))))
 ```
 
 That's a little bit harder to read, but breaks down nicely:
@@ -338,13 +414,13 @@ That's a little bit harder to read, but breaks down nicely:
 - `~round()` just rounds the mean values to the nearest whole number
 - `across(where(is.numeric)` tells R that we want to use all the columns (so work `across()` all the columns) that contain numbers (`where(is.numeric)`)
 - `summarise()` - crunch the results down into a single row
-- `demo %>%` take the data in the demo tibble
+- `demo_total %>%` take the data in the `demo_total` tibble
 - finally, `knitr::kable` displays a nice table containing the results
 
 We can also add some extra instructions to `kable` to re-name the columns in our table to keep things clear for the reader of our report:
 
 ```{r processing 3, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
-knitr::kable(demo %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))), col.names = c("Mean of count 1", "Mean of count 2", "Mean of count 3", "Mean of total"))
+knitr::kable(demo_total %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))), col.names = c("Mean of count 1", "Mean of count 2", "Mean of count 3", "Mean of total"))
 ```
 
 We've added the line `col.names = c("Mean of count 1", "Mean of count 2", "Mean of count 3", "Mean of total")` just before the last bracket from the previous command. This tells kable to rename our table's columns to read properly.
@@ -363,29 +439,29 @@ Let's start with a minimal example using our demo tibble:
 
 ```{r graph 1, echo=TRUE, message=FALSE, warning=FALSE}
 
-ggplot(demo) +
+ggplot(demo_total) +
   geom_point(aes(x=count1, y=count2))
 
 ```
 
 Here, the code works as follows:
 
-- `ggplot(demo)` - we tell ggplot2 to use the demo tibble as a data source
+- `ggplot(demo)` - we tell ggplot2 to use the `demo_total` tibble as a data source
 - `geom_point` tells ggplot2 that we want an XY scatter plot
-- the crux of the code is the `(aes(x=count1, y=count2))`. This tells R which columns in the demo tibble it should use to plot the points specified in `geom_point`
+- the crux of the code is the `(aes(x=count1, y=count2))`. This tells R which columns in the `demo_total` tibble it should use to plot the points specified in `geom_point`
 - finally, the `+` then chains together commands to produce a single plot
 
 There are lots and lots of other `geom_xxx` options. A couple of commonly-used examples are geom_col and geom_line:
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 
-ggplot(demo) +
+ggplot(demo_total) +
   geom_col(aes(x=count1, y=count2))
 
 ```
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 
-ggplot(demo) +
+ggplot(demo_total) +
   geom_line(aes(x=count1, y=count2))
 
 ```
@@ -394,7 +470,7 @@ We can also add, using `+` other elements to ggplot2 graphs. Going back to our f
 
 ```{r graph 2, echo=TRUE, message=FALSE, warning=FALSE}
 
-ggplot(demo) +
+ggplot(demo_total) +
   geom_point(aes(x=count1, y=count2)) +
   geom_smooth(aes(x=count1, y=count2), method='lm') +
   labs(title="Scatter plot of count 1 against count 2 with linear regression") +
@@ -407,7 +483,7 @@ The secret to most useful visualisations is to get the data into the right forma
 
 ```{r graph 3, echo=TRUE, message=FALSE, warning=FALSE}
 
-demo %>%
+demo_total %>%
   dplyr::select(!total) %>%
   pivot_longer(!date, names_to = "names", values_to = "count") %>%
   ggplot() +
@@ -416,6 +492,7 @@ demo %>%
   xlab("Date") +
   ylab("Count")
 ```
+Note that the changes to `demo_total` that we do in this command are only temporary - we don't ever assign the updated tibble anywhere. That's quite standard - I'd usually try and not make lots of different tibbles based on the same data, because it can get very confusing to try and remember which of `demo`, `demo_dates`, and `demo_total` we want to use. I'd suggest starting out by making new tibbles until you've built your speed and confidence up to the point where you become more comfortable doing the data work in a bespoke way for each of your visualisations etc.
 
 ### NHSplot the dots
 (to add - or possibly not given the size of this thing)
@@ -445,10 +522,10 @@ c -> d
 }
 
 # Outside the main grViz bracket, the footnote-style substituted label text. [x] provides the text for @@x above.
-[1]: paste0('Count 1 total (sum = ', sum(demo$count1), ')')
-[2]: paste0('Count 2 total (sum = ', sum(demo$count2), ')')
-[3]: paste0('Count 3 total (sum = ', sum(demo$count3), ')')
-[4]: paste0('Total (sum = ', sum(demo$total), ')')
+[1]: paste0('Count 1 total (sum = ', sum(demo_total$count1), ')')
+[2]: paste0('Count 2 total (sum = ', sum(demo_total$count2), ')')
+[3]: paste0('Count 3 total (sum = ', sum(demo_total$count3), ')')
+[4]: paste0('Total (sum = ', sum(demo_total$total), ')')
 ")
 
 ```
