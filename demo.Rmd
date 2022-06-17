@@ -147,6 +147,10 @@ Definitely worth us pausing here to explain what all this means. Usually in R, y
 
 If you look at the code pane, you'll see that this R command is wrapped-up in backticks, with a lot of options in {curly brackets}. These backticks are the way that we mark our R code, thus telling RStudio Cloud to interpret it as R, rather than RMarkdown. We call these sections of code ```chunks```. In what's ahead, one of the most common problems come from chunks, and so one of the first things to check if a command doesn't work as expected is that it's properly in place in a chunk.
 
+When I first started using R, I don't think that I'd ever used the backtick (`` `r '\x60'` ``) key before. You can usually find it at the extreme top left of most keyboards, often below the `Escape` key. Backticks are definitely different from the apostrophe ('), and it's vitally important to not get the two confused when you're working with R.
+
+<!-- Please ignore the horrible messing about with \x60r etc that I've done in the paragraph above to get backticks to display properly in RMarkdown. This isn't something that you're likely to have to do - unless you end up writing your own RMarkdown tutorial at some point in the future...-->
+
 There are more details about chunk set-up in the **More details** section.
 
 Because there are lots of different types of data out there, there are lots of ways of loading data into R. ```read_csv``` is the most commonly-used one, because .csv files - **c**omma **s**eparated **v**alues - are widely used to share data. The other main function used to load data is readr's ```read_excel```, which works similarly to ```read_csv```. 
@@ -341,36 +345,40 @@ Now that we have some data loaded and cleaned up, we're ready to use it to start
 
 ## Updating text
 
-Here's the most important point in the whole of this demonstration: we can make our RMarkdown text change depending on the data that we feed to R. Let's start with a group of examples:
+Here's the most important point in the whole of this demonstration: **we can make our RMarkdown text change depending on the data that we feed to R**. Let's start with a group of examples that show how we might report from our `demo_dates` tibble from earlier:
 
-### Text showing data from `r month(min(demo_dates$date), label = T, abbr=F)` `r year(min(demo_dates$date))`
-
-+ we can count up all of the rows here, and by using the expression `` `r '\x60r nrow(demo_dates)\x60'` ``
-find out that we have a total of `r nrow(demo_dates)` rows in our tibble
-+ using the command `sum(demo_dates$count1)` to add all the entries in the count1 column to give a total of `r sum(demo_dates$count1)`
-+ `max(demo_dates$count3)` will let us discover that the maximum value in count3 is `r max(demo$count3)`. 
-+ or we can say that on the first day of this range (`r min(demo_dates$date)`), the value of count2 was `r demo_dates[1,3]`
-+ or that the mean (average) of count3 was `r round(mean(demo_dates$count3), 1)`
+---
 
 <!-- Note that we can write comments in our RMarkdown file which won't be displayed in the output. This is very helpful to remind yourself - or tell others - exactly what's going on in your code. The square brackets in demo[1,3] allow us to pull out data from specified places in a tibble. The general syntax is [row,column]. -->
 
-Note the slightly different mini-chunk structure using single backticks that we've employed here - with a general format of `` `r '\x60r command()\x60'` ``. This tells R/Rmarkdown to run the command, but pass the output to RMarkdown which displays the output as if it were written inline.
+### Text showing data from `r month(min(demo_dates$date), label = T, abbr=F)` - `r month(max(demo_dates$date), label = T, abbr=F)` `r year(min(demo_dates$date))`
 
-Now let's change the data, and run exactly the same list of queries again. There are a couple of R code chunks here that we don't need to show in this report - but do feel free to look at the code pane to see what's going on behind the scenes:
++ we have data from `r nrow(demo_dates)` days
++ we have a total of `r sum(demo_dates$count1)` count1s
++ the biggest value in count3 is `r max(demo$count3)`. 
++ on the first day for which we have data, the count2 was `r demo_dates %>% filter(date == max(date)) %>% select(count2) %>% as.numeric`
++ the average of count3 was `r round(mean(demo_dates$count3), 1)`
+
+---
+
+That might look a bit unimpressive, given all the work that we've done to get here. But now let's see what happens when we run exactly the same commands but change the data Behind the scenes, there are a couple of R chunks here that change the contents of `demo_dates`. We don't need to show these in this report - but do feel free to look at the code pane to see how this works:
 
 ```{r update 1, echo=FALSE, eval=TRUE,warning = FALSE, message=FALSE}
 # backup the demo_dates tibble into demo_dates_old, load new data into the demo_dates tibble, and make sure the dates are correct
 demo_dates_old <- demo_dates
 demo_dates <- read_csv("demo4.csv") %>% mutate(date=dmy(date))
-```
-### Text showing data from `r month(min(demo_dates$date), label = T, abbr=F)` `r year(min(demo_dates$date))`
 
-+ we can count up all of the rows here, and by using the expression `` `r '\x60r nrow(demo_dates)\x60'` ``
-find out that we have a total of `r nrow(demo_dates)` rows in our tibble
-+ using the command `sum(demo_dates$count1)` to add all the entries in the count1 column to give a total of `r sum(demo_dates$count1)`
-+ `max(demo_dates$count3)` will let us discover that the maximum value in count3 is `r max(demo$count3)`. 
-+ or we can say that on the first day of this range (`r min(demo_dates$date)`), the value of count2 was `r demo_dates[1,3]`
-+ or that the mean (average) of count3 was `r round(mean(demo_dates$count3), 1)`
+```
+
+---
+
+### Text showing data from `r month(min(demo_dates$date), label = T, abbr=F)` - `r month(max(demo_dates$date), label = T, abbr=F)` `r year(min(demo_dates$date))`
+
++ we have data from `r nrow(demo_dates)` days
++ we have a total of `r sum(demo_dates$count1)` count1s
++ the biggest value in count3 is `r max(demo$count3)`. 
++ on the first day for which we have data, the count2 was `r demo_dates %>% filter(date == max(date)) %>% select(count2) %>% as.numeric`
++ the average of count3 was `r round(mean(demo_dates$count3), 1)`
 
 ```{r update 2, echo=FALSE, eval=TRUE,warning = FALSE, message=FALSE}
 # restoring the original demo_dates tibble, and removing demo_dates_old
@@ -378,55 +386,122 @@ demo_dates <- demo_dates_old
 rm(demo_dates_old)
 ```
 
-### Updating text exercises
+---
+
+The RMarkdown for those two example sections above is *exactly* the same. All that's changed is the data - as might happen when you take your dynamic report and set it to run on new data. No manual updating at all!
+
+### How does this work?
+
+We run little snippets of R, right in the RMarkdown text. The function of those snippets is to query the data that we've set up in the previous two sections of this demonstration, and then pass the results into RMarkdown, so that the results appear as inline text. We can apply formatting etc to those results as if they were any other text written in RMarkdown.  
+
+If you look at the code pane, you'll notice a slightly different mini-chunk structure that we use for these R snippets. The snippets themselves are wrapped in single backticks, with a general format of `` `r '\x60r command()\x60'` ``. This tells R/Rmarkdown to run the command, but pass the output to RMarkdown which displays the output as if it were written inline.
+
+Let's go through the example above to see how the commands work:
+
+<!-- trying to get RMarkdown to actually display backticks is a faff that requires a workaround using \x60 as a synonym for the backtick symbol - so do please excuse the unintelligible symbols in this section-->
+
++ we have one date per row. So counting the rows of `demo_dates` tells us the total number of days. We can do this using the expression `` `r '\x60r nrow(demo_dates)\x60'` ``.
++ the command `sum(demo_dates$count1)` adds all the entries in the count1 column
+    + **reminder**: using `$` lets us select a column from our tibble
++ `max(demo_dates$count3)` gives us the maximum value in count3
++ the value of count2 on the first day of the range is given by (`r demo_dates %>% filter(date == min(date)) %>% select(count2) %>% as.numeric`)
+    + **reminder**: we use the `%>%` pipe to chain commands together. 
+    + From left to right, we take the `demo_dates` tibble
+    + then use the `dplyr::filter` command to find the row where the date is equal to the `min(date)`
+    + then use `dplyr::select(count2)` to pick out the value of count2 on that date
+    + then convert the result from a 1x1 tibble into a number using `as.numeric()`
++ the mean (average) of count3 was `round(mean(demo_dates$count3), 1)`
+    + we use `round()` to give us our average to 1 decimal place. Otherwise R will report is as `r mean(demo_dates$count3)`. The extreme precision here is commendable, but misguided!
+    + finally, in the header, we have a little group of commands to report the month and year that our data covers:
+    - `` `r '\x60r month(min(demo_dates$date), label = T, abbr=F)\x60'` `` takes the earliest date `min(demo_dates$date)`, and then extracts the full month using `month( ..., label = T, abbr = F)`. There are lots of options for displaying the names of months, so I'd encourage you to run `?month()` to find out about them
+    - `` `r '\x60r month(max(demo_dates$date), label = T, abbr=F)\x60'` `` does the same, but for the last date in the range
+    - `` `r '\x60r year(min(demo_dates$date))\x60'` `` extracts the year in a similar way
+
+I'll say it again: **change the data, and all this stuff will update automatically**. Change the data, re-knit the report, and bask in the glory of a updated report - go on, try it!
+
+### Exercise 1
 
 As a refresher, let's have a look at the first few rows of the demo tibble using ```head()```, and also print out the total number of rows using ```nrow(demo_dates)```:
 
-```{r update text 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+```{r text ex 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
 head(demo_dates)
 nrow(demo_dates)
 ```
 
 This data will change as the data in the demo.csv file changes. You can show yourself how this works as follows:
 
-1. Knit this document now (menu at top middle of code pane or ctrl+shift+k)
-2. Have a look at this section again - you should see that our original data has 68 rows
-3. Now edit the demo.csv file. To do this, click on the demo.csv file in the `Files` pane, and select `View File`. This should open the data file in the code pane. 
-4. Now delete a couple of rows of your choice, before saving and closing the file.
-4. Now re-knit the document again. The data now has `r nrow(demo_dates)` rows, rather than the original 68 rows.
+1. First, edit the demo.csv file. To do this, click on the demo.csv file in the `Files` pane, and select `View File`. This should open the data file in the code pane. 
+2. Now delete a couple of rows of your choice, before saving and closing the file.
+3. Now re-knit the document again. The data now has `r nrow(demo_dates)` rows, rather than the original 68 rows.
 
-### Some ways of getting data into your report
+### Exercise 2
+This time, let's try formatting the output of our R snippets. I've provided a list of unformatted code below. Can you fit this into a more report-y format - like integrating it into a paragraph of text, or adding bold, italics, headings, or whatever takes your fancy?
 
-The raw R output that we've been using so far is useful, but looks pretty nasty. Ideally, we'd like to be able to format this text so that it fits into our report properly.
+<!-- here are the example R snippets for you -->
 
-#### Inline text
+Sum count3 on Mondays in our range: `r demo_dates %>% filter(wday(demo_dates$date) == 2) %>% select(count3) %>% sum()`
 
-<!-- trying to get RMarkdown to actually display backticks is a faff that requires a workaround using \x60 as a synonym for the backtick symbol - so do please excuse the unintelligible symbols in this section-->
+Number of days where count1 is 30 or more, and count2 is 70 or less: `r demo_dates %>% filter(count1 >= 30 & count2 <= 70) %>% nrow()`
 
-We can include R variables and data inline in our text by wrapping an R command in backticks: `` `r '\x60r some_command()\x60'` ``. 
+Number of days where count1 is greater than count3, but smaller than count2: `r demo_dates %>% filter(count1 > count3 && count1 < count2) %>% nrow()` 
 
-When I first started using R, I don't think that I'd ever used the backtick (`` `r '\x60'` ``) key - usually at the extreme top left of most keyboards, often below the `Escape` key. Backticks are definitely different from the apostrophe ('), and it's important to not get the two confused when you're working with R.
-
-If you haven't already, do follow along with the source code - particularly to find out how the last few commands are managed.
-
-<!-- Please ignore the horrible messing about with \x60r etc that I've done in the paragraph below to get backticks to display properly in RMarkdown. This isn't something that you're likely to have to do - unless you end up writing your own RMarkdown tutorial at some point in the future...-->
+Count 2 was highest on this day of the week: `r demo_dates %>% filter(count2==max(count2)) %>% select(date) %>% unlist() %>% as.Date(origin="1970-01-01") %>% lubridate::wday(label=T, abbr=F)`
 
 
+<!-- write your paragraph below -->
 
-#### Using knitr
+### Exercise 3
+Taking those commands from the above, can you tweak the R code snippets to that we have a nice paragraph where we:
++ find out what the sum of count3 is on Tuesdays?
++ find out how many days count 1 is 30 or more, and count2 is 90 or less?
++ find the number of days where count 1 is greater than count 2, but smaller than count 3?
++ find which day of the week count 3 was highest?
+
+<!-- write your paragraph below -->
+
+
+### Exercise 4
+Can you write a simple new command, and include it in a line or two of explanatory text? Some hints:
+- make sure that you wrap your R code properly: `` `r '\x60r someCommand(someData)\x60'` ``
+- you might like to try `mean(), min(), max(), sum()` on one of the columns using `$`
+- you do something more ambitious using `select() and filter()`
+- remember to try looking at the manual pages using `?command` if you get stuck
+
+## Data tables
+
+The raw output from tibbles (like when we use `head(demo_dates)`) that we've been using so far is very useful. But it looks pretty nasty. Ideally, we'd like to be able to format this text so that it fits into our report properly.
+
+### Using knitr::kable
 
 Sometimes our reports need to contain larger chunks of data than are comfortable to manage using inline text. The most obvious example is the data table. We have some R commands that are extremely helpful for writing data tables in reports. `knitr::kable` is the most useful of all, because it allows us to produce nicely formatted tables with the very minimum of fooling about. So the first few rows of our demo tibble look like this:
 
 ```{r data table 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
 knitr::kable(head(demo_dates))
 ```
-I've included an example showing some of the other tweaks that might be useful to you with kable. I'd recommend having a look at ?kable to get a sense of the possible scope for tweaking tables in this way:
+I've included an example showing some of the other tweaks that might be useful to you with kable - renaming the columns, adding a caption, modifying the alignment of the columns. I'd recommend having a look at `?kable` to get a sense of the possible scope for tweaking tables in this way:
 
 ```{r data table 2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
-knitr::kable(head(demo_dates))
+knitr::kable(head(demo_dates), col.names = c("Date", "Count 1", "Count 2", "Count 3"), caption = "A superbly magnificent table of data", align = c("r", "c", "c", "l"))
+
 ```
 
-I'll say it again: **change the data, and all this stuff will update automatically**. For example, you might like to include a date in your report describing which month the data is about. You can do this easily: the latest date in this data comes from `r month(max(demo_dates$date), label=T, abbr=F)`. Change the data, re-knit the report, and bask in the glory of a updated report - go on, try it!
+
+### Exercise 1
+Let's try making a new, simple, table from the first few rows of `demo2` using `head()` and `knitr::kable()` below
+```{r data ex 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+# just in case you don't have demo2 in your workspace, you can re-create it by uncommenting the following line:
+# demo2 <- read_excel("demo2.xlsx")
+
+
+```
+
+### Exercise 2
+Once the simple version is working, let's see if we can improve it. Copy your working code from the chunk above, then add a caption, play with the alignment, and rename the columns to something more suitable.
+
+```{r data ex 2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+
+
+```
 
 ## Data processing
 Most of the use that we get from data driven reports comes from the analysis that we do on the data. This is a very brief introduction to some basic analysis using R. We can do useful operations to our data like adding the columns together:
