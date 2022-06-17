@@ -4,6 +4,8 @@
 /*.pdf
 /*.aux
 /*.out
+/*.tex
+/*.log
 
 # History files
 .Rhistory

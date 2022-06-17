@@ -3,19 +3,19 @@ title: "![](https://i.imgur.com/5EhpPqK.png) Producing dynamic reports"
 date: "`r Sys.time()`"
 subtitle: "Introduction"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
-    pandoc_args: ["--extract-media", "."]
-  word_document:
-    toc: yes
-    toc_depth: '2'
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
+  word_document:
+    toc: yes
+    toc_depth: '2'
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
 ---
 # About this resource {.tabset}
 ## Introduction
@@ -51,7 +51,11 @@ Note too that it is a learning resource. You'll need some time to read this intr
 
 ### Is it worth it for me?
 
-![A recent personal example of a copy and paste error encountered while writing a short report. This would have been avoided if I'd been using a dynamic report.](https://i.imgur.com/1GhhzM2.png)
+```{r out.width="400px", echo=F}
+knitr::include_graphics("img/error.png")
+```
+
+A recent personal example of a copy and paste error encountered while writing a short report. This would have been avoided if I'd been using a dynamic report.
 
 We can't provide general guidance about whether automating some specific report will be worth the investment of time for you. But, we can suggest some strengths and weaknesses of dynamic reports compared to traditionally-produced static reports that might be helpful if you're thinking about automating some of your work:
 
@@ -95,19 +99,22 @@ You'll need to do a little bit of preparation before the training session. I'd a
 
 2. If you have an account, log in. Otherwise, create an account by selecting `Get started for free`, follow the steps, and then sign-in
 
-```{r out.width="300px", echo=F}
-url <- "https://i.imgur.com/2p1w6ts.png"
-knitr::include_graphics(url)
+```{r out.width="200px", echo=F}
+knitr::include_graphics("img/rsc_create.png")
 ```
 
 
 3. Add a new project on [RStudio Cloud](https://rstudio.cloud) by clicking ```New Project >> New Project from a Git repository```. When prompted, enter the URL `https://github.com/bclarke-nes/Dynamic-report-demo`
 
-![](https://i.imgur.com/ajnIoHQ.png)
+```{r out.width="200px", echo=F}
+knitr::include_graphics("img/proj.png")
+```
 
 4. That will give you a new project containing the files needed for this demonstration: 
 
-![](https://i.imgur.com/0AW7UVt.png)
+```{r out.width="600px", echo=F}
+knitr::include_graphics("img/screen.png")
+```
 
 5. Open the demo.Rmd file from the Files pane
 6. A word of reassurance. If you haven't done any coding before, your first sight of the [RStudio Cloud](https://rstudio.cloud) interface might be a shock. Don't worry about this - we'll go through some tips at the start of the session for setting up RStudio to make it more friendly. 
