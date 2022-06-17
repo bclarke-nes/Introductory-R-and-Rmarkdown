@@ -1,0 +1,423 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={ Producing dynamic reports},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{\includegraphics{./4cf3a1be231a55e00832f18f22d4480eeb96ac94.png}
+Producing dynamic reports}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Introduction}
+\author{}
+\date{\vspace{-2.5em}2022-06-17 07:44:37}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\hypertarget{about-this-resource}{%
+\section{About this resource}\label{about-this-resource}}
+
+\hypertarget{introduction}{%
+\subsection{Introduction}\label{introduction}}
+
+Dynamic reports are data-driven documents that can be periodically
+updated as their underlying data changes.
+
+This resource is a brief introduction to writing dynamic reports using
+\href{https://www.r-project.org/}{R},
+\href{http://rmarkdown.rstudio.com}{Rmarkdown}, and
+\href{https://rstudio.cloud}{RStudio Cloud}. It is a two hour
+interactive session designed for those without previous programming
+experience who work in health and care. It gives a general introduction
+to the tools, and then some useful examples of frequently-met
+data-driven tasks. It is intended as a starting point for automating
+your report writing processes, with the aim of replacing, enhancing, or
+simplifying, manual report writing. The demonstration also covers ways
+of producing the report in a variety of formats including .pdf, .docx
+(Word format), and .html (webpage).
+
+Some examples of routine reports that might be targets for re-working in
+a dynamic format:
+
+\begin{itemize}
+\tightlist
+\item
+  service-use reports (admission figures, bed utilisation)
+\item
+  annual reports (public health annual reports)
+\item
+  engagement and impact data (training, outreach)
+\end{itemize}
+
+\hypertarget{who-is-this-demo-for}{%
+\subsubsection{Who is this demo for?}\label{who-is-this-demo-for}}
+
+This learning resource is intended for someone who:
+
+\begin{itemize}
+\tightlist
+\item
+  is currently spending lots of time manually updating reports in
+  health, care, or housing
+\item
+  \textbf{and} would like to reduce the time spent on this routine work
+  over the medium-term (months)
+\item
+  \textbf{and} has some time to spend reworking this report-writing
+  process
+\item
+  \textbf{and} are open to gaining some basic programming experience
+\end{itemize}
+
+Note too that it is a learning resource. You'll need some time to read
+this introduction and get set for the training session, as well as for
+the two hour training session itself.
+
+\hypertarget{what-this-demo-is-not}{%
+\subsubsection{What this demo is not}\label{what-this-demo-is-not}}
+
+\begin{itemize}
+\tightlist
+\item
+  it's not a full introduction to working in
+  \href{https://www.r-project.org/}{R}/\href{http://rmarkdown.rstudio.com}{Rmarkdown}.
+  \href{https://www.r-project.org/}{R} is deep (like most analytic
+  platforms), and this demonstration covers only a little bit of the
+  available functionality
+\item
+  it's not an introduction to everything that you might like to do with
+  a data-driven report either. Instead, it covers some simple examples
+  of common tasks as a way of familiarising you with a different
+  workflow
+\item
+  it's definitely not a production-ready replacement for your existing
+  reports. It's a learning resource, rather than a pre-packed
+  replacement
+\item
+  it won't teach you how to make real-time dashboards. If you need your
+  report to update more than about once a day, you should consider
+  building a dashboard instead
+  (\href{https://powerbi.microsoft.com/en-gb/}{Power BI},
+  \href{https://www.r-project.org/}{R}/\href{https://shiny.rstudio.com/}{Shiny},
+  or \href{https://plotly.com/dash/}{Dash})
+\end{itemize}
+
+\hypertarget{about-dynamic-reports}{%
+\subsection{About dynamic reports}\label{about-dynamic-reports}}
+
+\hypertarget{is-it-worth-it-for-me}{%
+\subsubsection{Is it worth it for me?}\label{is-it-worth-it-for-me}}
+
+\begin{figure}
+\centering
+\includegraphics{./3ac468ff4b8a0a3b056d5968032984459d92624d.png}
+\caption{A recent personal example of a copy and paste error encountered
+while writing a short report. This would have been avoided if I'd been
+using a dynamic report.}
+\end{figure}
+
+We can't provide general guidance about whether automating some specific
+report will be worth the investment of time for you. But, we can suggest
+some strengths and weaknesses of dynamic reports compared to
+traditionally-produced static reports that might be helpful if you're
+thinking about automating some of your work:
+
+\hypertarget{strengths}{%
+\paragraph{Strengths}\label{strengths}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{fidelity}. A dynamic report means no manual updating of text,
+  graphs, and figures. No more copy and paste problems (see the Teams
+  chat message above)
+\item
+  \textbf{standardisation}. If you have lots of similar reports to
+  write, this dynamic approach simplifies the process of making your
+  reports look alike by applying a standard approach to formatting,
+  analysis, and so on. This is a huge time-saver, especially true if you
+  have lots of graphs to produce.
+\item
+  \textbf{reproducibility}. If someone else looks at the source code for
+  your report, they can see exactly how your figures are produced. That
+  means that, when it's time to hand over production of your report to a
+  colleague, you won't need to explain how to build the report. It's all
+  contained in the source-code.
+\item
+  \textbf{efficiency}. Again assuming that everything works properly,
+  updating a dynamic report with new data is much quicker than updating
+  a comparable report by hand.
+\end{itemize}
+
+\hypertarget{weaknesses}{%
+\paragraph{Weaknesses}\label{weaknesses}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{set-up cost}. Particularly if you are new to this kind of
+  work, writing a new dynamic report takes much longer than a
+  traditional report. There's plenty to learn, and it can be hard to
+  find that time needed to learn, and to rework an established process.
+\item
+  \textbf{errors}. While dynamic reports is a great way of avoiding
+  minor errors from copying and pasting, it can introduce entirely new
+  sources of error from reworking your analysis. Reports, particularly
+  early on, need frequent careful checking to ensure that you haven't
+  swapped small frequent errors for large, subtle ones.
+\item
+  \textbf{Information Governance and data protection concerns} about the
+  platforms used to write these kinds of reports.
+\item
+  \textbf{novelty}. Changing processes is often controversial, with a
+  degree of resistance. For example, there's a strong lock-in to the
+  Microsoft Office suite (Word and Excel especially) for report writing.
+  Suggesting something new can be daunting. Change management and QI
+  methods might be helpful if you think this is likely to be a
+  substantial concern for your project.
+\end{itemize}
+
+On balance, we think that dynamic reports have more advantages than
+disadvantages. But decisions about whether to automate a report will
+depend on the local factors in play. So that's something that I'd be
+happy to discuss during (or after) the session.
+
+\hypertarget{getting-started}{%
+\subsection{Getting started}\label{getting-started}}
+
+\hypertarget{how-does-it-work}{%
+\subsubsection{How does it work}\label{how-does-it-work}}
+
+We'll use three tools to write the report. First, we'll use the web
+service \href{https://rstudio.cloud}{RStudio Cloud}. This allows us to
+run \href{https://www.r-project.org/}{R} without installing any software
+or making any changes to our computer. Next, we'll use the markup
+language \href{http://rmarkdown.rstudio.com}{Rmarkdown} to add some text
+and images to our report. Finally, we'll use the
+\href{https://www.r-project.org/}{R} programming language to do some
+simple data handling, analysis, and visualisation.
+
+Just in case you'd like to look into how these tools work in advance of
+the session, we would recommend:
+
+\begin{itemize}
+\tightlist
+\item
+  an introductory \href{https://www.r-project.org/}{R} webinar -
+  \textbf{will link to John MacKintosh webinar recording here}
+\item
+  a quick
+  \href{https://www.r-bloggers.com/2022/02/rstudio-cloud-how-to-get-started-for-free/}{introduction
+  to RStudio Cloud from R bloggers}
+\item
+  \href{https://rmarkdown.rstudio.com/authoring_quick_tour.html}{Rstudio's
+  quick tour of Rmarkdown} is a great place to start if this is all new
+  to you
+\item
+  If you're already somewhat familiar with working in
+  \href{https://www.r-project.org/}{R}, you might prefer to start with
+  the \href{https://r4ds.had.co.nz/r-markdown.html}{Rmarkdown chapter in
+  the \emph{R for Data Science} book}
+\end{itemize}
+
+\href{https://rstudio.cloud}{RStudio Cloud} is easy to set-up and free
+for small-scale work like this demo. This makes it by far the easiest
+way to get going from scratch if you've never worked with
+\href{https://www.r-project.org/}{R} before. Note that because it's a
+web service, it requires you to upload your data to their servers, which
+might makes it unsuitable for production work in health and care owing
+to information governance concerns. That said, it's easy to tranfer
+projects from \href{https://rstudio.cloud}{RStudio Cloud} to an
+installed version of \href{https://www.r-project.org/}{R}, so don't
+worry that what you learn here will be tied to the cloud forever.
+
+My suggestion would be not to try and use this demo to change your way
+of writing reports under pressure. There's quite a lot to think about
+here, and you might need to spend a good bit of time working out how to
+adapt this demonstration to fit your report. Think of this as the start
+of a journey, rather than a destination.
+
+\hypertarget{joining-instructions}{%
+\subsubsection{Joining instructions}\label{joining-instructions}}
+
+You'll need to do a little bit of preparation before the training
+session. I'd advise you to leave about 15 minutes to do this, so that we
+can make a prompt start to the session. If you're new to
+\href{https://rstudio.cloud}{RStudio Cloud}, please follow the
+step-by-step instructions below. If you're more experienced in this kind
+of work, you short-cut by signing-in to
+\href{https://rstudio.cloud/}{RStudio Cloud}, creating a new project
+from the
+\href{https://unito.io/blog/guide-to-github-for-project-managers/}{GitHub}
+Repository at \url{https://github.com/bclarke-nes/Dynamic-report-demo},
+and then opening the demo.Rmd file. Otherwise:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Go to \url{https://rstudio.cloud/}
+\item
+  If you have an account, log in. Otherwise, create an account by
+  selecting \texttt{Get\ started\ for\ free}, follow the steps, and then
+  sign-in
+\end{enumerate}
+
+\includegraphics[width=300px]{https://i.imgur.com/2p1w6ts}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Add a new project on \href{https://rstudio.cloud}{RStudio Cloud} by
+  clicking
+  \texttt{New\ Project\ \textgreater{}\textgreater{}\ New\ Project\ from\ a\ Git\ repository}.
+  When prompted, enter the URL
+  \texttt{https://github.com/bclarke-nes/Dynamic-report-demo}
+\end{enumerate}
+
+\includegraphics{./7dbeeebb17d27037b8865ac5a7e5a5a41d056a29.png}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  That will give you a new project containing the files needed for this
+  demonstration:
+\end{enumerate}
+
+\includegraphics{./deccfa3234d755eea1f7eee40119eec81e26eb2c.png}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Open the demo.Rmd file from the Files pane
+\item
+  A word of reassurance. If you haven't done any coding before, your
+  first sight of the \href{https://rstudio.cloud}{RStudio Cloud}
+  interface might be a shock. Don't worry about this - we'll go through
+  some tips at the start of the session for setting up RStudio to make
+  it more friendly.
+\end{enumerate}
+
+\hypertarget{aims-and-objectives}{%
+\subsection{Aims and objectives}\label{aims-and-objectives}}
+
+This session will:
+
+\begin{itemize}
+\tightlist
+\item
+  Give an introduction to why we should write dynamic reports
+\item
+  What kinds of report are most suitable to automate
+\item
+  Give a basic overview of
+  \href{https://www.r-project.org/}{R}/\href{http://rmarkdown.rstudio.com}{Rmarkdown}/\href{https://rstudio.cloud}{RStudio
+  Cloud}, including basic data handling, simple data analysis, and
+  drawing graphs
+\item
+  Show how these functions can be integrated into a simple report format
+  that will update as the underlying data changes
+\end{itemize}
+
+By the end of this session, the user should:
+
+\begin{itemize}
+\tightlist
+\item
+  Have gained a basic understanding of
+  \href{https://www.r-project.org/}{R}, and how
+  \href{https://rstudio.cloud}{RStudio Cloud} and
+  \href{http://rmarkdown.rstudio.com}{Rmarkdown} can be used to generate
+  reports
+\item
+  Be familiar with the advantages and disadvantages of working in this
+  way compared to traditional manual report writing in Word and Excel
+\item
+  Be able to confidently navigate the parts of an
+  \href{http://rmarkdown.rstudio.com}{Rmarkdown} document
+\item
+  Be able to recognise some simple \href{https://www.r-project.org/}{R}
+  code, and with suitable assistance interpret it
+\item
+  Be able to seek suitable help for their R code needs
+\item
+  Produce and tweak simple descriptive statistical measures, and simple
+  visualisations in \href{https://www.r-project.org/}{R}
+\item
+  Be confident adding dynamic text elements to an
+  \href{http://rmarkdown.rstudio.com}{Rmarkdown} document
+\end{itemize}
+
+\end{document}

@@ -141,11 +141,13 @@ demo <- read_csv("demo.csv")
 Definitely worth us pausing here to explain what all this means. Usually in R, you do things by applying *commands* to objects like data. To break this command down into steps:
 
 + ```read_csv``` is the main command, which opens a .csv data file, and reads its contents
-+ ```demo.csv``` is where we well `read.csv` which .csv file to open by specifying the file's path
++ ```demo.csv``` is where we tell `read.csv` which .csv file to open by specifying the file's path
 + ```<-``` then assigns the data that `read_csv` pulls out of the file to...
 + ```demo``` - the *tibble* that contains our data. We'll explain what a tibble is below, but for now you can just think of it as the way that R stores data
 
-If you look at the code pane, you'll see that this R command is wrapped-up in backticks, with a lot of options in {curly brackets}. This is a way of marking our R code, and telling RStudio Cloud that we want it to be intpreted as R, rather than RMarkdown. We call these ```chunks```. In what's ahead, one of the most common problems come from chunks, and so one of the first things to check if a command doesn't work as expected is that it's properly in place in a chunk.
+If you look at the code pane, you'll see that this R command is wrapped-up in backticks, with a lot of options in {curly brackets}. These backticks are the way that we mark our R code, thus telling RStudio Cloud to interpret it as R, rather than RMarkdown. We call these sections of code ```chunks```. In what's ahead, one of the most common problems come from chunks, and so one of the first things to check if a command doesn't work as expected is that it's properly in place in a chunk.
+
+There are more details about chunk set-up in the **More details** section.
 
 Because there are lots of different types of data out there, there are lots of ways of loading data into R. ```read_csv``` is the most commonly-used one, because .csv files - **c**omma **s**eparated **v**alues - are widely used to share data. The other main function used to load data is readr's ```read_excel```, which works similarly to ```read_csv```. 
 
@@ -339,6 +341,45 @@ Now that we have some data loaded and cleaned up, we're ready to use it to start
 
 ## Updating text
 
+Here's the most important point in the whole of this demonstration: we can make our RMarkdown text change depending on the data that we feed to R. Let's start with a group of examples:
+
+### Text showing data from `r month(min(demo_dates$date), label = T, abbr=F)` `r year(min(demo_dates$date))`
+
++ we can count up all of the rows here, and by using the expression `` `r '\x60r nrow(demo_dates)\x60'` ``
+find out that we have a total of `r nrow(demo_dates)` rows in our tibble
++ using the command `sum(demo_dates$count1)` to add all the entries in the count1 column to give a total of `r sum(demo_dates$count1)`
++ `max(demo_dates$count3)` will let us discover that the maximum value in count3 is `r max(demo$count3)`. 
++ or we can say that on the first day of this range (`r min(demo_dates$date)`), the value of count2 was `r demo_dates[1,3]`
++ or that the mean (average) of count3 was `r round(mean(demo_dates$count3), 1)`
+
+<!-- Note that we can write comments in our RMarkdown file which won't be displayed in the output. This is very helpful to remind yourself - or tell others - exactly what's going on in your code. The square brackets in demo[1,3] allow us to pull out data from specified places in a tibble. The general syntax is [row,column]. -->
+
+Note the slightly different mini-chunk structure using single backticks that we've employed here - with a general format of `` `r '\x60r command()\x60'` ``. This tells R/Rmarkdown to run the command, but pass the output to RMarkdown which displays the output as if it were written inline.
+
+Now let's change the data, and run exactly the same list of queries again. There are a couple of R code chunks here that we don't need to show in this report - but do feel free to look at the code pane to see what's going on behind the scenes:
+
+```{r update 1, echo=FALSE, eval=TRUE,warning = FALSE, message=FALSE}
+# backup the demo_dates tibble into demo_dates_old, load new data into the demo_dates tibble, and make sure the dates are correct
+demo_dates_old <- demo_dates
+demo_dates <- read_csv("demo4.csv") %>% mutate(date=dmy(date))
+```
+### Text showing data from `r month(min(demo_dates$date), label = T, abbr=F)` `r year(min(demo_dates$date))`
+
++ we can count up all of the rows here, and by using the expression `` `r '\x60r nrow(demo_dates)\x60'` ``
+find out that we have a total of `r nrow(demo_dates)` rows in our tibble
++ using the command `sum(demo_dates$count1)` to add all the entries in the count1 column to give a total of `r sum(demo_dates$count1)`
++ `max(demo_dates$count3)` will let us discover that the maximum value in count3 is `r max(demo$count3)`. 
++ or we can say that on the first day of this range (`r min(demo_dates$date)`), the value of count2 was `r demo_dates[1,3]`
++ or that the mean (average) of count3 was `r round(mean(demo_dates$count3), 1)`
+
+```{r update 2, echo=FALSE, eval=TRUE,warning = FALSE, message=FALSE}
+# restoring the original demo_dates tibble, and removing demo_dates_old
+demo_dates <- demo_dates_old
+rm(demo_dates_old)
+```
+
+### Updating text exercises
+
 As a refresher, let's have a look at the first few rows of the demo tibble using ```head()```, and also print out the total number of rows using ```nrow(demo_dates)```:
 
 ```{r update text 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
@@ -368,12 +409,9 @@ When I first started using R, I don't think that I'd ever used the backtick (`` 
 
 If you haven't already, do follow along with the source code - particularly to find out how the last few commands are managed.
 
-<!-- And note that we can write comments in our RMarkdown file which won't be displayed. This one is here to advise you to ignore the horrible messing about with \x60r etc that I've done in the paragraph below to get backticks to display properly in RMarkdown. -->
+<!-- Please ignore the horrible messing about with \x60r etc that I've done in the paragraph below to get backticks to display properly in RMarkdown. This isn't something that you're likely to have to do - unless you end up writing your own RMarkdown tutorial at some point in the future...-->
 
-For example, we can count up all of the rows here, and by using the expression `` `r '\x60r nrow(demo_dates)\x60'` ``
-find out that we have a total of `r nrow(demo_dates)` rows in our tibble. Or by wrapping the command `sum(demo_dates$count1)` we can add all the entries in the count1 column to give a total of `r sum(demo_dates$count1)`. Or `max(demo_dates$count3)` will let us discover that the maximum value in count3 is `r max(demo$count3)`. Or we can say that on the first day of this range (`r demo_dates[1,1]`), the value of count2 was `r demo_dates[1,3]`. Or that the mean (average) of count3 was `r round(mean(demo_dates$count3), 1)`.
 
-<!-- The square brackets in demo[1,3] allow us to pull out data from specified places in a tibble. The general syntax is [row,column]. -->
 
 #### Using knitr
 

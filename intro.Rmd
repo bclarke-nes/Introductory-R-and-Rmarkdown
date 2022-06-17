@@ -3,6 +3,10 @@ title: "![](https://i.imgur.com/5EhpPqK.png) Producing dynamic reports"
 date: "`r Sys.time()`"
 subtitle: "Introduction"
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
   word_document:
     toc: yes
     toc_depth: '2'
@@ -12,10 +16,6 @@ output:
     number_sections: no
     toc_float:
       collapsed: no
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
-    pandoc_args: ["--extract-media", "."]
 ---
 # About this resource {.tabset}
 ## Introduction
@@ -42,10 +42,10 @@ Note too that it is a learning resource. You'll need some time to read this intr
 
 ### What this demo is not
 
-+ it's not a full introduction to working in R/Rmarkdown. R is deep (like most analytic platforms), and this demonstration covers only a little bit of the available functionality
++ it's not a full introduction to working in [R](https://www.r-project.org/)/[Rmarkdown](http://rmarkdown.rstudio.com). [R](https://www.r-project.org/) is deep (like most analytic platforms), and this demonstration covers only a little bit of the available functionality
 + it's not an introduction to everything that you might like to do with a data-driven report either. Instead, it covers some simple examples of common tasks as a way of familiarising you with a different workflow
 + it's definitely not a production-ready replacement for your existing reports. It's a learning resource, rather than a pre-packed replacement
-+ it won't teach you how to make real-time dashboards. If you need your report to update more than about once a day, you should consider building a dashboard instead (Power BI, R/Shiny, DASH)
++ it won't teach you how to make real-time dashboards. If you need your report to update more than about once a day, you should consider building a dashboard instead ([Power BI](https://powerbi.microsoft.com/en-gb/), [R](https://www.r-project.org/)/[Shiny](https://shiny.rstudio.com/), or [Dash](https://plotly.com/dash/))
 
 ## About dynamic reports
 
@@ -53,7 +53,7 @@ Note too that it is a learning resource. You'll need some time to read this intr
 
 ![A recent personal example of a copy and paste error encountered while writing a short report. This would have been avoided if I'd been using a dynamic report.](https://i.imgur.com/1GhhzM2.png)
 
-That's a metaphysical question, and not one that we can provide firm answers to! There are strengths and weaknesses of dynamic reports compared to traditionally-produced static reports:
+We can't provide general guidance about whether automating some specific report will be worth the investment of time for you. But, we can suggest some strengths and weaknesses of dynamic reports compared to traditionally-produced static reports that might be helpful if you're thinking about automating some of your work:
 
 #### Strengths
 
@@ -75,38 +75,42 @@ On balance, we think that dynamic reports have more advantages than disadvantage
 
 ### How does it work
 
-We'll use three tools to write the report. First, we'll use the web service RStudio Cloud. This allows us to run R without installing any software or making any changes to our computer. Next, we'll use the markup language Rmarkdown to add some text and images to our report. Finally, we'll use the [R](https://www.r-project.org/) programming language to do some simple data handling, analysis, and visualisation.
+We'll use three tools to write the report. First, we'll use the web service [RStudio Cloud](https://rstudio.cloud). This allows us to run [R](https://www.r-project.org/) without installing any software or making any changes to our computer. Next, we'll use the markup language [Rmarkdown](http://rmarkdown.rstudio.com) to add some text and images to our report. Finally, we'll use the [R](https://www.r-project.org/) programming language to do some simple data handling, analysis, and visualisation.
 
 Just in case you'd like to look into how these tools work in advance of the session, we would recommend:
 
-+ an introductory R webinar - **will link to John MacKintosh webinar recording here**
++ an introductory [R](https://www.r-project.org/) webinar - **will link to John MacKintosh webinar recording here**
 + a quick [introduction to RStudio Cloud from R bloggers](https://www.r-bloggers.com/2022/02/rstudio-cloud-how-to-get-started-for-free/)
 + [Rstudio's quick tour of Rmarkdown](https://rmarkdown.rstudio.com/authoring_quick_tour.html) is a great place to start if this is all new to you
-+ If you're already somewhat familiar with working in R, you might prefer to start with the [Rmarkdown chapter in the *R for Data Science* book](https://r4ds.had.co.nz/r-markdown.html)
++ If you're already somewhat familiar with working in [R](https://www.r-project.org/), you might prefer to start with the [Rmarkdown chapter in the *R for Data Science* book](https://r4ds.had.co.nz/r-markdown.html)
 
-RStudio Cloud is easy to set-up and free for small-scale work like this demo. This makes it by far the easiest way to get going from scratch if you've never worked with R before. Note that because it's a web service, it requires you to upload your data to their servers, which might makes it unsuitable for production work in health and care owing to information governance concerns. That said, it's easy to tranfer projects from RStudio Cloud to an installed version of R, so don't worry that what you learn here will be tied to the cloud forever. 
+[RStudio Cloud](https://rstudio.cloud) is easy to set-up and free for small-scale work like this demo. This makes it by far the easiest way to get going from scratch if you've never worked with [R](https://www.r-project.org/) before. Note that because it's a web service, it requires you to upload your data to their servers, which might makes it unsuitable for production work in health and care owing to information governance concerns. That said, it's easy to tranfer projects from [RStudio Cloud](https://rstudio.cloud) to an installed version of [R](https://www.r-project.org/), so don't worry that what you learn here will be tied to the cloud forever. 
 
 My suggestion would be not to try and use this demo to change your way of writing reports under pressure. There's quite a lot to think about here, and you might need to spend a good bit of time working out how to adapt this demonstration to fit your report. Think of this as the start of a journey, rather than a destination.
 
 ### Joining instructions
-You'll need to do a little bit of preparation before the training session. I'd advise you to leave about 15 minutes to do this, so that we can make a prompt start to the session. If you're new to RStudio Cloud, please follow the step-by-step instructions below. If you're more experienced in this kind of work, you short-cut by signing-in to [RStudio Cloud](https://rstudio.cloud/), creating a new project from the Git Repository at https://github.com/bclarke-nes/Dynamic-report-demo, and then opening the demo.Rmd file. Otherwise:
+You'll need to do a little bit of preparation before the training session. I'd advise you to leave about 15 minutes to do this, so that we can make a prompt start to the session. If you're new to [RStudio Cloud](https://rstudio.cloud), please follow the step-by-step instructions below. If you're more experienced in this kind of work, you short-cut by signing-in to [RStudio Cloud](https://rstudio.cloud/), creating a new project from the [GitHub](https://unito.io/blog/guide-to-github-for-project-managers/) Repository at https://github.com/bclarke-nes/Dynamic-report-demo, and then opening the demo.Rmd file. Otherwise:
 
 1. Go to [https://rstudio.cloud/](https://rstudio.cloud/)
 
 2. If you have an account, log in. Otherwise, create an account by selecting `Get started for free`, follow the steps, and then sign-in
 
-![](https://i.imgur.com/2p1w6ts.png) 
+```{r out.width="300px", echo=F}
+url <- "https://i.imgur.com/2p1w6ts.png"
+knitr::include_graphics(url)
+```
 
-4. Add a new project on RStudio Cloud by clicking ```New Project >> New Project from a Git repository```. When prompted, enter the URL `https://github.com/bclarke-nes/Dynamic-report-demo`
+
+3. Add a new project on [RStudio Cloud](https://rstudio.cloud) by clicking ```New Project >> New Project from a Git repository```. When prompted, enter the URL `https://github.com/bclarke-nes/Dynamic-report-demo`
 
 ![](https://i.imgur.com/ajnIoHQ.png)
 
-5. That will give you a new project containing the files needed for this demonstration: 
+4. That will give you a new project containing the files needed for this demonstration: 
 
 ![](https://i.imgur.com/0AW7UVt.png)
 
-6. Open the demo.Rmd file from the Files pane
-7. A word of reassurance. If you haven't done any coding before, your first sight of the RStudio Cloud interface might be a shock. Don't worry about this - we'll go through some tips at the start of the session for setting up RStudio to make it more friendly. 
+5. Open the demo.Rmd file from the Files pane
+6. A word of reassurance. If you haven't done any coding before, your first sight of the [RStudio Cloud](https://rstudio.cloud) interface might be a shock. Don't worry about this - we'll go through some tips at the start of the session for setting up RStudio to make it more friendly. 
 
 ## Aims and objectives
 
@@ -114,15 +118,15 @@ This session will:
 
 -	Give an introduction to why we should write dynamic reports
 -	What kinds of report are most suitable to automate
--	Give a basic overview of R/Rmarkdown/RStudio Cloud, including basic data handling, simple data analysis, and drawing graphs
+-	Give a basic overview of [R](https://www.r-project.org/)/[Rmarkdown](http://rmarkdown.rstudio.com)/[RStudio Cloud](https://rstudio.cloud), including basic data handling, simple data analysis, and drawing graphs
 -	Show how these functions can be integrated into a simple report format that will update as the underlying data changes
 
 By the end of this session, the user should:
 
--	Have gained a basic understanding of R, and how Rstudio Cloud and Rmarkdown can be used to generate reports
+-	Have gained a basic understanding of [R](https://www.r-project.org/), and how [RStudio Cloud](https://rstudio.cloud) and [Rmarkdown](http://rmarkdown.rstudio.com) can be used to generate reports
 -	Be familiar with the advantages and disadvantages of working in this way compared to traditional manual report writing in Word and Excel
--	Be able to confidently navigate the parts of an Rmarkdown document
--	Be able to recognise some simple R code, and with suitable assistance interpret it
+-	Be able to confidently navigate the parts of an [Rmarkdown](http://rmarkdown.rstudio.com) document
+-	Be able to recognise some simple [R](https://www.r-project.org/) code, and with suitable assistance interpret it
 -	Be able to seek suitable help for their R code needs
--	Produce and tweak simple descriptive statistical measures, and simple visualisations in R
--	Be confident adding dynamic text elements to an Rmarkdown document
+-	Produce and tweak simple descriptive statistical measures, and simple visualisations in [R](https://www.r-project.org/)
+-	Be confident adding dynamic text elements to an [Rmarkdown](http://rmarkdown.rstudio.com) document
