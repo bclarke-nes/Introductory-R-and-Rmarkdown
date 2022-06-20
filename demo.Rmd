@@ -55,11 +55,15 @@ Once you've got the header in place, we need to do a tiny bit of setting R up pr
   # library(ggplot2)
   # library(dplyr)
 
-packages <- c("tidyr","readr","DiagrammeR","ggplot2","dplyr","lubridate","NHSRplotthedots","readxl", "stringr")
+install.packages(setdiff("pacman", rownames(installed.packages())))
+library("pacman")                  # Load pacman package
+p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl, stringr)
 
-install.packages(setdiff(packages, rownames(installed.packages())))
-
-lapply(packages, library, character.only = TRUE)
+# packages <- c("tidyr","readr","DiagrammeR","ggplot2","dplyr","lubridate","NHSRplotthedots","readxl", "stringr")
+# 
+# install.packages(setdiff(packages, rownames(installed.packages())))
+# 
+# lapply(packages, library, character.only = TRUE)
 
 # Comments are useful - add comments as you work! R comments start with a #, comments in RMarkdown start <!-- and end -->
 
