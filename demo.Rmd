@@ -3,21 +3,26 @@ title: "![](https://i.imgur.com/5EhpPqK.png) Producing dynamic reports"
 date: "`r Sys.time()`"
 subtitle: "Demonstration"
 output:
-  word_document:
-    toc: yes
-    toc_depth: '2'
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
+  word_document:
+    toc: yes
+    toc_depth: '2'
   pdf_document:
     toc: yes
     toc_depth: '2'
     pandoc_args: ["--extract-media", "."]
 ---
 # Introduction{.tabset}
+
+**time is an hour out in heading**
+
+**change demo files to data**
+
 This is our dynamic report training resource. The main objective of this training resource is to demonstrate how to build a report like this one. In this session, we will work through the report step-by-step. It's interactive - so do please ask questions, or for extra clarification if anything isn't as clear as you'd like it to be. It's also very useful for everyone in the group if you can reflect on how this demonstration report might be adapted to suit your needs.
 
 Most of this demonstration is just about following-along. It's useful to try and switch between the code pane and the viewer pane to see how the report works. You might find it helpful to minimise the Console and Environment panes for this tutorial as they're less important at this stage.
@@ -40,22 +45,23 @@ The first time that you knit your document in RStudio Cloud, you may get a warni
 Once you've got the header in place, we need to do a tiny bit of setting R up properly. R uses packages, which are plug-ins that offer useful functions. We need to add these packages to R to help us do some of the tasks in this demonstration. We'll add them in the chunk of R code below:
 
 ```{r setup, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
-  library(tidyverse)
-  library(lubridate)
-  library(NHSRplotthedots)
-  library(readxl)
+  # library(tidyverse)
+  # library(lubridate)
+  # library(NHSRplotthedots)
+  # library(readxl)
   # library(tidyr)
   # library(readr)
   # library(DiagrammeR)
   # library(ggplot2)
   # library(dplyr)
 
+packages <- c("tidyr","readr","DiagrammeR","ggplot2","dplyr","lubridate","NHSRplotthedots","readxl", "stringr")
 
-# There's a problem currently with RStudio Cloud and tidyverse. If tidyverse installation fails, we'll need to install five packages individually. If that's the case, comment out the `library(tidyverse)` line by adding a # at the start of the line. Then uncomment, by removing the #s, the five lines installing tidyr, readr, DiagrammeR, ggplot2, and dplyr. You'll then need to install the packages, following the instructions in the demonstration report but using a different list of packages for installation as follows:
+install.packages(setdiff(packages, rownames(installed.packages())))
 
-#                                 tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl
+lapply(packages, library, character.only = TRUE)
 
-# Also comments are useful - add comments as you work! R comments start with a #, comments in RMarkdown start <!-- and end -->
+# Comments are useful - add comments as you work! R comments start with a #, comments in RMarkdown start <!-- and end -->
 
 ```
 
@@ -80,9 +86,13 @@ This kind of very basic formatting is known as Markdown. While it's simple, it's
 
 ### Suggested exercises
 
-1. Change the image above to something less dull (like https://i.imgur.com/RkMmLXm.png)
-2. Change THIS TEXT to bold, and THIS TEXT to italic
-3. Add some bullet points below here describing your morning
+**swappo??**
+
+1. Change THIS TEXT to bold, and THIS TEXT to italic
+2. Add some bullet points below here describing your morning
+3. Add an image. You can use https://i.imgur.com/RkMmLXm.png - but feel free to use any URL you like. As a hint, images are inserted using the following syntax:
+```![caption](URL)```
+
 
 Do have a look at the Rmarkdown in the code pane, and feel free to play around with it. Once you've had a look at some of the Rmarkdown in practice, we're ready to move on to get some data.
 
@@ -157,8 +167,10 @@ Because there are lots of different types of data out there, there are lots of w
 
 Let's try a couple of tasks now to help you get the hang of loading data. There are two empty R chunks below. Can you fill in the gaps to make the right thing happen?
 
+<!-- do more handholding for these exercises -->
+
 ### Data exercise 1
-Can you load the data from the data.csv file into a tibble called ```demo2```?
+Can you load the data from the demo.csv file into a tibble called ```demo2```?
 
 ```{r data ex1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
 # Write your code in the line below. Hint: the structure of the command will be the same as the chunk above - but the name of the tibble will be different
@@ -167,12 +179,12 @@ Can you load the data from the data.csv file into a tibble called ```demo2```?
 ```
 
 ### Data exercise 2
-Can you load the data from the data2.xlsx file into the ```demo2``` tibble using read_excel?
+Can you load the data from the demo 2.xlsx file into the ```demo2``` tibble using read_excel?
 
 ```{r data ex2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
-# Write your code in the line below. This will overwrite the contents of demo2 with new data.
+# Write your code below. This will overwrite the contents of demo2 with new data. I've included the previous line of code here to help
 
-
+demo2 <- read_csv("demo.csv")
 
 # Hint: whenever you're in a chunk, you can get help on a command by typing a question mark, then the name of the command, then ctrl-enter. For example, you can type ?read_excel on a new line for help with reading .xlsx files.
 ```
@@ -187,7 +199,9 @@ head(demo)
 Can you look at the head of your `demo2` tibble? How do demo and demo2 differ?
 
 ```{r data ex3, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
-# Write your code in the line below
+# Write your code in the line below. Again, I've included the previous command as a starting point for you
+
+head(demo)
 
 ```
 
@@ -226,7 +240,7 @@ Again, does `demo2` have the same column headings as `demo`?
 # Write your code in the line below
 
 ```
-Note that in the couple of examples above, we've just asked R to show us the number of rows/column names. We can also save these findings, which we might do if we want to use them later for another purpose. Just for instance, we can make a new variable *demo_length* containing the number of rows in data with:
+Note that in the couple of examples above, we've just asked R to show us the number of rows, and the column names. We can also save these findings, which we might do if we want to use them later for another purpose. Just for instance, we can make a new variable *demo_length* containing the number of rows in our data with:
 
 ```{r inspect data 4, echo=TRUE, eval=TRUE, warning = FALSE, message=FALSE}
 demo_length <- nrow(demo)
@@ -322,7 +336,7 @@ Using the code above as a starting point, can you confirm the missing data in co
 ```
 How about finding non-number values in count2?
 ```{r clean 5, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
-demo3 %>% filter(!str_detect(count2,"^\\s*[0-9]*\\s*$"))
+demo3 %>% filter(!stringr::str_detect(count2,"^\\s*[0-9]*\\s*$"))
 ```
 
 Or converting count2 to numeric. This will just force conversation, so we'll change that "None" into a proper `NA`:
@@ -361,7 +375,7 @@ Here's the most important point in the whole of this demonstration: **we can mak
 
 ---
 
-That might look a bit unimpressive, given all the work that we've done to get here. But now let's see what happens when we run exactly the same commands but change the data Behind the scenes, there are a couple of R chunks here that change the contents of `demo_dates`. We don't need to show these in this report - but do feel free to look at the code pane to see how this works:
+That might look a bit unimpressive, given all the work that we've done to get here. But now let's see what happens when we run exactly the same commands but change the data. Behind the scenes, there are a couple of R chunks here that change the contents of `demo_dates`. We don't need to show these in this report - but do feel free to look at the code pane to see how this works:
 
 ```{r update 1, echo=FALSE, eval=TRUE,warning = FALSE, message=FALSE}
 # backup the demo_dates tibble into demo_dates_old, load new data into the demo_dates tibble, and make sure the dates are correct

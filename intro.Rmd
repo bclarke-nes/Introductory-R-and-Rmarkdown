@@ -9,13 +9,13 @@ output:
     number_sections: no
     toc_float:
       collapsed: no
-  word_document:
-    toc: yes
-    toc_depth: '2'
   pdf_document:
     toc: yes
     toc_depth: '2'
     pandoc_args: ["--extract-media", "."]
+  word_document:
+    toc: yes
+    toc_depth: '2'
 ---
 # About this resource {.tabset}
 ## Introduction
