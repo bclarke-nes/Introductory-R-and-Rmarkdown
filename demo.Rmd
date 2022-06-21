@@ -28,25 +28,60 @@ Most of this demonstration is just about following-along. It's useful to try and
 ### What to do if things go wrong?
 There are lots of minor problems that we might encounter while working through this report. First, this is *normal and to be expected*. Please don't worry if things don't work first time - we will be able to work through any problems that you might encounter and hopefully resolve them fairly easily. Second, we'll give some advice below about good strategies for solving problems - this is a key part of the learning journey in this field.
 
-### What's the point of this?
+### What's the point of this demonstration?
 
-**show examples of dynamic text**
+This demonstration will show you how to build simple dynamic reports using R and RMarkdown. To give a lightning-speed overview:
+
+1. We'll load some data into R and tidy it
+```{r pre-setup, message=FALSE, warning=FALSE, echo=F}
+install.packages(setdiff("pacman", rownames(installed.packages())))
+library("pacman")
+p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl, stringr)
+# avoiding tidyverse as loading in RStudio Cloud potentially runs out of memory 
+```
+```{r pre-load, message=FALSE, warning=FALSE, echo=T}
+demo <- read_csv("data/data.csv") %>% mutate(date=dmy(date))
+```
+2. We'll use that data to produce dynamic text, that updates as the data changes, formatted using RMarkdown:
+
++ Our data is `r ncol(demo)` columns by `r nrow(demo)` rows
++ The column headings are **`r colnames(demo)`**
++ The first date in our data is `r min(demo$date)`, and the last date is `r max(demo$date)`. 
+
+3. We'll display tables based on that data, including summaries and other measures of use across health, care, and housing
+```{r pre-table, message=FALSE, warning=FALSE, echo=T}
+knitr::kable(head(demo))
+```
+4. We'll draw graphs with that data and show how they can fit into your report
+```{r pre-graph, message=FALSE, warning=FALSE, echo=T, fig.height=1, fig.width=3}
+ggplot(demo) +
+  geom_line(aes(x=date, y=count1)) +
+  xlab("Date") + ylab("Count 1")
+  
+```
+
+5. Finally, we'll end with some tips on possible next steps for you
+
 
 ## Getting set-up
 First thing first: we will work through knitting this document at the start of the session. We definitely don't want our end users to see our RMarkdown code. So the .Rmd file that we are working on needs to be converted into a suitable output format. We call that conversion *knitting* (after the R package `knitr` that manages the conversion). To knit your file, you can either:
 
-- select the Knit option from the menu at the top of the code pane. You can select any of the output formats, although I'd suggest sticking with .html (webpage) while working through the demo. ![](https://i.imgur.com/HhM3NqK.png)
+- select the Knit option from the menu at the top of the code pane. You can select any of the output formats, although I'd suggest sticking with .html (webpage) while working through the demo.
+
+![](https://i.imgur.com/HhM3NqK.png)
+
 - alternatively, press `ctrl+shift+k` while your cursor is in the code pane to knit to the last used format
 
 Knitting is controlled by the preamble at the head of .Rmd. For now, I'll suggest that you skip trying to figure it all out in favour of spending our time on some of the more interesting areas of this demonstration. I'll give more details about setting up your Rmarkdown document at the end of this document in the **More details** section.
 
 The first time that you knit your document in RStudio Cloud, you may get a warning about required packages. Just agree to this, as you'll need the packages to knit your document properly.
+
 ![](https://i.imgur.com/6pfFbXk.png)
 
 ### Getting R ready
-Once you've got the header in place, we need to do a tiny bit of setting R up properly. R uses packages, which are plug-ins that offer useful functions. We need to add these packages to R to help us do some of the tasks in this demonstration. We'll add them in the chunk of R code below:
+Once you've got the header in place, we need to do a tiny bit of setting R up properly. R uses packages, which are plug-ins that offer useful functions. We need to add these packages to R to help us do some of the tasks in this demonstration. We've actually added them already in the first few lines of this report. Let's have a look at this code, which includes some explanatory comments:
 
-```{r setup, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+```{r setup, echo=TRUE, eval=F, warning = FALSE, message=FALSE}
 # if pacman is missing, installs pacman, which helps us manage packages
 install.packages(setdiff("pacman", rownames(installed.packages())))
 
