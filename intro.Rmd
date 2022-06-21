@@ -1,6 +1,6 @@
 ---
 title: "![](https://i.imgur.com/5EhpPqK.png) Producing dynamic reports"
-date: "`r Sys.time()`"
+date: "`r Sys.Date()`"
 subtitle: "Introduction"
 output:
   html_document:
@@ -19,6 +19,8 @@ output:
 ---
 # About this resource {.tabset}
 ## Introduction
+
+**are we using I or We in this??**
 
 Dynamic reports are data-driven documents that can be periodically updated as their underlying data changes.
 
@@ -93,6 +95,11 @@ Just in case you'd like to look into how these tools work in advance of the sess
 My suggestion would be not to try and use this demo to change your way of writing reports under pressure. There's quite a lot to think about here, and you might need to spend a good bit of time working out how to adapt this demonstration to fit your report. Think of this as the start of a journey, rather than a destination.
 
 ### Joining instructions
+
+**bit more hand-holding here- red boxes around menu**
+
+**need a second screen**
+
 You'll need to do a little bit of preparation before the training session. I'd advise you to leave about 15 minutes to do this, so that we can make a prompt start to the session. If you're new to [RStudio Cloud](https://rstudio.cloud), please follow the step-by-step instructions below. If you're more experienced in this kind of work, you short-cut by signing-in to [RStudio Cloud](https://rstudio.cloud/), creating a new project from the [GitHub](https://unito.io/blog/guide-to-github-for-project-managers/) Repository at https://github.com/bclarke-nes/Dynamic-report-demo, and then opening the demo.Rmd file. Otherwise:
 
 1. Go to [https://rstudio.cloud/](https://rstudio.cloud/)
