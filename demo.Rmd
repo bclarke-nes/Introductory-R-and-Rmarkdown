@@ -2,17 +2,18 @@
 title: "![](img/header.png) Producing dynamic reports"
 date: "`r Sys.Date()`"
 subtitle: "Demonstration"
+always_allow_html: true
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
-    pandoc_args: ["--extract-media", "."]
   word_document:
     toc: yes
     toc_depth: '2'
@@ -926,19 +927,21 @@ The easiest option is to start a new Rmarkdown document direct from the RStudio 
 
 ```{verbatim}
 ---
-title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
-date: "`r Sys.time()`"
+title: "![](img/header.png) Producing dynamic reports"
+date: "`r Sys.Date()`"
+subtitle: "Demonstration"
+always_allow_html: true
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
-    pandoc_args: ["--extract-media", "."]
   word_document:
     toc: yes
     toc_depth: '2'
