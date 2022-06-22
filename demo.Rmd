@@ -4,16 +4,16 @@ date: "`r Sys.Date()`"
 subtitle: "Demonstration"
 always_allow_html: true
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
-    pandoc_args: ["--extract-media", "."]
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
   word_document:
     toc: yes
     toc_depth: '2'
@@ -22,9 +22,16 @@ output:
 
 ## Introduction
 
+```{r pre-setup, message=FALSE, warning=FALSE, echo=F}
+install.packages(setdiff("pacman", rownames(installed.packages())))
+library("pacman")
+p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl, stringr)
+# avoiding tidyverse as loading in RStudio Cloud potentially runs out of memory 
+```
+
 This is our dynamic report training resource. The main objective of this training resource is to demonstrate how to build a report like this one. In this session, we will work through the report step-by-step. It's interactive - so do please ask questions, or for extra clarification if anything isn't as clear as you'd like it to be. It's also very useful for everyone in the group if you can reflect on how this demonstration report might be adapted to suit your needs.
 
-Most of this demonstration is just about following-along. It's useful to try and switch between the code pane and the viewer pane to see how the report works. You might find it helpful to minimise the Console and Environment panes for this tutorial as they're less important at this stage.
+Most of this demonstration is just about following-along. It's useful to try and switch between the code pane and the viewer pane to see how the report works. You might find it helpful to minimise the Console and Environment panes for this tutorial as they're less important at this stage. You can do this using the minimize/maximise buttons (`r knitr::include_graphics("img/minmax.png")`) in the upper right-hand corners of the four panes.
 
 ### What to do if things go wrong?
 There are lots of minor problems that we might encounter while working through this report. First, this is *normal and to be expected*. Please don't worry if things don't work first time - we will be able to work through any problems that you might encounter and hopefully resolve them fairly easily. Second, we'll give some advice below about good strategies for solving problems - this is a key part of the learning journey in this field.
@@ -34,12 +41,7 @@ There are lots of minor problems that we might encounter while working through t
 This demonstration will show you how to build simple dynamic reports using R and RMarkdown. To give a lightning-speed overview:
 
 1. We'll load some data into R and tidy it
-```{r pre-setup, message=FALSE, warning=FALSE, echo=F}
-install.packages(setdiff("pacman", rownames(installed.packages())))
-library("pacman")
-p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl, stringr)
-# avoiding tidyverse as loading in RStudio Cloud potentially runs out of memory 
-```
+
 ```{r pre-load, message=FALSE, warning=FALSE, echo=T}
 demo <- read_csv("data/data.csv") %>% mutate(date=dmy(date))
 ```
@@ -69,7 +71,7 @@ First thing first: we will work through knitting this document at the start of t
 
 - select the Knit option from the menu at the top of the code pane. You can select any of the output formats, although I'd suggest sticking with .html (webpage) while working through the demo.
 
-```{r echo=F, out.width="300px"}
+```{r echo=F, out.width="300px", fig.align='center'}
 knitr::include_graphics("img/knitr_options.png")
 ```
 
@@ -79,7 +81,7 @@ Knitting is controlled by the preamble at the head of .Rmd. For now, I'll sugges
 
 The first time that you knit your document in RStudio Cloud, you may get a warning about required packages. Just agree to this, as you'll need the packages to knit your document properly.
 
-```{r echo=F, out.width="300px"}
+```{r echo=F, out.width="300px", fig.align='center'}
 knitr::include_graphics("img/packages.png")
 ```
 
@@ -111,7 +113,34 @@ We load several packages (link to eventual NHS-R statement on tools and packages
 
 [Rmarkdown](http://rmarkdown.rstudio.com) is a simple markup language. You might have used it before without really knowing what it was called. If you've ever posted on a Wordpress site or web forum with basic text formatting options available, the chances are that you've already done at least a tiny bit of markdown. Just to give you an example, surrounding a word with asterisks - like ```*italics*``` formats it in *italics*. Pairs of asterisks either side of the word formats that word - like ```**bold**``` - formats the text as **bold**. And so on. 
 
-This kind of very basic formatting is known as Markdown. While it's simple, it's usually sufficient to allow the production of neat and clear documents that are easy to ready. Rmarkdown is just Markdown with a few extras to allow you to embed R code directly into the text that you're writing. That R code allows you to do more-or-less any data analysis that you might like and include the results in your markdown-formatted document. There's a quick reference sheet at the foot of this section.
+This kind of very basic formatting is known as Markdown. While it's simple, it's usually sufficient to allow the production of neat and clear documents that are easy to ready. Rmarkdown is just Markdown with a few extras to allow you to embed R code directly into the text that you're writing. That R code allows you to do more-or-less any data analysis that you might like and include the results in your markdown-formatted document. 
+
+There's a quick reference, and a couple of exercises, at the foot of this section. But to give you an idea of what Rmarkdown can do, we can have a look at the introductory materials for this demonstration. While this report is completely static - there's no data in it, and apart from the date at the top nothing changes without us manually updating it - it's still a useful demonstration of the kinds of formatting that we can do in Rmarkdown. Let's have a quick look at the code for the introduction now to see what it's like:
+
+### Rmarkdown in the introduction
+
+1. First, open the `intro.Rmd` file from the files pane by clicking on the name
+
+```{r echo=F, out.width="300px", fig.align='center'}
+knitr::include_graphics("img/load_intro.png")
+```
+
+2. This opens the file in the code pane. Note that we've now got two tabs at the top of the code pane - we can switch quickly between open files using these as you would in a web browser
+
+```{r echo=F, out.width="300px", fig.align='center'}
+knitr::include_graphics("img/tabs.png")
+```
+
+3. Once we've opened the `intro.Rmd` file, `knit` it to .html, like we did in the previous section. 
+
+4. You can then follow along between the code and viewer panes. Ignoring the first 20 lines or so - which are used to set the display options for the report - you can see that most of the code is just the displayed text. See if you can spot:
+
++ a link
++ some bold text
++ a heading
++ some bullet-points
+
+5. You'll also see that we were able to output this report in different formats (the `.html` you've viewing now, versus the `.pdf` that you received before this session). Now might be a good time to try knitting to one of the other formats available - like `.doc`, or `.pdf`. Note that the formatting is (broadly) the same, no matter what the output format. This can be a fantastic time-saver if you're manually producing both print and web versions of your reports now.
 
 ### RMarkdown quick reference
 
