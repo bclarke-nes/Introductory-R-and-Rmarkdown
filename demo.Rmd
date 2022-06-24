@@ -539,6 +539,7 @@ Count 2 was highest on this day of the week: `r demo_dates %>% filter(count2==ma
 
 ### Exercise 3
 Taking those commands from the above, can you tweak the R code snippets to that we end up with a paragraph where we:
+
 + find out what the sum of count3 is on Tuesdays?
 + find out how many days count 1 is 30 or more, and count2 is 90 or less?
 + find the number of days where count 1 is greater than count 2, but smaller than count 3?
@@ -549,6 +550,7 @@ Taking those commands from the above, can you tweak the R code snippets to that 
 
 ### Exercise 4
 Can you write a simple new command, and include it in a line or two of explanatory text? Some hints:
+
 - make sure that you wrap your R code properly in backticks: `` `r '\x60r someCommand(someData)\x60'` ``
 - you might like to try `mean(), min(), max(), sum()` on one of the columns using `$`
 - you do something more ambitious using `select() and filter()`
