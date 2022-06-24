@@ -3,24 +3,22 @@ title: "![](https://i.imgur.com/5EhpPqK.png) Producing dynamic reports"
 date: "`r Sys.Date()`"
 subtitle: "Introduction"
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
-    pandoc_args: ["--extract-media", "."]
   word_document:
     toc: yes
     toc_depth: '2'
 ---
 # About this resource {.tabset}
 ## Introduction
-
-<!--**are we using I or We in this??**-->
 
 Dynamic reports are data-driven documents that can be periodically updated as their underlying data changes.
 
@@ -115,7 +113,9 @@ You'll need to do a little bit of preparation before the training session, which
 knitr::include_graphics("img/rsc_create.png")
 ```
 
-3. Once you've signed-in to RStudio Cloud, add a new project by clicking ```New Project >> New Project from a Git repository```. When prompted, enter the URL `https://github.com/bclarke-nes/Dynamic-report-demo`
+3. Once you've signed-in to RStudio Cloud, add a new project by clicking ```New Project >> New Project from a Git repository```. 
+
+When prompted, enter the URL `https://github.com/bclarke-nes/Dynamic-report-demo`
 
 ```{r out.width="200px", fig.align='center',echo=F}
 knitr::include_graphics("img/proj.png")
@@ -123,11 +123,11 @@ knitr::include_graphics("img/proj.png")
 
 4. That will give you a new project containing the files needed for this demonstration: 
 
-```{r out.width="600px", fig.align='center',echo=F}
+```{r out.width="500px", fig.align='center',echo=F}
 knitr::include_graphics("img/screen.png")
 ```
 
-Don't worry is this first sight of the the [RStudio Cloud](https://rstudio.cloud) interface is a shock. There's an awful lot happening here, and most of the apparent complexity is just information overload! We'll start adapting the interface to be more friendly at the start of the first interactive session.
+Don't worry if this first sight of the the [RStudio Cloud](https://rstudio.cloud) interface is a shock. There's an awful lot happening here, and most of the apparent complexity is just information overload! We'll start adapting the interface to be more friendly at the start of the first interactive session.
 
 5. Open the `demo.Rmd` file from the Files pane in the bottom right-hand corner by clicking on its name
 
