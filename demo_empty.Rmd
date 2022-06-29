@@ -1,0 +1,247 @@
+---
+title: "![](img/header.png) Producing dynamic reports"
+date: "`r Sys.Date()`"
+subtitle: "Demonstration"
+always_allow_html: true
+output:
+  html_document:
+    toc: no
+    toc_depth: 2
+    number_sections: no
+    toc_float:
+      collapsed: no
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
+  word_document:
+    toc: yes
+    toc_depth: '2'
+---
+# My report{.tabset}
+
+```{r pre-setup, message=FALSE, warning=FALSE, echo=F}
+install.packages(setdiff("pacman", rownames(installed.packages())))
+library("pacman")
+p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl,stringr)
+
+# avoiding tidyverse as loading in RStudio Cloud potentially runs out of memory 
+```
+
+## Load, tidy, and display data
+
+```{r pre-load, message=FALSE, warning=FALSE, echo=T}
+demo <- read_csv("data/data.csv") %>% mutate(date=dmy(date))
+head(demo)
+
+demo2 <- read_excel("data/data2.xlsx")
+head(demo2)
+```
+
+## Basic data operations
+
+```{r data basics, message=FALSE, warning=FALSE, echo=T}
+nrow(demo)
+colnames(demo2)
+demo_length <- nrow(demo)
+demo_length * 5
+sum(demo$count3)
+```
+## Dplyr
+
+```{r dplyr, message=FALSE, warning=FALSE, echo=T}
+
+demo %>% filter(date == "2022-05-06")
+
+# finding rows of demo2 where count_2 is not a number
+demo2 %>% filter(!stringr::str_detect(count_2,"^\\s*[0-9]*\\s*$"))
+
+demo_total <- demo %>% mutate(total = count1 + count2 + count3)
+
+demo_total <- demo_total %>% select(!count1)
+
+demo_total <- demo_total %>% filter(total >= 200)
+
+demo_total <- demo_total %>% arrange(count2)
+
+demo_total <- demo_total %>% mutate(rank_count2 = as.integer(rank(count2))) %>% arrange(desc(date))
+
+knitr::kable(demo_total %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))))
+
+knitr::kable(head(demo), col.names = c("Date", "Count 1", "Count 2", "Count 3"), caption = "A superbly magnificent table of data", align = c("r", "c", "c", "l"))
+```
+
+
+
+## Dynamic text
+
++ The column headings are **`r colnames(demo)`**
++ The first date in our data is `r min(demo$date)`, and the last date is `r max(demo$date)`. 
++ we can format in *italics*, **bold** and so on
++ we have data from `r nrow(demo)` days
++ we have a total of `r sum(demo$count1)` count1s
++ the biggest value in count3 is `r max(demo$count3)`. 
++ on the first day for which we have data, the count2 was `r demo %>% filter(date == max(date)) %>% select(count2) %>% as.numeric`
++ the average of count3 was `r round(mean(demo$count3), 1)`
++ Sum count3 on Mondays in our range: `r demo %>% filter(wday(demo$date) == 2) %>% select(count3) %>% sum()`
++ Number of days where count1 is 30 or more, and count2 is 70 or less: `r demo %>% filter(count1 >= 30 & count2 <= 70) %>% nrow()`
++ Number of days where count1 is greater than count3, but smaller than count2: `r demo %>% filter(count1 > count3 && count1 < count2) %>% nrow()` 
++ Count 2 was highest on this day of the week: `r demo %>% filter(count2==max(count2)) %>% select(date) %>% unlist() %>% as.Date(origin="1970-01-01") %>% lubridate::wday(label=T, abbr=F)`
++ make sure that you wrap your R code properly in backticks: `` `r '\x60r someCommand(someData)\x60'` ``
++ you might like to try `mean(), min(), max(), sum()` on one of the columns using `$`
++ you do something more ambitious using `select() and filter()`
++ remember to try looking at the manual pages using `?command` if you get stuck
+
+## Graphs
+
+### ggplot2
+```{r pre-graph, message=FALSE, warning=FALSE, echo=T, fig.height=1, fig.width=5, fig.align='center'}
+demo <- read_csv("data/data.csv") %>% mutate(date=dmy(date))
+demo_total <- demo %>% mutate(total = count1+count2+count3)
+ggplot(demo) +
+  geom_line(aes(x=date, y=count1)) +
+  xlab("Date") + ylab("Count 1") +
+  theme(axis.text = element_text(size = 6), axis.title = element_text(size = 7))
+```
+
+```{r ggplot, message=FALSE, warning=FALSE, echo=T, fig.align='center'}
+ggplot(demo_total) +
+  geom_point(aes(x=count1, y=count2))
+
+ggplot(demo_total) +
+  geom_col(aes(x=date, y=count2))
+
+ggplot(demo_total) +
+  geom_line(aes(x=date, y=count3)) +
+  geom_smooth(aes(x=date, y=count3))
+
+ggplot(demo_total) +
+  geom_point(aes(x=count1, y=count2), colour="#004380") +
+  geom_smooth(aes(x=count1, y=count2), method='lm') +
+  labs(title="Scatter plot of count 1 against count 2 with a smoothed conditional mean") +
+  ylab("Count 2") +
+  xlab("Count 1")
+
+demo_total %>%
+  dplyr::select(!total) %>%
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names)) +
+  labs(title = "Stacked bar of counts by date", fill="Count type") +
+  xlab("Date") +
+  ylab("Count")
+
+demo_total %>% 
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names)) +
+  facet_wrap(~ names)
+
+demo_total %>% 
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  filter(date <= (min(date)+5)) %>%
+  ggplot() +
+  geom_col(aes(x=names, y=count, fill=names)) +
+  facet_wrap(~ date)
+
+demo_total %>%
+  dplyr::select(!total) %>%
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names)) +
+  geom_smooth(data=demo_total, aes(x=date, y=total)) +
+  labs(title = "Stacked bar of counts by date with total trend", fill="Count type") +
+  xlab("Date") +
+  ylab("Count")
+```
+
+### NHSPlotthedots
+```{r plotdots, message=FALSE, warning=FALSE, echo=T, fig.align='center'}
+
+my_spc <- demo_total %>% 
+  pivot_longer(!date, names_to = "type", values_to="count", values_drop_na = TRUE) %>% 
+  filter(type == "count1") %>% 
+  ptd_spc(value_field = "count", date_field = date, improvement_direction = "increase")
+
+plot(my_spc, x_axis_breaks = "1 month", main_title="Count 1", theme = )
+```
+
+### DiagrammeR
+
+```{r diagrammer, message=FALSE, warning=FALSE, echo=T, fig.align='center'}
+DiagrammeR::grViz("
+digraph graph2 {
+
+// a graph statement, which applies to the whole graph
+graph [layout = dot]
+
+// node statements, which describe how each of the nodes work. Note the @@x - corresponding to substituted label text below
+node [shape = rectangle, width = 4, style = filled, fillcolor = beige]
+a [label = '@@1']
+b [label = '@@2']
+c [label = '@@3']
+d [label = '@@4']
+
+// edge statements, which describe how each of the nodes are connected
+a -> d
+b -> d
+c -> d
+
+}
+
+# Outside the main grViz bracket, the footnote-style substituted label text. [x] provides the text for @@x above.
+[1]: paste0('Count 1 total (sum = ', sum(demo_total$count1), ')')
+[2]: paste0('Count 2 total (sum = ', sum(demo_total$count2), ')')
+[3]: paste0('Count 3 total (sum = ', sum(demo_total$count3), ')')
+[4]: paste0('Total (sum = ', sum(demo_total$total), ')')
+")
+
+```
+
+### Adding images to RMarkdown
+
+----
+
+To include a local image from the `img` directory of the project:
+
+```{r}
+knitr::include_graphics("img/header.png")
+```
+
+----
+
+To include an image from its URL:
+
+```{r}
+knitr::include_graphics("https://i.imgur.com/RkMmLXm.png")
+```
+
+----
+
+You can change the size of the image in pixels by setting the `out.width=` option in the chunk label:
+
+```{r out.width="300px"}
+knitr::include_graphics("img/header.png")
+```
+
+----
+
+And you can control figure alignment (and add a caption) again using the chunk options:
+
+```{r out.width="300px", fig.align='center', fig.cap='A centred image'}
+knitr::include_graphics("img/header.png")
+```
+
+----
+
+It might be more convenient to use the mini-chunk structure of `r knitr::include_graphics("img/button.png")` for small, inline images.
+
+----
+
+Include animations in the .html report, and leave them out of the static formats like .pdf:
+
+```{r eval=knitr::is_html_output(), echo=F, fig.align='center', fig.cap='Image credit: https://gfycat.com/defiantwateryblackfish-aleksandar-jovanovic-ronnie-osullivan'}
+knitr::include_graphics("https://thumbs.gfycat.com/DefiantWateryBlackfish-size_restricted.gif")
+```
+
+
