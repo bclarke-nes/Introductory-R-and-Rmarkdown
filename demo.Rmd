@@ -866,7 +866,7 @@ demo_total %>%
 
 In `geom_smooth()` we specify a new data source - the version of `demo_total` before the earlier processing in this code. You'll note that we dropped the total column in the second line of this code, so we can't use the data that we piped into the main `ggplot()` command.
   
-  
+`ggplot2` is an enormously powerful package. But that power means that it's complicated, and can be hard to learn for new users. The density of the documentation also doesn't help the new user as much as it might, as the [creators of the package have identified](https://github.com/tidyverse/ggplot2/issues/4770). I'd suggest taking the different graph recipes from the two ggplot2 subsections as a basis for your own experimentation. If you think that producing more complex graphs will be an important part of your own report writing work, I would definitely recommend looking at the [ggplot2 book](https://ggplot2-book.org/index.html) to get a better sense of what might be done with the package.
   
 ### NHSplot the dots
 
@@ -914,6 +914,8 @@ c -> d
 ")
 
 ```
+
+If you've been delving into the more advanced functions found in Rmarkdown, you might recognise the way that the labels are put together - it's the same general syntax used for footnotes.
 
 ### Adding images to RMarkdown
 If you've been following along in the source code, you'll have noticed that the images in this report are included using `include_graphics()`. This command is well worth understanding, because it not only allows you to include ordinary images (photos or page graphics), but also allows you to include other kinds of images in your RMarkdown report. For example, it might not be possible to automate all aspects of your report production. You might have data locked in proprietary systems, or better ways of producing some of your visualisations, and so on. In cases like these, you can use `include_graphics()` to pass your image into RMarkdown neatly so that your reader won't suspect that the image is any different from the other visualisations that your report contains.
@@ -976,7 +978,7 @@ knitr::include_graphics("https://thumbs.gfycat.com/DefiantWateryBlackfish-size_r
 
 
 
-## More details
+## More details{.tabset}
 
 ### Rmarkdown document settings
 
@@ -1029,11 +1031,6 @@ You might notice another tweak that I've made to the pdf output options for this
 ```
 
 
-### So what's next?
-
-#### Alternatives
-In the R/Rmarkdown universe, [Flexdashboard](https://pkgs.rstudio.com/flexdashboard/) looks great: there's an [example](https://www.themillerlab.io/post/flexdashboards/mcc_fake_cohort_dashboard_for_post.html#outcomes-by-stage) and a  [walkthrough by the Miller Lab](https://www.themillerlab.io/post/flexdashboards/)
-
 ### More on R code chunks
 
 Code chunks in Rmarkdown start and end with a triple backtick:
@@ -1053,3 +1050,19 @@ There are then a few options that you can set for the code chunk. Here:
 Setting all the chunk options can become very involved. The [Rmarkdown Cookbook](https://bookdown.org/yihui/rmarkdown/r-code.html) is a great helper and reference for that kind of work. In general, it's best to keep them as simple as possible. You might just begin with default chunks. A useful shortcut to insert a new R chunk is `ctrl + alt + i`, or you can use the button at the top right of the code pane `r knitr::include_graphics("img/chunk.png")`, and only add the options as you need them.
 
 That said, chunk labels are very helpful at any stage, because they give you navigational clues for getting around in large documents.
+
+### Reading and resources
+
++ [Rstudio cheat sheets](https://www.rstudio.com/resources/cheatsheets/) are a brilliant quick-reference for many jobs in R. I particularly like and use the sheets for [`ggplot2`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization.pdf), [`dplyr`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf), and [`lubridate`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/lubridate.pdf).
++ [*R for data science* (r4ds)](r4ds.had.co.nz) is a brilliant wider introduction to using R for data analysis, particularly when used with...
++ ... the companion-piece [*Advanced R*](adv-r.had.co.nz)
++ [*ggplot2: elegant graphics for data analysis*](https://ggplot2-book.org/index.html) is extremely helpful to go beyond simple recipes for drawing graphs in ggplot2
++ the [*Rmarkdown Cookbook*](https://bookdown.org/yihui/rmarkdown/r-code.html) is a great helper and reference for Rmarkdown
++ [*Think Like A Programmer*](https://nostarch.com/thinklikeaprogrammer) is not R-specific, but instead teaches a range of helpful techniques for translating your work into effective code. You might find this helpful if you don't have much coding experience, particularly if your analysis requires advanced R skills (no open-access version available)
++ [The Epidemiologist's R handbook](https://epirhandbook.com/en/) is a new and comprehensive set of resources for epidemiological work in R. Many of their examples can be adapted to other areas of health and care
+
+### Alternatives to R/Rmarkdown
+
++ Microsoft's PowerBI. This is more focused on building real-time dashboards, and it's intended to be a low-code way of working that should be a fairly natural step for staff with lots of Excel experience. **We have supporting resources under development for PowerBI, which I'll link here when completed**.
++ R + Shiny is the best R-based way of building real-time dashboards (and will hopefully be something we will support from the KIND Learning Network in the future)
++ If you're getting on well with R/Rmarkdown, but would rather build a dashboard than a report, [Flexdashboard](https://pkgs.rstudio.com/flexdashboard/) looks great. To get started, there's an [example](https://www.themillerlab.io/post/flexdashboards/mcc_fake_cohort_dashboard_for_post.html#outcomes-by-stage) and a  [walkthrough by the Miller Lab](https://www.themillerlab.io/post/flexdashboards/)
