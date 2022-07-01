@@ -153,6 +153,28 @@ demo_total %>%
   labs(title = "Stacked bar of counts by date with total trend", fill="Count type") +
   xlab("Date") +
   ylab("Count")
+
+NEScol <- c("#004380", "#0096DC", "#6C2383", "#007188", "#00AFAA", "#80BA27", "#3FA535", "#FFDD00", "#F39200", "#B10933", "#BD006A")
+
+demo_total %>%
+  dplyr::select(!total) %>%
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names)) +
+  geom_smooth(data=demo_total, aes(x=date, y=total)) +
+  labs(title = "Stacked bar of counts by date with total trend", fill="Count type") +
+  xlab("Date") +
+  ylab("Count") + 
+  scale_fill_manual(values=NEScol)
+
+demo_total %>% 
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  filter(date <= (min(date)+5)) %>%
+  ggplot() +
+  geom_col(aes(x=names, y=count, fill=names)) +
+  facet_wrap(~ date) +
+  coord_flip()
+
 ```
 
 ### NHSPlotthedots
