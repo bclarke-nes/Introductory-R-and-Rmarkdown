@@ -4,6 +4,9 @@ date: "`r Sys.Date()`"
 subtitle: "Demonstration"
 always_allow_html: true
 output:
+  word_document:
+    toc: yes
+    toc_depth: '2'
   html_document:
     toc: no
     toc_depth: 2
@@ -14,9 +17,6 @@ output:
     toc: yes
     toc_depth: '2'
     pandoc_args: ["--extract-media", "."]
-  word_document:
-    toc: yes
-    toc_depth: '2'
 ---
 # Dynamic reports demonstration{.tabset}
 
@@ -117,7 +117,7 @@ We load several packages (link to eventual NHS-R statement on tools and packages
 
 + [tidyverse](https://www.tidyverse.org/) - this is a large ecosystem of tools designed for data science. Specifically in this demonstration, we use tidyr, readr, DiagrammeR, ggplot2, stringr, readxl, and dplyr.
 + [lubridate](https://lubridate.tidyverse.org/) - helps with handling dates and times
-+ [NHSRplotthedots](https://github.com/nhs-r-community/NHSRplotthedots)  - NHS-R community tool for making XmR charts
++ [NHSRplotthedots](https://github.com/nhs-r-community/NHSRplotthedots) - NHS-R community tool for making XmR charts
 
 
 ## Using Rmarkdown
@@ -202,8 +202,11 @@ There is some demo data available in the file pane, under the `data`) folder. Al
 We load the data from the first of these data files (`data.csv`) using the following command:
 
 ```{r get data, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+
 demo <- read_csv("data/data.csv")
+
 ```
+
 We should definitely pause here to explain this code. Usually in R, you do things by applying *commands* to objects like data. To break this command down into steps:
 
 + ```read_csv``` is the main command, which opens a .csv data file, and reads its contents
@@ -232,20 +235,21 @@ Can you load the data from the data.csv file into a tibble called ```demo2```?
 # Can you load the data from the data.csv file into a tibble called ```demo2```?
 # Write your code below. Hint: the structure of the command will be the same as the chunk above - which went:
 
-demo <- read_csv("data/data.csv")
+demo2 <- read_csv("data/data.csv")
 
-# but the name of the tibble will be different this time
+# but the name of the tibble will be different this time. You can check to see whether your code has worked by uncommenting the line below:
 
+# head(demo2)
 
 ```
 
 ### Data exercise 2
-Can you load the data from the data/data2.xlsx file into the ```demo2``` tibble using read_excel?
+Now we want to load some data from a different file. That file uses a different format - it's an Excel (.xlsx) file, rather than a .csv. Can you load the data from the data/data2.xlsx file into the ```demo2``` tibble. You'll need to use `read_excel` rather than `read_csv`?
 
 ```{r data ex2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
 # Can you load the data from the data/data2.xlsx file into the ```demo2``` tibble using read_excel?
 
-# Write your code below. This will overwrite the contents of demo2 with new data. Again, the previous line of R code is a useful guide: but you'll need to change the command, and the name of the data file the command loads.
+# Write your code below. This will overwrite the contents of demo2 with new data. Again, the previous line of R code is provided as a guide: but you'll need to change the command itself, and the name of the data file the command loads.
 
 demo2 <- read_csv("data/data.csv")
 
@@ -353,7 +357,7 @@ demo_dates <- demo %>% mutate(date = dmy(date))
 
 There's a bit to unpack here. Personally, it makes most sense to read this code backwards. From right to left, then:
 
-+ ```dmy(date)```  is a lubridate command which takes whatever is inside the bracket, and tries to convert it into a proper date. It works by assuming that it'll be a day value (d), followed by a month (m), followed by a year (y). There are also related commands like ```ymd()``` to be used when the dates given in our data are formatted differently.
++ ```dmy(date)``` is a lubridate command which takes whatever is inside the bracket, and tries to convert it into a proper date. It works by assuming that it'll be a day value (d), followed by a month (m), followed by a year (y). There are also related commands like ```ymd()``` to be used when the dates given in our data are formatted differently.
 + `mutate(date =...)` takes the result of the `dmy()` above, and uses it in a command named `mutate`. `mutate` makes new columns in tibbles from existing columns. Here, we tell `mutate` to make a new column called `date` by taking the result of the `dmy(date)` above.
 + ` %>%` [the pipe!](https://r4ds.had.co.nz/pipes.html) This is a way of chaining commands together. In this case, writing `demo %>% mutate...` tells R to take the demo tibble, and do the mutate command to it. The advantage here is that we can string several `%>%`s together, to do many operations in sequence on some set of data.
 + finally, we assign the modified demo tibble to a new tibble `demo_dates` using `<-`.
@@ -399,7 +403,7 @@ demo3 %>% filter(is.na(date))
 
 ##### Exercise 2
 
-Using the code above as a starting point, can you confirm the missing data in count1 and count2?
+Using the code above as a starting point, can you confirm that there is missing data in count1 and count2?
 
 ```{r clean ex 2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
 # Add your code below
@@ -422,7 +426,6 @@ Let's change that `cnont3` into something more seemly - like `count3`. I'll give
 
 ```{r clean ex 3, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
 # Add your code below - I've included head(demo3) afterwards so that you can check the renaming has worked properly.
-
 
 head(demo3)
 ```
@@ -477,7 +480,7 @@ The RMarkdown for those two example sections above is *exactly* the same. All th
 
 ### How does this work?
 
-We run little snippets of R, right in the RMarkdown text. The function of those snippets is to query the data that we've set up in the previous two sections of this demonstration, and then pass the results into RMarkdown, so that the results appear as inline text. We can apply formatting to those results as if they were any other text written in RMarkdown.  
+We run little snippets of R, right in the RMarkdown text. The function of those snippets is to query the data that we've set up in the previous two sections of this demonstration, and then pass the results into RMarkdown, so that the results appear as inline text. We can apply formatting to those results as if they were any other text written in RMarkdown. 
 
 If you look at the code pane, you'll notice a slightly different mini-chunk structure that we use for these R snippets. The snippets themselves are wrapped in single backticks, with a general format of `` `r '\x60r command()\x60'` ``. This tells R/Rmarkdown to run the command, but pass the output to RMarkdown which displays the output as if it were written inline.
 
@@ -745,8 +748,66 @@ Here, the code works as follows:
 - `ggplot(demo)` - `ggplot2()` starts a new plot area, and we then specify that we want to `demo_total` as the data source for that plot 
 - `geom_point()` tells ggplot2 that we want an XY scatter drawn on our plot area
 - the crux of the code is the `(aes(x=count1, y=count2))`. Here, `aes` means *set the aesthetics of this graph as follows...*. So it's here that we tell R which columns from the `demo_total` tibble we should use to plot the points specified in `geom_point`
-- finally, the `+` then chains together commands to produce a single plot. Unlike the `%>%`, `+` doesn't pass the result of one command to the next. Instead, `+` is just a way of connecting lots of different operations that we want to perform to a single plot area. This is part of the design philosophy of ggplot2, which treats the elements of a graph as [layers that can be built up](https://rpubs.com/hadley/ggplot2-layers) to produce complex and useful visualisations.
+- finally, the `+` then chains together commands to produce a single plot. Unlike the `%>%`, `+` doesn't pass the result of one command to the next. Instead, `+` is just a way of connecting lots of different operations that we want to perform to a single plot area. This is part of the design philosophy of ggplot2, which treats the elements of a graph as [layers that can be built up](https://rpubs.com/hadley/ggplot2-layers) to produce complex and useful visualisations. We'll explore lots of other ggplot2 options later, but first we'll look at how to place your graph into your report.
 
+#### Using our graph in Rmarkdown
+
+Chunk options allow us to set size and position. For example, adding `fig.height=1, fig.width=3` to the chunk options sets the height of the graph to 1 inch, and the width to 3 inches:
+
+```{r graph chunk 1, echo=F, fig.height=1, fig.width=3, message=FALSE, warning=FALSE}
+
+ggplot(demo_total) +
+  geom_point(aes(x=count1, y=count2))
+
+```
+
+Or we can set the alignment of the graph using `fig.align='center'`:
+```{r graph chunk 21, echo=F, fig.align='center', fig.height=1, fig.width=3, message=FALSE, warning=FALSE}
+
+ggplot(demo_total) +
+  geom_point(aes(x=count1, y=count2))
+
+```
+
+or `fig.align='right'`:
+
+```{r graph chunk 2b, echo=F, fig.align='right', fig.height=1, fig.width=3, message=FALSE, warning=FALSE}
+
+ggplot(demo_total) +
+  geom_point(aes(x=count1, y=count2))
+
+```
+More information about how to set these options in the knitr/R chunks tab of the **More details** section at the end of this resource.
+
+#### Themes
+We can also [change the theme](https://ggplot2.tidyverse.org/reference/ggtheme.html) that ggplot2 uses to ensure that the appearance of our graph as a whole suits our report. Some examples:
+
+```{r graph chunk 3, echo=T, fig.align='left', fig.height=2, fig.width=2, message=FALSE, warning=FALSE}
+
+ggplot(demo_total) +
+  geom_point(aes(x=count1, y=count2))+
+  theme_void()
+
+```
+
+```{r graph chunk 4, echo=T, fig.align='left', fig.height=2, fig.width=2, message=FALSE, warning=FALSE}
+
+ggplot(demo_total) +
+  geom_point(aes(x=count1, y=count2))+
+  theme_linedraw()
+
+```
+
+```{r graph chunk 5, echo=T, fig.align='left', fig.height=2, fig.width=2, message=FALSE, warning=FALSE}
+
+ggplot(demo_total) +
+  geom_point(aes(x=count1, y=count2))+
+  theme_dark()
+
+```
+
+
+#### Back to ggplot2
 There are lots and lots of other `geom_xxx` options. A couple of commonly-used examples are geom_col and geom_line. Note that neither of these are really going to show anything useful plotting count1 against count2, so we'll use some other parts of our `demo` tibble so that we see the counts plotted against the date:
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
@@ -865,9 +926,66 @@ demo_total %>%
 ```
 
 In `geom_smooth()` we specify a new data source - the version of `demo_total` before the earlier processing in this code. You'll note that we dropped the total column in the second line of this code, so we can't use the data that we piped into the main `ggplot()` command.
+
+#### Palettes
+As well as the whole-graph changes to appearance that we explored earlier when we set graph themes, we can also just tweak the colours appearing in our graph using palettes:
+
+```{r graph ad 7, echo=T, message=F, warning=F}
+
+demo_total %>%
+  dplyr::select(!total) %>%
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names)) +
+  geom_smooth(data=demo_total, aes(x=date, y=total)) +
+  labs(title = "Stacked bar of counts by date with total trend", fill="Count type") +
+  xlab("Date") +
+  ylab("Count") + 
+  scale_fill_manual(values=c("#999999", "#E69F00", "#2299FF"))
+```
+
+Here, we've manually specified three colours using the `scale_fill_manual()` command, and specifying the colours that we want to use. This is okay if you're using custom colours in a small number of graphs, but if you're trying to make lots of graphs a much better option is to produce a variable that contains a suitable list of colour values that you can then call in each of your graphs. To demonstrate using NES's corporate colour-scheme:
+
+```{r graph ad 8, echo=T, message=F, warning=F}
+
+# create a variable NEScol containing hex values for NES colours
+NEScol <- c("#004380", "#0096DC", "#6C2383", "#007188", "#00AFAA", "#80BA27", "#3FA535", "#FFDD00", "#F39200", "#B10933", "#BD006A")
+
+demo_total %>%
+  dplyr::select(!total) %>%
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names)) +
+  geom_smooth(data=demo_total, aes(x=date, y=total)) +
+  labs(title = "Stacked bar of counts by date with total trend", fill="Count type") +
+  xlab("Date") +
+  ylab("Count") + 
+  scale_fill_manual(values=NEScol)
+
+demo_total %>% 
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names)) +
+  facet_wrap(~ names) +
+  scale_fill_manual(values=NEScol)
+```
   
 `ggplot2` is an enormously powerful package. But that power means that it's complicated, and can be hard to learn for new users. The density of the documentation also doesn't help the new user as much as it might, as the [creators of the package have identified](https://github.com/tidyverse/ggplot2/issues/4770). I'd suggest taking the different graph recipes from the two ggplot2 subsections as a basis for your own experimentation. If you think that producing more complex graphs will be an important part of your own report writing work, I would definitely recommend looking at the [ggplot2 book](https://ggplot2-book.org/index.html) to get a better sense of what might be done with the package.
-  
+
+#### Coord-flip
+A last word about a useful command: `coord_flip()`, which swaps your axes. Very helpful if you realise that you've got the dependence relationships between your variables backwards. It's just added in as a layer to your ggplot code, as follows:
+
+```{r graph ad 9, echo=T, message=F, warning=F}
+
+demo_total %>% 
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  filter(date <= (min(date)+5)) %>%
+  ggplot() +
+  geom_col(aes(x=names, y=count, fill=names)) +
+  facet_wrap(~ date) +
+  coord_flip()
+```
+
 ### NHSplot the dots
 
 ```{r nhs, echo=T, eval=T, message=F, warning=F}
@@ -1031,7 +1149,7 @@ You might notice another tweak that I've made to the pdf output options for this
 ```
 
 
-### More on R code chunks
+### knitr / R chunks
 
 Code chunks in Rmarkdown start and end with a triple backtick:
 
@@ -1049,11 +1167,16 @@ There are then a few options that you can set for the code chunk. Here:
 
 Setting all the chunk options can become very involved. The [Rmarkdown Cookbook](https://bookdown.org/yihui/rmarkdown/r-code.html) is a great helper and reference for that kind of work. In general, it's best to keep them as simple as possible. You might just begin with default chunks. A useful shortcut to insert a new R chunk is `ctrl + alt + i`, or you can use the button at the top right of the code pane `r knitr::include_graphics("img/chunk.png")`, and only add the options as you need them.
 
+There are also some useful hints in the [knitr documentation](https://yihui.org/knitr/options/).
+
 That said, chunk labels are very helpful at any stage, because they give you navigational clues for getting around in large documents.
 
 ### Reading and resources
 
+#### Docs
 + [Rstudio cheat sheets](https://www.rstudio.com/resources/cheatsheets/) are a brilliant quick-reference for many jobs in R. I particularly like and use the sheets for [`ggplot2`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization.pdf), [`dplyr`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf), and [`lubridate`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/lubridate.pdf).
+
+#### Books
 + [*R for data science* (r4ds)](r4ds.had.co.nz) is a brilliant wider introduction to using R for data analysis, particularly when used with...
 + ... the companion-piece [*Advanced R*](adv-r.had.co.nz)
 + [*ggplot2: elegant graphics for data analysis*](https://ggplot2-book.org/index.html) is extremely helpful to go beyond simple recipes for drawing graphs in ggplot2
@@ -1061,8 +1184,11 @@ That said, chunk labels are very helpful at any stage, because they give you nav
 + [*Think Like A Programmer*](https://nostarch.com/thinklikeaprogrammer) is not R-specific, but instead teaches a range of helpful techniques for translating your work into effective code. You might find this helpful if you don't have much coding experience, particularly if your analysis requires advanced R skills (no open-access version available)
 + [The Epidemiologist's R handbook](https://epirhandbook.com/en/) is a new and comprehensive set of resources for epidemiological work in R. Many of their examples can be adapted to other areas of health and care
 
+#### Packages
++ [phsmethods](https://github.com/Public-Health-Scotland/phsmethods/blob/master/README.md) is Public Health Scotland's R package that has helpful functions for analysts in Scotland. For instance, tools for working with CHI, or area matching from Scottish postcodes
+
 ### Alternatives to R/Rmarkdown
 
 + Microsoft's PowerBI. This is more focused on building real-time dashboards, and it's intended to be a low-code way of working that should be a fairly natural step for staff with lots of Excel experience. **We have supporting resources under development for PowerBI, which I'll link here when completed**.
 + R + Shiny is the best R-based way of building real-time dashboards (and will hopefully be something we will support from the KIND Learning Network in the future)
-+ If you're getting on well with R/Rmarkdown, but would rather build a dashboard than a report, [Flexdashboard](https://pkgs.rstudio.com/flexdashboard/) looks great. To get started, there's an [example](https://www.themillerlab.io/post/flexdashboards/mcc_fake_cohort_dashboard_for_post.html#outcomes-by-stage) and a  [walkthrough by the Miller Lab](https://www.themillerlab.io/post/flexdashboards/)
++ If you're getting on well with R/Rmarkdown, but would rather build a dashboard than a report, [Flexdashboard](https://pkgs.rstudio.com/flexdashboard/) looks great. To get started, there's an [example](https://www.themillerlab.io/post/flexdashboards/mcc_fake_cohort_dashboard_for_post.html#outcomes-by-stage) and a [walkthrough by the Miller Lab](https://www.themillerlab.io/post/flexdashboards/)
