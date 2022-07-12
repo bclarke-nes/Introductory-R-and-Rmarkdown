@@ -3,16 +3,16 @@ title: "![](https://i.imgur.com/5EhpPqK.png) Producing dynamic reports"
 date: "`r Sys.Date()`"
 subtitle: "Introduction"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
-    pandoc_args: ["--extract-media", "."]
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
   word_document:
     toc: yes
     toc_depth: '2'
@@ -100,7 +100,7 @@ It is extremely helpful, although not essential, to have a multi-monitor setup. 
 
 ### Joining instructions
 
-You'll need to do a little bit of preparation before the training session, which should take about 15 minutes to complete. Please do this before the start of the first session so that we can make a prompt start. If you're new to [RStudio Cloud](https://rstudio.cloud), please follow the step-by-step instructions below. If you've worked with RStudio Cloud before, you can just signing-in to your account at [RStudio Cloud](https://rstudio.cloud/), create a new project from the [GitHub Repository at https://github.com/bclarke-nes/Dynamic-report-demo](https://unito.io/blog/guide-to-github-for-project-managers/), and then open the `demo.Rmd` file from the file pane.
+You'll need to do a little bit of preparation before the training session, which should take about 15 minutes to complete. Please do this before the start of the first session so that we can make a prompt start. If you're new to [RStudio Cloud](https://rstudio.cloud), please follow the step-by-step instructions below. If you've worked with RStudio Cloud before, you can just sign-in to your account at [RStudio Cloud](https://rstudio.cloud/), create a new project from the [GitHub Repository at https://github.com/bclarke-nes/Dynamic-report-demo](https://unito.io/blog/guide-to-github-for-project-managers/), and then open the `demo.Rmd` file from the file pane.
 
 #### Step-by-step instructions
 

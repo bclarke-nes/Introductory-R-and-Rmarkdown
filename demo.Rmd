@@ -4,15 +4,15 @@ date: "`r Sys.Date()`"
 subtitle: "Demonstration"
 always_allow_html: true
 output:
-  word_document:
-    toc: yes
-    toc_depth: '2'
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
+  word_document:
+    toc: yes
+    toc_depth: '2'
   pdf_document:
     toc: yes
     toc_depth: '2'
@@ -126,7 +126,7 @@ We load several packages (link to eventual NHS-R statement on tools and packages
 
 This kind of very basic formatting is known as Markdown. While it's simple, it's usually sufficient to allow the production of neat and clear documents that are easy to ready. Rmarkdown is just Markdown with a few extras to allow you to embed R code directly into the text that you're writing. That R code allows you to do more-or-less any data analysis that you might like and include the results in your markdown-formatted document. 
 
-There's a quick reference, and a couple of exercises, at the foot of this section. But to give you an idea of what Rmarkdown can do, we can have a look at the introductory materials for this demonstration. While the introductory materials are completely static - apart from the date at the top nothing changes without us manually updating it - it's still a useful demonstration of the kinds of formatting that we can do in Rmarkdown. Let's have a quick look at the Rmarkdown code for this training report now to see what it's like:
+There's a quick reference, and a couple of exercises, at the foot of this section. But to give you an idea of what Rmarkdown can do, we can have a look at the static materials for this demonstration. Let's have a quick look at the Rmarkdown code for this training report now to see what it's like:
 
 ### Rmarkdown in this report
 
@@ -235,9 +235,9 @@ Can you load the data from the data.csv file into a tibble called ```demo2```?
 # Can you load the data from the data.csv file into a tibble called ```demo2```?
 # Write your code below. Hint: the structure of the command will be the same as the chunk above - which went:
 
-demo2 <- read_csv("data/data.csv")
+demo <- read_csv("data/data.csv")
 
-# but the name of the tibble will be different this time. You can check to see whether your code has worked by uncommenting the line below:
+# but the name of the tibble will be different this time. You can check to see whether your code has worked by un-commenting the line below:
 
 # head(demo2)
 
