@@ -353,6 +353,8 @@ Time for another R chunk:
 
 ```{r clean up data, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
 demo_dates <- demo %>% mutate(date = dmy(date))
+
+
 ```
 
 There's a bit to unpack here. Personally, it makes most sense to read this code backwards. From right to left, then:
@@ -369,7 +371,7 @@ That simple exercise introduces several new concepts, so we'll pause here to wor
 Let's take our `demo2` tibble, and inspect its `head()` to see what type of data is stored in it to find out whether or not we'll need to modify the date column in the same way:
 
 ```{r clean ex 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
-
+head(demo_dates)
 ```
 
 ### Other major clean-ups
@@ -572,7 +574,7 @@ knitr::kable(head(demo_dates))
 It's also possible to tweak lots of aspects of tables with `knitr::kable`. There's an example below showing some of these modifications that might be useful to you - renaming the columns, adding a caption, and modifying the alignment of the columns. You might also usefully look at the manual page (`?kable`) to get a sense of the possible scope for tweaking tables in this way:
 
 ```{r data table 2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
-knitr::kable(head(demo_dates), col.names = c("Date", "Count 1", "Count 2", "Count 3"), caption = "A superbly magnificent table of data", align = c("r", "c", "c", "l"))
+knitr::kable(head(demo_dates), col.names = c("Date", "Count 1", "Count 2", "Count 3", "Total"), caption = "A superbly magnificent table of data", align = c("r", "c", "c", "c", "l"))
 
 ```
 
