@@ -743,17 +743,6 @@ Let's start with a minimal example using our `demo_total` tibble, plotting an XY
 ggplot(demo_total) +
   geom_point(aes(x=count1, y=count2))
 
-demo_total %>%
-  ggplot() +
-  geom_line(aes(x=date, y=count1)) +
-  geom_line(aes(x=date, y=count3)) +
-  ggtitle("A super graph") +
-  labs(title="Two senseless lines") +
-  ylab("Count 1") +
-  xlab("Date")
-
-
-
 ```
 
 Here, the code works as follows:
