@@ -574,7 +574,7 @@ knitr::kable(head(demo_dates))
 It's also possible to tweak lots of aspects of tables with `knitr::kable`. There's an example below showing some of these modifications that might be useful to you - renaming the columns, adding a caption, and modifying the alignment of the columns. You might also usefully look at the manual page (`?kable`) to get a sense of the possible scope for tweaking tables in this way:
 
 ```{r data table 2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
-knitr::kable(head(demo_dates), col.names = c("Date", "Count 1", "Count 2", "Count 3", "Total"), caption = "A superbly magnificent table of data", align = c("r", "c", "c", "c", "l"))
+knitr::kable(head(demo_dates), col.names = c("Date", "Count 1", "Count 2", "Count 3"), caption = "A superbly magnificent table of data", align = c("r", "c", "c", "l"))
 
 ```
 
@@ -743,6 +743,17 @@ Let's start with a minimal example using our `demo_total` tibble, plotting an XY
 ggplot(demo_total) +
   geom_point(aes(x=count1, y=count2))
 
+demo_total %>%
+  ggplot() +
+  geom_line(aes(x=date, y=count1)) +
+  geom_line(aes(x=date, y=count3)) +
+  ggtitle("A super graph") +
+  labs(title="Two senseless lines") +
+  ylab("Count 1") +
+  xlab("Date")
+
+
+
 ```
 
 Here, the code works as follows:
@@ -784,23 +795,15 @@ More information about how to set these options in the knitr/R chunks tab of the
 #### Themes
 We can also [change the theme](https://ggplot2.tidyverse.org/reference/ggtheme.html) that ggplot2 uses to ensure that the appearance of our graph as a whole suits our report. Some examples:
 
-```{r graph chunk 3, echo=T, fig.align='left', fig.height=2, fig.width=2, message=FALSE, warning=FALSE}
+```{r graph chunk 3, echo=T, fig.align='left', fig.height=1, fig.width=2, message=FALSE, warning=FALSE}
 
 ggplot(demo_total) +
   geom_point(aes(x=count1, y=count2))+
   theme_void()
 
-```
-
-```{r graph chunk 4, echo=T, fig.align='left', fig.height=2, fig.width=2, message=FALSE, warning=FALSE}
-
 ggplot(demo_total) +
   geom_point(aes(x=count1, y=count2))+
   theme_linedraw()
-
-```
-
-```{r graph chunk 5, echo=T, fig.align='left', fig.height=2, fig.width=2, message=FALSE, warning=FALSE}
 
 ggplot(demo_total) +
   geom_point(aes(x=count1, y=count2))+
@@ -863,17 +866,22 @@ The secret to most useful visualisations is to get the data into the right forma
 
 ```{r graph ad 1, echo=T, message=F, warning=F}
 
-demo_total %>%
+demo_total2 <- demo_total %>%
   dplyr::select(!total) %>%
-  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  pivot_longer(!date, names_to = "names", values_to = "count")
+
+head(demo_total2)
+
+demo_total2 %>%
   ggplot() +
   geom_col(aes(x=date, y=count, fill=names)) +
   labs(title = "Stacked bar of counts by date", fill="Count type") +
   xlab("Date") +
   ylab("Count")
+
 ```
 
-Most of this code should be very familiar to you by now. We have a couple of lines of `dplyr` to organise our data, then `ggplot` to plot it. The once exception is probably `pivot_longer()`. This is really useful, and could do with some explanation.
+Most of this code should be very familiar to you by now. We have a couple of lines of `dplyr` to organise our data, `head()` to have a quick look at it, and finally `ggplot` to plot it. The one new command is `pivot_longer()`. This is really useful when drawing more complex graphs, and could do with some explanation.
 
 #### pivot_longer()
 let's look again at the structure of our `demo_total`.

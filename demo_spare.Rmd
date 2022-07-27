@@ -27,7 +27,7 @@ install.packages(setdiff("pacman", rownames(installed.packages())))
 library("pacman")
 p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl,stringr)
 
-# avoiding tidyverse as loading in RStudio Cloud potentially runs out of memory 
+# avoiding tidyverse due to memory issues in RStudio Cloud environment 
 ```
 
 This is our dynamic report training resource. The main objective of this training resource is to demonstrate how to build a report like this one. In this session, we will work through the report step-by-step. It's interactive - so do please ask questions, or for extra clarification if anything isn't as clear as you'd like it to be. It's also very useful for everyone in the group if you can reflect on how this demonstration report might be adapted to suit your needs.
