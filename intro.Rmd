@@ -22,7 +22,7 @@ output:
 
 Dynamic reports are data-driven documents that can be periodically updated as their underlying data changes.
 
-This resource is a brief introduction to writing dynamic reports using [R](https://www.r-project.org/), [Rmarkdown](http://rmarkdown.rstudio.com), and [RStudio Cloud](https://rstudio.cloud). It runs as a series of three interactive sessions, and is designed for those without previous programming experience working in health, care, and housing. It gives a general introduction to the tools, and then some useful examples of frequently-met data-driven tasks. It is intended as a starting point for automating your report writing processes, with the aim of replacing, enhancing, or simplifying, manual report writing. The demonstration also covers ways of producing the report in a variety of formats including .pdf, .docx (Word format), and .html (webpage).
+This training provides a brief introduction to writing dynamic reports using [R](https://www.r-project.org/), [Rmarkdown](http://rmarkdown.rstudio.com), and [RStudio Cloud](https://rstudio.cloud). It runs as a series of three interactive sessions, and is designed for those without previous programming experience working in health, care, and housing. It gives a general introduction to the tools, and then some useful examples of frequently-encountered data-driven tasks. It is intended as a starting point for automating your report writing processes, with the aim of replacing, enhancing, or simplifying, manual report writing. The training also covers ways of producing reports in a variety of formats including .pdf, .docx (Word format), and .html (webpage).
 
 Some examples of routine reports that might be targets for re-working in a dynamic format:
 
@@ -30,19 +30,17 @@ Some examples of routine reports that might be targets for re-working in a dynam
 - annual reports (public health annual reports)
 - engagement and impact data (training, outreach)
 
-### Who is this demo for?
-This learning resource is intended for someone who:
+### Who is this training for?
+This training is intended for someone who:
 
 + is currently spending lots of time manually updating reports in health, care, or housing
 + **and** would like to reduce the time spent on this routine work over the medium-term (months)
 + **and** has some time to spend reworking this report-writing process 
 + **and** are open to gaining some basic programming experience
 
-Note too that it is a learning resource. You'll need some time to read this introduction and get set for the training session, as well as for the training sessions themselves. 
+### What this training is not
 
-### What this demo is not
-
-+ it's not a full introduction to working in [R](https://www.r-project.org/)/[Rmarkdown](http://rmarkdown.rstudio.com). [R](https://www.r-project.org/) is deep (like most analytic platforms), and this demonstration covers only a little bit of the available functionality
++ it's not a full introduction to working in [R](https://www.r-project.org/)/[Rmarkdown](http://rmarkdown.rstudio.com). [R](https://www.r-project.org/) is deep (like most analytic platforms), and this training covers only a little bit of the available functionality
 + it's not an introduction to everything that you might like to do with a data-driven report either. Instead, it covers some simple examples of common tasks as a way of familiarising you with a different workflow
 + it's definitely not a production-ready replacement for your existing reports. It's a learning resource, rather than a pre-packed replacement
 + it won't teach you how to make real-time dashboards. If you need your report to update more than about once a day, you should consider building a dashboard instead ([Power BI](https://powerbi.microsoft.com/en-gb/), [R](https://www.r-project.org/)/[Shiny](https://shiny.rstudio.com/), or [Dash](https://plotly.com/dash/))
@@ -89,7 +87,7 @@ Just in case you'd like to look into how these tools work in advance of the sess
 
 [RStudio Cloud](https://rstudio.cloud) is easy to set-up and free for small-scale work like this demo. This makes it by far the easiest way to get going from scratch if you've never worked with [R](https://www.r-project.org/) before. Note that because it's a web service, it requires you to upload your data to their servers, which might makes it unsuitable for production work in health and care owing to information governance concerns. That said, it's easy to transfer projects from [RStudio Cloud](https://rstudio.cloud) to an installed version of [R](https://www.r-project.org/), so don't worry that what you learn here will be tied to the cloud forever. 
 
-One important tip: this is a learning resource, and you'll need time to think about it, play around with it, and reflect on how it might inform your work. Don't try to use this demo to change your way of writing reports under pressure. There's quite a lot to think about here, and you might need to spend a good bit of time working out how to adapt this demonstration to fit your report. Think of this as the start of a journey, rather than a destination.
+One important tip: this is a learning resource, and you'll need time to think about it, play around with it, and reflect on how it might inform your work. Don't try to use this training to change your way of writing reports under pressure. There's quite a lot to think about here, and you might need to spend a good bit of time working out how to adapt this demonstration to fit your report. Think of this as the start of a journey, rather than a destination.
 
 
 ### What you'll need
@@ -100,7 +98,7 @@ It is extremely helpful, although not essential, to have a multi-monitor setup. 
 
 ### Joining instructions
 
-You'll need to do a little bit of preparation before the training session, which should take about 15 minutes to complete. Please do this before the start of the first session so that we can make a prompt start. If you're new to [RStudio Cloud](https://rstudio.cloud), please follow the step-by-step instructions below. If you've worked with RStudio Cloud before, you can just sign-in to your account at [RStudio Cloud](https://rstudio.cloud/), create a new project from the [GitHub Repository at https://github.com/bclarke-nes/Dynamic-report-demo](https://unito.io/blog/guide-to-github-for-project-managers/), and then open the `demo.Rmd` file from the file pane.
+You'll need to do a little bit of preparation before the first training session, which should take about 15 minutes to complete. Please make sure you have completed this before the start of the first session so that we can make a prompt start. If you're new to [RStudio Cloud](https://rstudio.cloud), please follow the step-by-step instructions below. If you've worked with RStudio Cloud before, you can just sign-in to your account at [RStudio Cloud](https://rstudio.cloud/), create a new project from the [GitHub Repository at https://github.com/bclarke-nes/Dynamic-report-demo](https://unito.io/blog/guide-to-github-for-project-managers/), and then open the `demo.Rmd` file from the file pane.
 
 #### Step-by-step instructions
 

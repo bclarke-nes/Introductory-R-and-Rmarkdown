@@ -67,60 +67,7 @@ ggplot(demo) +
 
 5. Finally, we'll end with some tips on possible next steps for you
 
-
-## Getting set-up
-
-We definitely don't want our end users to see our RMarkdown code. So the `.Rmd` file that we are working on needs to be converted into a suitable output format. We call that conversion *knitting* (after the R package `knitr` that manages the conversion). To knit your file, you can either:
-
-- select the Knit option from the menu at the top of the code pane. You can select any of the output formats, although I'd suggest sticking with .html (webpage) while working through the demo.
-
-```{r echo=F, out.width="300px", fig.align='center'}
-knitr::include_graphics("img/knitr_options.png")
-```
-
-**or**
-
-- press `ctrl+shift+k` while your cursor is in the code pane to knit to the last used format
-
-(you might prefer to select the `Preview in viewer pane` option from the options menu at the top of the code pane to keep your report preview in the main RStudio Cloud window:
-
-```{r echo=F, out.width="300px", fig.align='center'}
-knitr::include_graphics("img/pivp.png")
-```
-
-Knitting is controlled by the preamble at the head of .Rmd. For now, I'll suggest that you skip trying to figure it all out in favour of spending our time on some of the more interesting areas of this demonstration. I'll give more details about setting up your Rmarkdown document at the end of this document in the **More details** section.
-
-The first time that you knit your document in RStudio Cloud, you may get a warning about required packages. Just agree to this, as you'll need the packages to knit your document properly.
-
-```{r echo=F, out.width="300px", fig.align='center'}
-knitr::include_graphics("img/packages.png")
-```
-
-### Getting R ready
-Once you've got the header in place, we need to do a tiny bit of setting R up properly. R uses packages, which are plug-ins that offer useful functions. We need to add these packages to R to help us do some of the tasks in this demonstration. We've actually added them already in the first few lines of this report. Let's have a look at this code, which here includes some explanatory comments:
-
-```{r setup, echo=TRUE, eval=F, warning = FALSE, message=FALSE}
-# if pacman is missing, installs pacman, which helps us manage packages
-install.packages(setdiff("pacman", rownames(installed.packages())))
-
-# loads pacman
-library("pacman")
-
-#loads required packages
-p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl, stringr)
-
-# Comments are useful - add comments as you work! R comments start with a #, comments in RMarkdown start <!-- and end -->
-
-```
-
-We load several packages (link to eventual NHS-R statement on tools and packages) here to help us do some useful work with our data. These are all *very* useful for health and care projects, so we'll briefly introduce them here:
-
-+ [tidyverse](https://www.tidyverse.org/) - this is a large ecosystem of tools designed for data science. Specifically in this demonstration, we use tidyr, readr, DiagrammeR, ggplot2, stringr, readxl, and dplyr.
-+ [lubridate](https://lubridate.tidyverse.org/) - helps with handling dates and times
-+ [NHSRplotthedots](https://github.com/nhs-r-community/NHSRplotthedots) - NHS-R community tool for making XmR charts
-
-
-## Using Rmarkdown
+## Rmarkdown
 
 [Rmarkdown](http://rmarkdown.rstudio.com) is a simple markup language. You might have used it before without really knowing what it was called. If you've ever posted on a Wordpress site or web forum with basic text formatting options available, the chances are that you've already done at least a tiny bit of markdown. Just to give you an example, surrounding a word with asterisks - like ```*italics*``` formats it in *italics*. Pairs of asterisks either side of the word formats that word - like ```**bold**``` - formats the text as **bold**. And so on. 
 
@@ -130,7 +77,7 @@ There's a quick reference, and a couple of exercises, at the foot of this sectio
 
 ### Rmarkdown in this report
 
-1. Try to find the Rmarkdown code corresponding to this text in the source code pane. We're currently at about line 130 in the source code. Once you've found this section, have a look around to spot:
+1. Try to find the Rmarkdown code corresponding to this text in the source code pane. We're currently at about line 80 in the source code. Once you've found this section, have a look around to spot:
 
 + a link
 + some bold text
@@ -140,6 +87,8 @@ There's a quick reference, and a couple of exercises, at the foot of this sectio
 2. You'll also see that we were able to output this report in different formats. Now might be a good time to try knitting to one of the other formats available - like `.doc`, or `.pdf`. Note that the formatting is (broadly) the same, no matter what the output format. This can be a fantastic time-saver if you're manually producing both print and web versions of your reports now.
 
 6. When you've finished looking at the Rmarkdown, move on to the exercises below
+
+----
 
 ### RMarkdown quick reference
 
@@ -178,6 +127,8 @@ Heading levels
 
 You can also add images easily in RMarkdown, and you can easily find [guidance online about how to do this](https://www.earthdatascience.org/courses/earth-analytics/document-your-science/add-images-to-rmarkdown-report/). I'd advise you not to use RMarkdown for image handling, because it can cause problems (particularly when you're using images hosted on the web) when you `knit` your project to .pdf and .docx formats. The R command `include_graphics()` is a much better option, and we'll cover its use in the graphs section.
 
+----
+
 ### Exercises
 
 1. Change THIS TEXT to bold, and THIS TEXT to italic
@@ -187,11 +138,146 @@ You can also add images easily in RMarkdown, and you can easily find [guidance o
 
 Do have a look at the Rmarkdown in the code pane, and feel free to play around with it. Once you've had a look at some of the Rmarkdown in practice, we're ready to move on to get some data.
 
+
+## Knitting
+
+We definitely don't want our end users to see our RMarkdown code. So the `.Rmd` file that we are working on needs to be converted into a suitable output format. We call that conversion *knitting* (after the R package `knitr` that manages the conversion). To knit your file, you can either:
+
+- select the Knit option from the menu at the top of the code pane. You can select any of the output formats, although I'd suggest sticking with .html (webpage) while working through the demo.
+
+```{r echo=F, out.width="300px", fig.align='center'}
+knitr::include_graphics("img/knitr_options.png")
+```
+
+**or**
+
+- press `ctrl+shift+k` while your cursor is in the code pane to knit to the last used format
+
+The first time that you knit your document in RStudio Cloud, you may get a warning about required packages. Just agree to this, as you'll need the packages to knit your document properly.
+
+```{r echo=F, out.width="300px", fig.align='center'}
+knitr::include_graphics("img/packages.png")
+```
+
+(you might prefer to select the `Preview in viewer pane` option from the options menu at the top of the code pane to keep your report preview in the main RStudio Cloud window:
+
+```{r echo=F, out.width="300px", fig.align='center'}
+knitr::include_graphics("img/pivp.png")
+```
+
+Knitting is controlled by the preamble at the head of our .Rmd file. Everything between the pair of three dashes: `---` is concerned with setting up this Rmarkdown document:
+
+```{verbatim}
+---
+title: "![](img/header.png) Producing dynamic reports"
+date: "`r Sys.Date()`"
+subtitle: "Demonstration"
+always_allow_html: true
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+    pandoc_args: ["--extract-media", "."]
+  html_document:
+    toc: no
+    toc_depth: 2
+    number_sections: no
+    toc_float:
+      collapsed: no
+  word_document:
+    toc: yes
+    toc_depth: '2'
+---
+```
+
+Most of this header block is made up of options for the different output formats (html, word, and pdf). In RStudio, you can select which output format you'd like your report to be rendered as:
+
+```{r}
+knitr::include_graphics("img/knitr_options.png")
+```
+
+Try these out now - this demo report should knit to each of the three formats without any problems. I'd recommend sticking with html while you're working on a report, though, just because it tends to render most quickly, and plays nicely with other aspects of the workflow while you're writing.
+
+This header block is written in YAML. You can find more information about [YAML editing in chapter 2 of the excellent R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/rmarkdown-anatomy.html). Editing YAML can be a bit fiddly. For instance, indentation and white-space matters in YAML. Each of the three output formats (html_document, pdf_document, and word_document) are indented from the *output:* line, and each of the output format options are indented too. A common cause of documents not knitting (see below) are small errors in the indenting in the header.
+
+One option is to ignore the YAML altogether, and use the default options that Rstudio provides. If you're trying to create a new Rmarkdown document, Rstudio gives you an simple header to get started. You can create a new Rmarkdown document in Rstudio by navigating to `File >> New file >> R Markdown...`.
+
+Alternatively, and perfectly honourably, you can copy the header from this document, and paste it at the top of your document, and make minor tweaks to suit. For example, I've added a link to the KIND Learning Network banner image as part of the title. If you're thinking about adapting this report to suit your purposes, you can easily change that by editing the URL in the following line:
+
+```{verbatim}
+title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
+```
+
+You might notice another tweak that I've made to the pdf output options for this document, which is to add the line:
+```{verbatim}
+    pandoc_args: ["--extract-media", "."]
+```
+
+This simplifies some of the image handling in this document to allow pandoc (that writes the .pdf version of the report) to download the linked images so that they are properly incorporated in the text.
+
+### knitr / R chunks
+
+One last important point about Rmarkdown: we need to tell Rstudio where our Rmarkdown ends, and our R code begins. We do this using code chunks. Code chunks in Rmarkdown start and end with a triple backtick:
+
+`r knitr::include_graphics("img/backs.png")`
+
+If you look at the code pane, you'll see that most of our R commands are wrapped-up in triple backticks, with a lot of options in {curly brackets}. These backticks are the way that we mark our R code, thus telling RStudio Cloud to interpret it as R, rather than RMarkdown. We call these sections of code ```chunks```. In what's ahead, one of the most common problems come from chunks, and so one of the first things to check if a command doesn't work as expected is that it's properly in place in a chunk.
+
+If you're new to R you might not ever have used the backtick (`` `r '\x60'` ``) key before. You can usually find it at the extreme top left of most keyboards, often below the `Escape` key. Backticks are definitely different from the apostrophe ('), and it's vitally important to not get the two confused when you're working with R.
+
+<!-- Please ignore the horrible messing about with \x60r etc that I've done in the paragraph above to get backticks to display properly in RMarkdown. This isn't something that you're likely to have to do - unless you end up writing your own RMarkdown tutorial at some point in the future...-->
+
+Apart from the backticks and the R code itself, there are also some options in {curly brackets} at the head of each chunk. We won't run through all of these during the session, but it's likely that we'll do a little bit of playing around with them if our code misbehaves. So, for reference, the most useful code chunk options are:
+
++ r: telling Rmarkdown to interpret this code as R. There are other languages that you can use in Rmarkdown, which is one of the strengths of building reports in this way.
++ setup: the chunk label. This can be anything you like, but no duplicates are allowed. Very useful for navigation in more complicated reports
++ echo=TRUE: whether to show this code in the report. If this is set to FALSE, you'll just see the output of the code (more on this below)
++ eval=TRUE: whether or not to run the code. If eval=FALSE, the code won't do anything other than appear in the report (useful if you're explaining how something works - like this report!)
++ warning = FALSE: whether to show warnings in the report if something goes wrong with your code
++ message=FALSE: whether to show information messages about how your code is running
++ we've also explored some options relating to image size and alignment in the graph section
+
+Setting all the chunk options can become very involved. The [Rmarkdown Cookbook](https://bookdown.org/yihui/rmarkdown/r-code.html) is a great helper and reference for that kind of work. In general, it's best to keep them as simple as possible. You might just begin with default chunks. A useful shortcut to insert a new R chunk is `ctrl + alt + i`, or you can use the button at the top right of the code pane `r knitr::include_graphics("img/chunk.png")`, and only add the options as you need them.
+
+There are also some useful hints in the [knitr documentation](https://yihui.org/knitr/options/).
+
+That said, chunk labels are very helpful at any stage, because they give you navigational clues for getting around in large documents.
+
+For now, I'll suggest that you skip trying to figure it all out in favour of spending our time on some of the more interesting areas of this demonstration. 
+
 ## Getting data
 
-Once we've got a sense of how we're going to write our report using RMarkdown, it's time to start thinking about the data that we are going to use to make our report update. Luckily, getting data into R is easy. Instead of opening a data file directly (as we might when using Excel), and then inspecting and analysing it, we instead load all the data in that file into R. 
+### Getting R ready
+Assuming that we've got a basic Rmarkdown framework in place, we're now ready to start using R to load and manipulate our data. To do that, we'll need to do a tiny bit of work to set up R correctly.
 
-There is some demo data available in the file pane, under the `data`) folder. All of the data files here are pretty simple, and follow roughly the same pattern: they give three different values each measured on a single date as shown below. This might be similar to the kind of data that you'd see in your work - like admissions figures, service engagement statistics, or inquiry measures.
+#### Packages
+R uses packages, which are plug-ins that offer useful functions. We need to add these packages to R to help us do some of the tasks in this demonstration. We've actually added them already in the first few lines of this report. Let's have a look at this code, which here includes some explanatory comments:
+
+```{r setup, echo=TRUE, eval=F, warning = FALSE, message=FALSE}
+# if pacman is missing, installs pacman, which helps us manage packages
+install.packages(setdiff("pacman", rownames(installed.packages())))
+
+# loads pacman
+library("pacman")
+
+#loads required packages
+p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl, stringr)
+
+# Comments are useful - add comments as you work! R comments start with a #, comments in RMarkdown start <!-- and end -->
+
+```
+
+This chunk of code loads several packages here to help us do some useful work with our data. These are all *very* useful for health and care projects, so we'll briefly introduce them here:
+
++ [tidyverse](https://www.tidyverse.org/) - this is a large ecosystem of tools designed for data science. Specifically in this demonstration, we use tidyr, readr, DiagrammeR, ggplot2, stringr, readxl, and dplyr.
++ [lubridate](https://lubridate.tidyverse.org/) - helps with handling dates and times
++ [NHSRplotthedots](https://github.com/nhs-r-community/NHSRplotthedots) - NHS-R community tool for making XmR charts
+
+There's a lot that might be said about packages here, but this is probably better skipped over for now. If you're very interested, the [NHS-R statement on tools](https://nhs-r-community.github.io/statements-on-tools/statement-on-using-tools.html) has some useful background information about packages and their role in making R work.
+
+Once we've got a sense of how we're going to write our report using RMarkdown, and we've loaded some packages, it's time to start thinking about the data that we are going to use to make our report update. Luckily, getting data into R is easy. Instead of opening a data file directly (as we might when using Excel), and then inspecting and analysing it, we instead load all the data in that file into R. 
+
+There is some demo data available in the file pane, under the `data` folder. All of the data files here are pretty simple, and follow roughly the same pattern: they give three different values each measured on a single date as shown below. This might be similar to the kind of data that you'd see in your work - like admissions figures, service engagement statistics, or inquiry measures.
 
 | date       | count1 | count2 | count3 |
 | ---------- |:------:|:------:|:------:|
@@ -215,14 +301,6 @@ We should definitely pause here to explain this code. Usually in R, you do thing
 + ```demo``` - the *tibble* that contains our data. We'll explain what a tibble is below, but for now you can just think of it as the way that R stores data
 
 Note too that we use brackets to keep our code in the correct order. Be sure to keep a careful eye on the brackets - they need to match up, so that every **(** has a corresponding **)**, and it's very easy to inadvertently add an extra one. If you do this, R will fall over and print a cross-looking error message in the console pane. If this happens, don't worry too much - they're usually easy to fix, and we'll do some demonstrating in the session to give you some tips about how to go about this.
-
-If you look at the code pane, you'll see that this R command is wrapped-up in backticks, with a lot of options in {curly brackets}. These backticks are the way that we mark our R code, thus telling RStudio Cloud to interpret it as R, rather than RMarkdown. We call these sections of code ```chunks```. In what's ahead, one of the most common problems come from chunks, and so one of the first things to check if a command doesn't work as expected is that it's properly in place in a chunk.
-
-If you're new to R you might not ever have used the backtick (`` `r '\x60'` ``) key before. You can usually find it at the extreme top left of most keyboards, often below the `Escape` key. Backticks are definitely different from the apostrophe ('), and it's vitally important to not get the two confused when you're working with R.
-
-<!-- Please ignore the horrible messing about with \x60r etc that I've done in the paragraph above to get backticks to display properly in RMarkdown. This isn't something that you're likely to have to do - unless you end up writing your own RMarkdown tutorial at some point in the future...-->
-
-There are more details about chunk set-up in the **More details** section.
 
 Because there are lots of different types of data out there, there are lots of ways of loading data into R. ```read_csv``` is the most commonly-used one, because .csv files - **c**omma **s**eparated **v**alues - are widely used to share data. The other main function used to load data is readr's ```read_excel```, which works similarly to ```read_csv```. 
 
@@ -347,7 +425,7 @@ I think that's enough demonstrating the basics of loading data for now, and so w
 
 ## Cleaning data
 
-There's one important problem with our `demo` tibble: our dates aren't proper dates yet. `read_csv` doesn't know that the values in the date column actually are dates. We can tell that by looking `head(demo)`, which shows that the type of data in the `date` column is `<<chr>>`. This stands for `character`, which is the way that R refers to text values. We definitely want those values to be stored properly as dates, and doing that conversion will be the next part of this demonstration.
+There's one important problem with our `demo` tibble: our dates aren't proper dates yet. `read_csv` doesn't know that the values in the date column actually are dates. We can tell that by looking at `head(demo)`, which shows that the type of data in the `date` column is `<<chr>>`. This stands for `character`, which is the way that R refers to text values. We definitely want those values to be stored properly as dates, and doing that conversion will be the next part of this demonstration.
  
 Time for another R chunk:
 
@@ -1097,78 +1175,7 @@ knitr::include_graphics("https://thumbs.gfycat.com/DefiantWateryBlackfish-size_r
 
 ## More details{.tabset}
 
-### Rmarkdown document settings
 
-The easiest option is to start a new Rmarkdown document direct from the RStudio menu `File >> New file >> R Markdown...`. Alternatively, you can copy the header from this document, and paste it at the top of your document. Everything between the pair of three dashes: `---` is concerned with setting up this Rmarkdown document:
-
-```{verbatim}
----
-title: "![](img/header.png) Producing dynamic reports"
-date: "`r Sys.Date()`"
-subtitle: "Demonstration"
-always_allow_html: true
-output:
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
-    pandoc_args: ["--extract-media", "."]
-  html_document:
-    toc: no
-    toc_depth: 2
-    number_sections: no
-    toc_float:
-      collapsed: no
-  word_document:
-    toc: yes
-    toc_depth: '2'
----
-```
-You might notice that there are a couple of differences between the header from this document and the default version that RStudio gives you. I've added a link to the KIND Learning Network banner image as part of the title. If you're thinking about adapting this report to suit your purposes, you can easily change both of those by editing the URL (and the title text) in the following line:
-
-```{verbatim}
-title: "![](https://i.imgur.com/5EhpPqK.png) Dynamic report demo"
-```
-
-More info on [YAML editing in chapter 2 of the excellent R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/rmarkdown-anatomy.html).
-
-Most of this header block is made up of options for the different output formats (html, word, and pdf). In RStudio, you can select which output format you'd like your report to be rendered as:
-
-```{r}
-knitr::include_graphics("img/knitr_options.png")
-```
-
-
-Try these out now - this demo report should knit to each of the three formats without any problems. I'd recommend sticking with html while you're working on a report, though, just because it tends to render most quickly, and plays nicely with other aspects of the workflow while you're writing.
-
-One thing to watch out for when tweaking these options: indentation and white-space matters. Each of the three output formats (html_document, pdf_document, and word_document) are indented from the *output:* line, and each of the output format options are indented too. A common cause of documents not knitting (see below) are small errors in the indenting in the header.
-
-You might notice another tweak that I've made to the pdf output options for this document, which is to add the line:
-```{verbatim}
-    pandoc_args: ["--extract-media", "."]
-```
-
-
-### knitr / R chunks
-
-Code chunks in Rmarkdown start and end with a triple backtick:
-
-`r knitr::include_graphics("img/backs.png")`
-
-There are then a few options that you can set for the code chunk. Here:
-
-+ r: telling Rmarkdown to interpret this code as R. There are other languages that you can use in Rmarkdown, which is one of the strengths of building reports in this way.
-+ setup: the chunk label. This can be anything you like, but no duplicates are allowed. Very useful for navigation in more complicated reports
-+ echo=TRUE: whether to show this code in the report. If this is set to FALSE, you'll just see the output of the code (more on this below)
-+ eval=TRUE: whether or not to run the code. If eval=FALSE, the code won't do anything other than appear in the report (useful if you're explaining how something works - like this report!)
-+ warning = FALSE: whether to show warnings in the report if something goes wrong with your code
-+ message=FALSE: whether to show information messages about how your code is running
-+ we've also explored some options relating to image size and alignment in the graph section
-
-Setting all the chunk options can become very involved. The [Rmarkdown Cookbook](https://bookdown.org/yihui/rmarkdown/r-code.html) is a great helper and reference for that kind of work. In general, it's best to keep them as simple as possible. You might just begin with default chunks. A useful shortcut to insert a new R chunk is `ctrl + alt + i`, or you can use the button at the top right of the code pane `r knitr::include_graphics("img/chunk.png")`, and only add the options as you need them.
-
-There are also some useful hints in the [knitr documentation](https://yihui.org/knitr/options/).
-
-That said, chunk labels are very helpful at any stage, because they give you navigational clues for getting around in large documents.
 
 ### Reading and resources
 
