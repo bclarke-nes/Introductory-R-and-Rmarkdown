@@ -524,7 +524,7 @@ Here's the most important point in the whole of this demonstration: **we can mak
 + we have data from `r nrow(demo_dates)` days
 + we have a total of `r sum(demo_dates$count1)` count1s
 + the biggest value in count3 is `r max(demo$count3)`. 
-+ on the first day for which we have data, the count2 was `r demo_dates %>% filter(date == max(date)) %>% select(count2) %>% as.numeric`
++ on the last day for which we have data, the count2 was `r demo_dates %>% filter(date == max(date)) %>% select(count2) %>% as.numeric`
 + the average of count3 was `r round(mean(demo_dates$count3), 1)`
 
 ---
@@ -545,7 +545,7 @@ demo_dates <- read_csv("data/data4.csv") %>% mutate(date=dmy(date))
 + we have data from `r nrow(demo_dates)` days
 + we have a total of `r sum(demo_dates$count1)` count1s
 + the biggest value in count3 is `r max(demo$count3)`. 
-+ on the first day for which we have data, the count2 was `r demo_dates %>% filter(date == max(date)) %>% select(count2) %>% as.numeric`
++ on the last day for which we have data, the count2 was `r demo_dates %>% filter(date == max(date)) %>% select(count2) %>% as.numeric`
 + the average of count3 was `r round(mean(demo_dates$count3), 1)`
 
 ```{r update 2, echo=FALSE, eval=TRUE,warning = FALSE, message=FALSE}
