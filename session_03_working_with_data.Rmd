@@ -1,0 +1,323 @@
+---
+title: "![](img/header.png) Introductory R and Rmarkdown"
+date: "`r Sys.Date()`"
+subtitle: "Demonstration"
+always_allow_html: true
+output:
+  html_document:
+    toc: no
+    toc_depth: 2
+    number_sections: no
+    toc_float:
+      collapsed: no
+word_document:
+  toc: yes
+  toc_depth: '2'
+pdf_document:
+  toc: yes
+  toc_depth: '2'
+  pandoc_args: ["--extract-media", "."]
+---
+  
+# Session 3: introduction{.tabset}
+
+```{r pre-setup, message=FALSE, warning=FALSE, echo=F}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+install.packages(setdiff("pacman", rownames(installed.packages())))
+
+library("pacman")
+
+p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl,stringr,glue)
+
+# avoiding tidyverse as loading in RStudio Cloud potentially runs out of memory 
+```
+
+## Updating text
+
+Here's the most important point in the whole of this demonstration: **we can make our RMarkdown text change depending on the data that we feed to R**. Let's start with a group of examples that show how we might report from our `demo_dates` tibble from earlier:
+
+---
+
+<!-- Note that we can write comments in our RMarkdown file which won't be displayed in the output. This is very helpful to remind yourself - or tell others - exactly what's going on in your code. The square brackets in demo[1,3] allow us to pull out data from specified places in a tibble. The general syntax is [row,column]. -->
+
+### Text showing data from `r month(min(demo_dates$date), label = T, abbr=F)` - `r month(max(demo_dates$date), label = T, abbr=F)` `r year(min(demo_dates$date))`
+
++ we have data from `r nrow(demo_dates)` days
++ we have a total of `r sum(demo_dates$count1)` count1s
++ the biggest value in count3 is `r max(demo$count3)`. 
++ on the last day for which we have data, the count2 was `r demo_dates %>% filter(date == max(date)) %>% select(count2) %>% as.numeric`
++ the average of count3 was `r round(mean(demo_dates$count3), 1)`
+
+---
+
+That might look a bit unimpressive, given all the work that we've done to get here. But now let's see what happens when we run exactly the same commands but change the data. Behind the scenes, there are a couple of R chunks here that change the contents of `demo_dates`. We don't need to show these in this report - but do feel free to look at the code pane to see how this works:
+
+```{r update 1, echo=FALSE, eval=TRUE,warning = FALSE, message=FALSE}
+# backup the demo_dates tibble into demo_dates_old, load new data into the demo_dates tibble, and make sure the dates are correct
+demo_dates_old <- demo_dates
+demo_dates <- read_csv("data/data4.csv") %>% mutate(date=dmy(date))
+
+```
+
+---
+
+### Text showing data from `r month(min(demo_dates$date), label = T, abbr=F)` - `r month(max(demo_dates$date), label = T, abbr=F)` `r year(min(demo_dates$date))`
+
++ we have data from `r nrow(demo_dates)` days
++ we have a total of `r sum(demo_dates$count1)` count1s
++ the biggest value in count3 is `r max(demo$count3)`. 
++ on the last day for which we have data, the count2 was `r demo_dates %>% filter(date == max(date)) %>% select(count2) %>% as.numeric`
++ the average of count3 was `r round(mean(demo_dates$count3), 1)`
+
+```{r update 2, echo=FALSE, eval=TRUE,warning = FALSE, message=FALSE}
+# restoring the original demo_dates tibble, and removing demo_dates_old
+demo_dates <- demo_dates_old
+rm(demo_dates_old)
+```
+
+---
+
+The RMarkdown for those two example sections above is *exactly* the same. All that's changed is the data - as might happen when you take your dynamic report and set it to run on new data. No manual updating at all!
+
+### How does this work?
+
+We run little snippets of R, right in the RMarkdown text. The function of those snippets is to query the data that we've set up in the previous two sections of this demonstration, and then pass the results into RMarkdown, so that the results appear as inline text. We can apply formatting to those results as if they were any other text written in RMarkdown. 
+
+If you look at the code pane, you'll notice a slightly different mini-chunk structure that we use for these R snippets. The snippets themselves are wrapped in single backticks, with a general format of `` `r '\x60r command()\x60'` ``. This tells R/Rmarkdown to run the command, but pass the output to RMarkdown which displays the output as if it were written inline.
+
+Let's go through the example above to see how the commands work:
+
+<!-- trying to get RMarkdown to actually display backticks without interpreting them as markers for code is an irredeemable faff. Here, I've used a workaround using \x60 as a synonym for the backtick symbol, which displays in Rmarkdown as a backtick, but isn't interpreted as a proper backtick when knitting. Do please excuse and ignore the unintelligible symbols in this section - unless you one day plan to write a similar training demo...-->
+
++ we have one date per row. So counting the rows of `demo_dates` tells us the total number of days. We can do this using the expression `` `r '\x60r nrow(demo_dates)\x60'` ``.
++ the command `sum(demo_dates$count1)` adds all the entries in the count1 column
+    + **reminder**: using `$` lets us select a column from our tibble
++ `max(demo_dates$count3)` gives us the maximum value in count3
++ the value of count2 on the first day of the range is given by (`r demo_dates %>% filter(date == min(date)) %>% select(count2) %>% as.numeric`)
+    + **reminder**: we use the `%>%` pipe to chain commands together. 
+    + From left to right, we take the `demo_dates` tibble
+    + then use the `dplyr::filter` command to find the row where the date is equal to the `min(date)`
+    + then use `dplyr::select(count2)` to pick out the value of count2 on that date
+    + then convert the result from a 1x1 tibble into a number using `as.numeric()`
++ the mean (average) of count3 was `round(mean(demo_dates$count3), 1)`
+    + we use `round()` to give us our average to 1 decimal place. Otherwise R will report is as `r mean(demo_dates$count3)`. The extreme precision here is commendable, but misguided!
+    + finally, in the header, we have a little group of commands to report the month and year that our data covers:
+    - `` `r '\x60r month(min(demo_dates$date), label = T, abbr=F)\x60'` `` takes the earliest date `min(demo_dates$date)`, and then extracts the full month using `month( ..., label = T, abbr = F)`. There are lots of options for displaying the names of months, so I'd encourage you to run `?month()` to find out about them
+    - `` `r '\x60r month(max(demo_dates$date), label = T, abbr=F)\x60'` `` does the same, but for the last date in the range
+    - `` `r '\x60r year(min(demo_dates$date))\x60'` `` extracts the year in a similar way
+
+I'll say it again: **change the data, and all this stuff will update automatically**. Change the data, re-knit the report, and bask in the glory of a updated report - go on, try it!
+
+### Exercise 1
+
+As a refresher, let's have a look at the first few rows of the demo tibble using ```head()```, and also print out the total number of rows using ```nrow(demo_dates)```:
+
+```{r text ex 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+head(demo_dates)
+nrow(demo_dates)
+```
+
+<!-- This data will change as the data in the `data.csv` file changes. You can show yourself how this works as follows: -->
+
+<!-- 1. First, edit the `data.csv` file. To do this, click on the `data` folder in the `Files` pane, then click on the `data.csv` file and select `View File`. This should open the data file in the code pane.  -->
+<!-- 2. Now delete a couple of rows of your choice, before saving and closing the file. -->
+<!-- 3. Now re-knit the document again. The data now has `r nrow(demo_dates)` rows, rather than the original 68 rows. -->
+
+### Exercise 2
+This time, let's try formatting the output of our R snippets. I've provided a list of unformatted code below. Can you fit this into a more report-y format - like integrating it into a paragraph of text, or adding bold, italics, headings, or whatever takes your fancy?
+
+<!-- here are the example R snippets for you -->
+
+Sum count3 on Mondays in our range: `r demo_dates %>% filter(wday(demo_dates$date) == 2) %>% select(count3) %>% sum()`
+
+Number of days where count1 is 30 or more, and count2 is 70 or less: `r demo_dates %>% filter(count1 >= 30 & count2 <= 70) %>% nrow()`
+
+Number of days where count1 is greater than count3, but smaller than count2: `r demo_dates %>% filter(count1 > count3 && count1 < count2) %>% nrow()` 
+
+Count 2 was highest on this day of the week: `r demo_dates %>% filter(count2==max(count2)) %>% select(date) %>% unlist() %>% as.Date(origin="1970-01-01") %>% lubridate::wday(label=T, abbr=F)`
+
+
+<!-- write your paragraph below -->
+
+### Exercise 3
+Taking those commands from the above, can you tweak the R code snippets to that we end up with a paragraph where we:
+
++ find out what the sum of count3 is on Tuesdays?
++ find out how many days count 1 is 30 or more, and count2 is 90 or less?
++ find the number of days where count 1 is greater than count 2, but smaller than count 3?
++ find which day of the week count 3 was highest?
+
+<!-- write your paragraph below -->
+
+
+### Exercise 4
+Can you write a simple new command, and include it in a line or two of explanatory text? Some hints:
+
+- make sure that you wrap your R code properly in backticks: `` `r '\x60r someCommand(someData)\x60'` ``
+- you might like to try `mean(), min(), max(), sum()` on one of the columns using `$`
+- you do something more ambitious using `select() and filter()`
+- remember to try looking at the manual pages using `?command` if you get stuck
+
+## Data tables
+
+The raw output from tibbles (like when we use `head(demo_dates)`) that we've been using so far is very informative, telling us about the types of data we have and so on. But it looks pretty nasty. Ideally, we'd like to be able to format this text so that it fits into our report properly.
+
+### Using knitr::kable
+
+Sometimes our reports need to contain larger chunks of data than are comfortable to manage using inline text. The most obvious example is the data table. We have some R commands that are extremely helpful for writing data tables in reports. `knitr::kable` is the most useful of all, because it allows us to produce nicely formatted tables with the very minimum of fooling about. When we use `knitr::kable` to show the first few rows of the `demo` tibble we get the following:
+
+```{r data table 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+knitr::kable(head(demo_dates))
+```
+
+It's also possible to tweak lots of aspects of tables with `knitr::kable`. There's an example below showing some of these modifications that might be useful to you - renaming the columns, adding a caption, and modifying the alignment of the columns. You might also usefully look at the manual page (`?kable`) to get a sense of the possible scope for tweaking tables in this way:
+
+```{r data table 2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+knitr::kable(head(demo_dates), col.names = c("Date", "Count 1", "Count 2", "Count 3"), caption = "A superbly magnificent table of data", align = c("r", "c", "c", "l"))
+
+```
+
+
+### Exercise 1
+Let's try making a new, simple, table from the first few rows of `demo2` using `head()` and `knitr::kable()` below
+```{r data ex 1, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+# just in case you don't have demo2 in your workspace, you can re-create it by uncommenting the following line:
+# demo2 <- read_excel("data/data2.xlsx")
+
+
+```
+
+### Exercise 2
+Once the simple version is working, let's see if we can improve it. Copy your working code from the chunk above, then add a caption, play with the alignment, and rename the columns to something more suitable.
+
+```{r data ex 2, echo=TRUE, eval=TRUE,warning = FALSE, message=FALSE}
+
+
+```
+
+## Data processing
+Most of the use that we get from data driven reports comes from the analysis that we do on the data. This is a very brief introduction to some basic analysis using R. Let's start with our old friend `demo_dates`. So far, apart from some tidying up, we haven't tried to change this data. Instead, we've just queried what's there, and included those queries in our report. Some of the real advantages of writing dynamic reports in R though come from modifying our original data to discover useful things about it. Let's start with something straightforward: adding columns together:
+
+```{r processing 1, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+demo_total <- demo_dates %>%
+  mutate(total = count1 + count2 + count3) 
+
+knitr::kable(head(demo_total))
+```
+
+We've already met all the parts of this command before. We use the pipe `%>%` to pass the `demo` tibble to `mutate`. `mutate` creates a new column (`total`) by adding together the three `count` columns, and we then assign to a new tibble named `demo_total`, which we display nicely via `knitr::kable`. Some more examples of useful commands with tibbles:
+
+### To calculate the count 1 rate (so what percentage of the total it is for that day):
+
+```{r processing 2, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+# We'll also backup the demo_total tibble to use later
+demo_total_old <- demo_total 
+demo_total <- demo_total %>% mutate(count1_rate = count1/total)
+knitr::kable(head(demo_total))
+```
+To keep things simple, we'll just assign `demo_total` back to itself.
+
+### To remove the original count1 column:
+```{r processing 3, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+demo_total <- demo_total %>% select(!count1)
+knitr::kable(head(demo_total))
+```
+
+This uses the `select` function to select columns. Here, the `!` means (roughly) "not" or "except". So `select(!count)` command means "select all columns except for count1. The `select` command is part of the tidyverse `dplyr` package, which consists of many powerful tools for manipulating data in tibbles. 
+
+We'll use several other `dplyr` commands below, including `filter` and `arrange`. `dplyr` is probably the single most important R package for most analysts. You might usefully look at the manual page using `??dplyr` - double question-marks opens package help pages - although it's pretty dense. [The `dplyr` cheat-sheet put together by RStudio](https://nyu-cdsc.github.io/learningr/assets/data-transformation.pdf) is much more beginner-friendly.
+
+### To keep only the rows of our table where the total is 200 or more:
+```{r processing 4, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+demo_total <- demo_total %>% filter(total >= 200)
+knitr::kable(head(demo_total))
+```
+
+Here, we use `dplyr`'s `filter` to pick out all the values of total that are greater than or equal to 200 (`>= 200`). We can filter in other ways too - `==` to equal some value, `>` or `<` for greater/less than, or `%in%` for partial matching of your value.
+
+### To sort our table by the value of count2:
+```{r processing 5, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+demo_total <- demo_total %>% arrange(count2)
+knitr::kable(head(demo_total))
+```
+
+`arrange` re-sorts the rows of our tibble based on the values found in the count2 column.
+
+### To add a `rank_count2` column, based on the value of count2, and then re-sorting by reverse date order:
+```{r processing 6, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+demo_total <- demo_total %>% mutate(rank_count2 = as.integer(rank(count2))) %>% arrange(desc(date))
+knitr::kable(head(demo_total))
+```
+
+This one is a little bit more complicated. Starting with `demo_total` still arranged by count2 (from the previous command), we add a column called `rank_count2` using `mutate()`. This new column contains a number corresponding to the rank of the row. So the value of `rank_count2` for the 7th row would be 7. We make this number using `rank()`, and then convert it to an integer using `as.integer()` to make sure that this rank displays nicely as `7`, rather than the `7.0` decimal that `rank()` produces. We then, using the pipe, re-arrange the tibble using `arrange()`. Note the `desc()` which reverses the usual ascending order of `arrange()`.
+
+### To make the `count1_rate` column rounded percentages, and rename this column to `count1_percentage`:
+```{r processing 7, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+demo_total <- demo_total %>% mutate(count1_rate = round((count1_rate * 100), 1)) %>% rename(count1_percentage=count1_rate)
+knitr::kable(head(demo_total))
+```
+
+We take the existing `count1_rate` column, multiply it by 100 to convert to percentages, then use `round()` to round it to one decimal place. We then `mutate()` to write those new rounded values back over the starting `count1_rate` column. Finally, we use `rename()` to rename the column to `count1_percentage`.
+
+### Exercise 1
+Can you add `count2` and `count3` together to make a new column called `count4`
+```{r processing ex 1, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+# Add your code here
+
+knitr::kable(head(demo_total))
+```
+
+
+### Exercise 2
+How about removing all rows where `total` is over 300?
+```{r processing ex 2, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+# Add your code here
+
+knitr::kable(head(demo_total))
+```
+
+### Exercise 3
+How about removing the count 3 column?
+```{r processing ex 3, echo=FALSE, echo=TRUE, message=FALSE, warning=FALSE}
+# Add your code here
+
+knitr::kable(head(demo_total))
+```
+
+Before we move on, it's also worth showing a feature of the `%>%` pipe, which is that it allows us to string together lots of operations in one. This is very useful if we have a lot of processing to do on our data, because it keeps our code nice and concise. It's probably best to avoid building great long chains while you're first writing the code - I end up writing lots of single commands (like in the examples above), and then stringing them all together once I'm sure everything works as expected. To give you an example, I'll reset the `demo_total` tibble, and then run all of those commands that I demonstrated above in one go:
+
+```{r processing 8, eval=T, echo=T, message=F, warning=F}
+
+demo_total <- demo_total_old
+
+demo_total <- demo_total %>% 
+  mutate(count1_rate = count1/total) %>% 
+  select(!count1) %>% 
+  filter(total >= 200) %>% 
+  arrange(count2) %>% 
+  mutate(rank_count2 = as.integer(rank(count2))) %>% 
+  arrange(desc(date)) %>% 
+  mutate(count1_rate = round((count1_rate * 100), 1)) %>%
+  rename(count1_percentage=count1_rate)
+
+knitr::kable(head(demo_total))
+```
+
+If everything has worked properly, this should be the same table as appeared just before the exercises.
+
+We can also summarise tables of data:
+
+```{r}
+knitr::kable(demo_total %>% summarise(across(where(is.numeric), ~round(mean(.x, na.rm=T)))))
+```
+
+That's a little bit harder to read because we've wrapped several commands together into a single line, but breaks down nicely in exactly the same way as the code we've already looked at:
+
+- we find the average of columns using `mean(.x, na.rm=T)`. The `.x` tells R to use whatever data is passed from the previous command, while the `na.rm=T` part tells R to ignore any missing data.
+- `~round()` just rounds the mean values to the nearest whole number
+- `across(where(is.numeric)` tells R that we want to use all the columns (so work `across()` all the columns) that contain numbers (`where(is.numeric)`)
+- `summarise()` - crunch the results down into a single row
+- `demo_total %>%` take the data in the `demo_total` tibble
+- finally, `knitr::kable` displays a nice table containing the results
+
+As before, we can add some extra instructions to `kable` to re-name the columns in our table if we'd like to keep things clear for our readers.
