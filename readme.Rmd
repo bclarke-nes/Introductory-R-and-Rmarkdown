@@ -5,16 +5,16 @@ subtitle: "Introduction"
 date: "`r Sys.Date()`"
 always_allow_html: true
 output:
-  github_document:
+  word_document:
+    toc: yes
+    toc_depth: '2'
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
-  word_document:
-    toc: yes
-    toc_depth: '2'
+  github_document:
   pdf_document:
     toc: yes
     toc_depth: '2'
