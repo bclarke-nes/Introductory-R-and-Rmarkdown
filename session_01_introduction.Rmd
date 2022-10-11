@@ -3,15 +3,15 @@ title: "![](img/header.png) Introductory R and Rmarkdown"
 date: "`r Sys.Date()`"
 subtitle: 'Session 1: introduction'
 output:
-  word_document:
-    toc: no
-    toc_depth: '2'
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
+  word_document:
+    toc: no
+    toc_depth: '2'
   pdf_document:
     toc: no
     toc_depth: '2'
@@ -134,29 +134,26 @@ Let's start by making Posit Cloud feel a bit less intimidating. Four things to t
 
 1. Try some of the appearance options in the global options menu (*Tools / Global Options*) - you could set a whole theme, change the size of the text in the interface, and lots of other tweaks
 
+1. Try using the outline menu (`r knitr::include_graphics("img/outline.png")`) in the top right-hand corner of the source pane to get an overview of this source code
 
 It's useful to try and switch between the code pane and the viewer pane to see how the report works. You might find it helpful to minimise the Console and Environment panes for this tutorial as they're less important at this stage. 
 
 ## Rmarkdown
 
-[Rmarkdown](http://rmarkdown.rstudio.com) is a simple markup language. You might have used it before without really knowing what it was called. If you've ever posted on a Wordpress site or web forum with basic text formatting options available, the chances are that you've already done at least a tiny bit of markdown. Just to give you an example, surrounding a word with asterisks - like ```*italics*``` formats it in *italics*. Pairs of asterisks either side of the word formats that word - like ```**bold**``` - formats the text as **bold**. And so on. 
+Most of the text in dynamic reports is written in [Rmarkdown](http://rmarkdown.rstudio.com). Rmarkdown is a simple markup language. If you've ever posted on a Wordpress site or web forum with basic text formatting options available, the chances are that you've already done at least a tiny bit of markdown. Just to give you an example, surrounding a word with asterisks - like ```*italics*``` formats it in *italics*. Pairs of asterisks either side of the word formats that word - like ```**bold**``` - formats the text as **bold**. And so on. 
 
 This kind of very basic formatting is known as Markdown. While it's simple, it's usually sufficient to allow the production of neat and clear documents that are easy to ready. Rmarkdown is just Markdown with a few extras to allow you to embed R code directly into the text that you're writing. That R code allows you to do more-or-less any data analysis that you might like and include the results in your markdown-formatted document. 
 
-There's a quick reference, and a couple of exercises, at the foot of this section. But to give you an idea of what Rmarkdown can do, we can have a look at the static materials for this demonstration. Let's have a quick look at the Rmarkdown code for this training report now to see what it's like:
+There's a quick reference, and a couple of exercises, at the foot of this section. But to give you an idea of what Rmarkdown can do, let's have a quick look at the Rmarkdown code for this session now to see what it's like:
 
-### Rmarkdown in this report
+### Exercise
 
-1. Try to find the Rmarkdown code corresponding to this text in the source code pane. We're currently at about line 80 in the source code. Once you've found this section, have a look around to spot:
+1. Try to find the Rmarkdown code corresponding to this text in the source code pane. Once you've found this section, have a look around to spot:
 
 + a link
 + some bold text
 + a heading
 + some bullet-points
-
-2. You'll also see that we were able to output this report in different formats. Now might be a good time to try knitting to one of the other formats available - like `.doc`, or `.pdf`. Note that the formatting is (broadly) the same, no matter what the output format. This can be a fantastic time-saver if you're manually producing both print and web versions of your reports now.
-
-6. When you've finished looking at the Rmarkdown, move on to the exercises below
 
 ----
   
@@ -206,7 +203,7 @@ You can also add images easily in RMarkdown, and you can easily find [guidance o
 2. Add some bullet points below here describing your morning:
 + this morning, I...
 
-Do have a look at the Rmarkdown in the code pane, and feel free to play around with it.
+----
 
 ## Knitting
 
@@ -216,7 +213,7 @@ In this section, we're going to give a bit of explanation about something that w
 
 Try knitting this document to each of the three formats in the knit menu.
 
-In RStudio, you can select which output format you'd like your report to be rendered as:
+In Posit Cloud, you can select which output format you'd like your report to be rendered as:
 
 ```{r, echo=F, out.width = "400px", fig.align = 'center'}
 knitr::include_graphics("img/knitr_options.png")
@@ -251,9 +248,9 @@ pdf_document:
 ---
 ```
  
-Most of this header block is made up of options for the different output formats (html, word, and pdf).
- 
-This header block is written in YAML. You can find more information about [YAML editing in chapter 2 of the excellent R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/rmarkdown-anatomy.html). Editing YAML can be a bit fiddly. For instance, indentation and white-space matters in YAML. Each of the three output formats (html_document, pdf_document, and word_document) are indented from the *output:* line, and each of the output format options are indented too. A common cause of documents not knitting (see below) are small errors in the indenting in the header.
+Most of this header block is made up of options for the different output formats (html, word, and pdf). It's hierarchical, so the `output:` option is followed by the `html_document` option, which is then followed by a lot of details about how to set up the TOC (table of contents) for the html.
+
+The header block is written in YAML. You can find more information about [YAML editing in chapter 2 of the excellent R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/rmarkdown-anatomy.html). A word of warning though: editing YAML can be a bit fiddly. For instance, indentation and white-space matters in YAML. Each of the three output formats (html_document, pdf_document, and word_document) are indented from the *output:* line, and each of the output format options are indented too. A common cause of documents not knitting (see below) are small errors in the indenting in the header.
  
 One option is to ignore the YAML altogether, and use the default options that Rstudio provides. If you're trying to create a new Rmarkdown document, Posit Cloud gives you an simple header to get started. You can create a new Rmarkdown document in Rstudio by navigating to `File >> New file >> R Markdown...`.
 
@@ -277,13 +274,13 @@ pandoc_args: ["--extract-media", "."]
  
 This simplifies some of the image handling in this document to allow pandoc (that writes the .pdf version of the report) to download the linked images so that they are properly incorporated in the text.
  
-### knitr / R chunks
+## R chunks
  
 One last important point about Rmarkdown: we need to tell Posit Cloud where our Rmarkdown ends, and our R code begins. We do this using code chunks. Code chunks in Rmarkdown start and end with a triple backtick:
    
 `r knitr::include_graphics("img/backs.png")`
  
-If you look at the code pane, you'll see that most of our R commands are wrapped-up in triple backticks, with a lot of options in {curly brackets}. These backticks are the way that we mark our R code, thus telling RStudio Cloud to interpret it as R, rather than RMarkdown. We call these sections of code ```chunks```. In what's ahead, one of the most common problems come from chunks, and so one of the first things to check if a command doesn't work as expected is that it's properly in place in a chunk.
+If you look at the code pane, you'll see that most of our R commands are wrapped-up in triple backticks, sometimes with some additional options following inside the {curly brackets}. These backticks are the way that we mark our R code, thus telling RStudio Cloud to interpret it as R, rather than RMarkdown. We call these sections of code ```chunks```. In what's ahead, one of the most common problems come from chunks, and so one of the first things to check if a command doesn't work as expected is that it's properly in place in a chunk.
  
 If you're new to R you might not ever have used the backtick (`` `r '\x60'` ``) key before. You can usually find it at the extreme top left of most keyboards, often below the `Escape` key. Backticks are definitely different from the apostrophe ('), and it's vitally important to not get the two confused when you're working with R.
 
@@ -306,7 +303,7 @@ There are also some useful hints in the [knitr documentation](https://yihui.org/
 ### Exercise
 1. Create a new code chunk now, and adjust some of the options using the chunk options menu: `r knitr::include_graphics("img/chunk_opts.png")`
 
-2. Once you've created your new chunk, add the following code to it:
+2. Once you've created your new chunk, copy-and-paste the following code into it:
 ```{verbatim}
 data %>% 
   mutate(total=count1+count2+count3) %>%

@@ -39,7 +39,15 @@ data_dates <- read_csv("data/data.csv") %>%
 
 ## Introduction
 
-This session builds on the two previous sessions. Now that you know how to setup an Rmarkdown document, and how to write simple R code, in this session we will integrate these two skills. We'll look at two ways of integrating R code with Rmarkdown, and we'll use those techniques to develop your knowledge and skills in handling data.
+Welcome to the third session of this introductory training in R and Rmarkdown. This session builds on the two previous sessions. Now that you know how to setup an Rmarkdown document, and how to write simple R code, in this session we will integrate these two skills. We'll look at two ways of integrating R code with Rmarkdown, and we'll use those techniques to develop your knowledge and skills in handling data.
+
+A reminder of the ground rules for this session:
+
+1. The training is **interactive**. You'll be working on code, answering questions, and helping other trainees. Do please ask questions whenever you like, or for extra clarification if anything isn't as clear as you'd like it to be. 
+
+2. Please leave **cameras and mics on** as much as you reasonably can. Social learning is a vital part of this training, and the more discussion and chat that we get, the better the sessions run.
+
+3. Things will go wrong, and code will misbehave. **Be ready to share your screen when this happens.** The aim is that we will all collaborate on solving any problems that we might run into. This is the best way of developing a set of strategies for solving problems which is such an important part of the learning journey in this field.
 
 We'll start with the data that we loaded from file and tidied during the last session:
 
@@ -320,27 +328,31 @@ How about removing the count 3 column?
 
 ```
 
-Before we move on, it's also worth showing a feature of the `%>%` pipe, which is that it allows us to string together lots of operations in one. This is very useful if we have a lot of processing to do on our data, because it keeps our code nice and concise. It's probably best to avoid building great long chains while you're first writing the code - I end up writing lots of single commands (like in the examples above), and then stringing them all together once I'm sure everything works as expected. To give you an example, I'll reset the `data_total` tibble, and then run all of those commands that I demonstrated above in one go:
+### Exercise 4
+Now please rank your data based on the total.
+```{r}
+# Add your code here
+```
+
+
+Before we move on, it's also worth showing a feature of the `%>%` pipe, which is that it allows us to string together lots of operations in one. This is very useful if we have a lot of processing to do on our data, because it keeps our code nice and concise. It's probably best to avoid building great long chains while you're first writing the code - I end up writing lots of single commands (like in the examples above), and then stringing them all together once I'm sure everything works as expected:
 
 ```{r}
 
 data_total %>% 
-  mutate(count1_rate = count1/total) %>% 
-  select(!count1) %>% 
-  filter(total >= 200) %>% 
-  arrange(count2) %>% 
-  mutate(rank_count2 = as.integer(rank(count2))) %>% 
-  arrange(desc(date)) %>% 
-  mutate(count1_rate = round((count1_rate * 100), 1)) %>%
-  rename(count1_percentage=count1_rate) %>%
+  mutate(count4 = count2 + count3) %>%
+  filter(total < 300) %>% 
+  select(!count3) %>% 
+  arrange(total) %>%
+  mutate(rank = as.integer(rank(total))) %>%
   head() %>%
   knitr::kable()
 
 ```
 
-If everything has worked properly, this should be the same table as appeared just before the exercises.
+If everything has worked properly, this single code block should have replicated all of the individual processing steps that we have been working through in the exercises above.
 
-We can also summarise tables of data:
+We can also summarise tables of data using `summarise()`:
 
 ```{r}
 data_total %>% 

@@ -32,14 +32,23 @@ p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl,str
 # avoiding tidyverse as loading in RStudio Cloud potentially runs out of memory 
 ```
 ## Introduction
-This session is a quick introduction to R. It's written for those without prior programming experience, and it concentrates on demonstrating how the main building blocks of R code work. The aim of this session is to help you develop your skills in reading and writing R code. These building blocks are:
+
+Welcome to the second session of this introductory training in R and Rmarkdown. In this session, we'll give a quick introduction to R. A reminder of the ground rules for this session:
+
+1. The training is **interactive**. You'll be working on code, answering questions, and helping other trainees. Do please ask questions whenever you like, or for extra clarification if anything isn't as clear as you'd like it to be. 
+
+2. Please leave **cameras and mics on** as much as you reasonably can. Social learning is a vital part of this training, and the more discussion and chat that we get, the better the sessions run.
+
+3. Things will go wrong, and code will misbehave. **Be ready to share your screen when this happens.** The aim is that we will all collaborate on solving any problems that we might run into. This is the best way of developing a set of strategies for solving problems which is such an important part of the learning journey in this field. We'll probably do more screen sharing today than in any of the other sessions.
+
+This session is written for those without prior programming experience, and it concentrates on demonstrating how the main building blocks of R code work. The aim of this session is to help you develop your skills in reading and writing R code. These building blocks are:
 
 1. Functions
 2. Assigning to variables
 3. Brackets
 4. The pipe (`%>%` or `|>`)
 
-We will also introduce some of the technical terms used to describe code in R with the intention of making some of the useful online sources of help (such as [stack overflow](https://stackoverflow.com/questions/tagged/r)) more accessible and useful.
+Once we've introduced these building blocks, we'll go on to use them to load some data into R, and then tidy that data so that we can analyse it during the next training session. We will also introduce some of the technical terms used to describe code in R with the intention of making some of the useful online sources of help (such as [stack overflow](https://stackoverflow.com/questions/tagged/r)) more accessible and useful.
 
 ### Exercise
 
@@ -193,7 +202,7 @@ Be sure to keep a careful eye on the brackets - they need to match up, so that e
 #### Packages
 R uses packages, which are plug-ins that offer useful functions. We need to add these packages to R to help us do some of our tasks. We've actually added them already in the first few lines of this report. Let's have a look at this code, which here includes some explanatory comments:
 
-```{r setup, echo=TRUE, eval=F, warning = FALSE, message=FALSE}
+```{verbatim}
 # if pacman is missing, installs pacman, which helps us manage packages
 install.packages(setdiff("pacman", rownames(installed.packages())))
 
@@ -385,7 +394,8 @@ Time for another R chunk:
 
 ```{r}
 
-data_dates <- data %>% mutate(date = dmy(date))
+data_dates <- data %>% 
+  mutate(date = dmy(date))
 
 ```
 
@@ -412,7 +422,9 @@ head(data_dates)
 Sometimes we'll have missing or anomalous data in the files that we load into R. This can cause all kinds of subtle problems in R. Our `data` tibble (and derivatives like `data_dates` etc) have no missing data, so to demonstrate we'll load some new, faulty data into `data3`, and try to tidy it up. The first part of this should be very familiar - we load data using `read_csv()`, then mutate the date column to give us proper dates. We then look at the `head()` of the data:
 
 ```{r}
-data3 <- read_csv("data/data3.csv") %>% mutate(date = dmy(date)) 
+data3 <- read_csv("data/data3.csv") %>%
+  mutate(date = dmy(date)) 
+
 head(data3)
 ```
 Right away we can see a few problems:
@@ -424,7 +436,8 @@ Right away we can see a few problems:
 Let's deal with the missing data. Let's see what we're dealing with by using the `filter()` command. Filter looks through tibbles, and returns any that match the conditions you specify. So to look at the date column of `data` we would write:
 
 ```{r}
-data3 %>% filter(is.na(date))
+data3 %>% 
+  filter(is.na(date))
 ```
 
 We can look at each column in the same way. 
@@ -434,7 +447,8 @@ We can look at each column in the same way.
 Use `filter()` to look at the other columns of `data`. You can use the code above as a template:
 
 ```{r}
-data3 %>% filter(is.na(date))
+data3 %>% 
+  filter(is.na(date))
 ```
 
 ----
@@ -442,7 +456,8 @@ data3 %>% filter(is.na(date))
 ```{r echo=F, eval=F}
 # here's a variant that looks through all the columns at once. Don't worry too much about the details of this code. We tell `filter` to look across the date, count1, count2, and count3 columns using `if_any`, and then specify that `filter` should look for any rows with missing data using `is.na`.
 
-data3 %>% filter(if_any(c(date, count1, count2, cnont3), ~ is.na(.)))
+data3 %>% 
+  filter(if_any(c(date, count1, count2, cnont3), ~ is.na(.)))
 
 ```
 
