@@ -4,8 +4,9 @@ author: "Brendan Clarke"
 subtitle: "Introduction"
 date: "`r Sys.Date()`"
 always_allow_html: true
-output:
+output: 
   github_document:
+    toc: no
   html_document:
     toc: no
     toc_depth: 2
