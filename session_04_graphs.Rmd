@@ -1,0 +1,453 @@
+---
+title: "![](img/header.png) Introductory R and Rmarkdown"
+date: "`r Sys.Date()`"
+subtitle: "Session 4: graphs"
+always_allow_html: true
+output:
+  html_document:
+    toc: no
+    toc_depth: 2
+    number_sections: no
+    toc_float:
+      collapsed: no
+word_document:
+  toc: yes
+  toc_depth: '2'
+pdf_document:
+  toc: yes
+  toc_depth: '2'
+  pandoc_args: ["--extract-media", "."]
+editor_options: 
+  chunk_output_type: console
+---
+
+# {.tabset}
+
+```{r pre-setup, message=FALSE, warning=FALSE, echo=F}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+install.packages(setdiff("pacman", rownames(installed.packages())))
+
+library("pacman")
+
+p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl,stringr,glue)
+
+# avoiding tidyverse as loading in RStudio Cloud potentially runs out of memory 
+
+data_total <- read_csv("data/data.csv") %>%
+  mutate(date = dmy(date)) %>%
+  mutate(total = count1+count2+count3)
+```
+
+# {.tabset}
+
+## Introduction
+
+Welcome to the final session of this introductory training in R and Rmarkdown. This session concentrates on drawing graphs. Graphs are a really important part of report writing. Nearly all of this session will be spent getting to grips with the general purpose graph-drawing package called `ggplot2`. You can generate many different types of graph (bar, column, line, scatter...) using this package, and so we'll use it to demonstrate some of the general principles of graph drawing in R. We'll also have very brief looks at two other aspects of graph drawing. First, we'll introduce a pair of specialist packages for drawing other kinds of graphs. These are:
+
+- an NHS-specific package called `NHSplotthedots` for producing XmR/run charts
+- a diagram-drawing package called `DiagrammeR` which we'll use to draw a dynamic flowchart
+
+Second, to cover cases where R won't produce the kind of graph you need, we'll also introduce some ways of including static images (like other graphs) in your Rmarkdown.
+
+As this is the last session of this course, we'll conclude with a short discussion of possible next steps for you in your R journey.
+
+A reminder of the ground rules for this session:
+
+1. The training is **interactive**. You'll be working on code, answering questions, and helping other trainees. Do please ask questions whenever you like, or for extra clarification if anything isn't as clear as you'd like it to be. 
+
+2. Please leave **cameras and mics on** as much as you reasonably can. Social learning is a vital part of this training, and the more discussion and chat that we get, the better the sessions run.
+
+3. Things will go wrong, and code will misbehave. **Be ready to share your screen when this happens.** The aim is that we will all collaborate on solving any problems that we might run into. This is the best way of developing a set of strategies for solving problems which is such an important part of the learning journey in this field.
+
+
+## ggplot2 introduction
+Let's start with a minimal example using our `data_total` tibble, plotting an XY scatter plot of count1 against count2:
+
+```{r}
+data_total %>%
+  ggplot() +
+  geom_point(aes(x=count1, y=count2))
+
+```
+
+Here, the code works as follows:
+
+- `data_total %>% ggplot()` - `ggplot2()` starts a new plot area, and we associate that new plot area with the `data_total` tibble using the pipe
+- `geom_point()` tells ggplot2 that we want an XY scatter drawn on our plot area
+- the crux of the code is the `(aes(x=count1, y=count2))`. Here, `aes` means *set the aesthetics of this graph as follows...*. So it's here that we tell R which columns from the `data_total` tibble we should use to plot the points specified in `geom_point`
+- finally, the `+` then chains together commands to produce a single plot. Unlike the `%>%`, `+` doesn't pass the result of one command to the next. Instead, `+` is just a way of connecting lots of different operations that we want to perform to a single plot area. This is part of the design philosophy of ggplot2, which treats the elements of a graph as [layers that can be built up](https://rpubs.com/hadley/ggplot2-layers) to produce complex and useful visualisations. We'll explore lots of other ggplot2 options later, but first we'll look at how to place your graph into your report.
+
+One quick trick that will pay immediate dividends: we can save a ggplot object in a variable using `<-`:
+
+```{r fig.align='left', fig.height=1, fig.width=3}
+
+simple_graph <- data_total %>%
+  ggplot() +
+  geom_point(aes(x=count1, y=count2))
+
+simple_graph
+
+```
+
+### Using our graph in Rmarkdown
+
+Chunk options allow us to set size and position. For example, adding `fig.height=1, fig.width=3` to the chunk options sets the height of the graph to 1 inch, and the width to 3 inches:
+
+```{r fig.height=1, fig.width=3}
+simple_graph
+```
+
+Or we can set the alignment of the graph using `fig.align='center'`:
+
+```{r fig.align='center', fig.height=1, fig.width=3}
+simple_graph
+```
+
+or `fig.align='right'`:
+
+```{r fig.align='right', fig.height=1, fig.width=3}
+simple_graph
+```
+We covered some more details about R chunks in the first session of this training, so you can always go back and look again at the range of options that you might use here.
+
+### Themes
+We can also [change the theme](https://ggplot2.tidyverse.org/reference/ggtheme.html) that ggplot2 uses to ensure that the appearance of our graph as a whole suits our report. Let's use our simple graph again, but this time we'll add an extra `ggplot` layer to change the overall theme:
+
+```{r fig.align='left', fig.height=1, fig.width=2}
+
+simple_graph +
+  theme_void()
+
+simple_graph +
+  theme_linedraw()
+
+simple_graph +
+  theme_dark()
+
+```
+
+### Back to ggplot2
+So far, we've been working just with `geom_point()`, but there are many other `geom_xxx` options. A couple of commonly-used examples are `geom_col()` and `geom_line()`. Note that neither of these are really going to show anything useful plotting count1 against count2, so we'll use some other parts of our `demo` tibble so that we see the counts plotted against the date:
+
+```{r}
+data_total %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count2))
+
+
+data_total %>%
+  ggplot() +
+  geom_line(aes(x=date, y=count3)) +
+  geom_smooth(aes(x=date, y=count3))
+
+```
+
+The line graph above has a smoothed conditional mean with 95% CI added via `+` and `geom_smooth()`. We can continue to add elements to ggplot using `+` - so below I'll add some labels (`xlab` and `ylab`), a title (`labs(title="...")`), and a smoothed mean line to our first plot via `geom_smooth()`. I'll also change the colour of the dots using `colour="#004380"` in the `geom_point()` call.
+
+```{r}
+
+data_total %>%
+  ggplot() +
+  geom_point(aes(x=count1, y=count2), colour="#004380") +
+  geom_smooth(aes(x=count1, y=count2), method='lm') +
+  labs(title="Scatter plot of count 1 against count 2 with a smoothed conditional mean") +
+  ylab("Count 2") +
+  xlab("Count 1")
+```
+
+### Exercise 1
+
+Let's take the code for the graph above, and rework it. What we've been asked to produce is an XY scatter showing how all three of our count values have changed over time. Please make sure that your graph has:
+
++ three `geom_point` commands, one for each of the three counts
++ with suitable colours for the dots - you can use the values *#004380*, *#0096DC*, and *#BD006A* if you'd like. Or do [feel free to borrow some from the internet](https://www.w3schools.com/colors/colors_picker.asp), or invent your own. These are RGB hex codes, so the first pair of numbers give the amount of red, second pair green, third pair blue. Each pair ranges between 00 (least) and FF (most).
++ one `geom_line` for the total
++ a label reading *Scatter plot of counts 1-3 over time, with total*
++ appropriate x and y axis labels
+
+```{r}
+# I've left some fragments of code here to help you get started
+data_total %>%
+  ggplot() +
+  geom_point(aes(x=date, y=count1), colour="#004380") +
+  labs(title="") +
+  ylab("Some inappropriate label")
+```
+
+That's very pretty! But perhaps not the most useful graph in the world. In the next section, we'll look at how to build more advanced graphs in ggplot.
+
+## more advanced ggplot2
+The secret to most useful visualisations is to get the data into the right format. Here's an example, based on using `dplyr` from the tidyverse to select parts of the data (i.e. excluding the total column), and then reformatting the demo tibble data. This should all be familiar from the data processing section, but the difference here is that we're building our data work into our graph drawing. This allows us to ask ggplot2 to plot counts for each day automatically, using the `fill` option to set each type of count as a different colour. This avoids the kind of repetition from the exercise at the end of the last section.
+
+```{r}
+
+data_total2 <- data_total %>%
+  dplyr::select(!total) %>%
+  pivot_longer(!date, names_to = "names", values_to = "count")
+
+head(data_total2)
+
+data_total2 %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names), position="stack") +
+  labs(title = "Stacked bar of counts by date", fill="Count type") +
+  xlab("Date") +
+  ylab("Count")
+
+```
+
+Most of this code should be very familiar to you by now. We have a couple of lines of `dplyr` to organise our data, `head()` to have a quick look at it, and finally `ggplot()` and `geom_col()` - with a slight tweak to ensure that we have stacked columns - to plot the graph. The one new command is `pivot_longer()`. This is really useful when drawing more complex graphs, and could do with some explanation.
+
+### pivot_longer()
+let's look again at the structure of our `data_total`.
+
+```{r}
+data_total %>%
+  head() %>%
+  knitr::kable()
+```             
+
+In the data, we have several different observations per date. This makes some of the plotting functions that we might want to do awkward, because we don't have a good way of specifying to ggplot how it should handle data in different columns (like assigning everything in the count1 column a certain colour). `pivot_longer` allows us to work round this problem by re-shaping our data. Let's use it, and have a look at the results:
+
+```{r}
+data_total %>%
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  head(n=12) %>%
+  knitr::kable()
+```  
+
+As the name suggests, `pivot_longer` has made our data longer. Instead of four columns of counts + total, we now have only two: one with the name of the count, and the other with the value of that count on that date. This means that we handle data that contains several different kinds of value in a more highly automated way:
+
+```{r}
+data_total %>% 
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names), position="stack") +
+  facet_wrap(~ names)
+```
+
+Here, the only new bit of `ggplot` that we need is `facet_wrap(~ names)`, which splits our graph up into little subgraphs depending on what we specify after the `~`. We can split up lots of different ways with these small multiples - some more usefully than others - but this can be a really powerful tool for showing patterns in your data:
+
+```{r}
+data_total %>% 
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  filter(date <= (min(date)+5)) %>%
+  ggplot() +
+  geom_col(aes(x=names, y=count, fill=names)) +
+  facet_wrap(~ date)
+```
+
+
+Note that the changes to `demo_total` that we do in this commands are only temporary - we don't ever assign the updated tibble anywhere. That's quite standard - I'd usually try and not make lots of different tibbles based on the same data, because it can get very confusing to try and remember which of `demo`, `demo_dates`, and `demo_total` we want to use. I'd suggest starting out by making new tibbles until you've built your speed and confidence up to the point where you become more comfortable doing the data work in a bespoke way for each of your visualisations etc.
+
+It's worth noting that you can use multiple data sources in one ggplot area. For example, we can take the first section of code above, and add back in a smoothed mean line from the original tibble:
+
+```{r}
+
+data_total %>%
+  dplyr::select(!total) %>%
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names)) +
+  geom_smooth(data=data_total, aes(x=date, y=total)) +
+  labs(title = "Stacked bar of counts by date with total trend", fill="Count type") +
+  xlab("Date") +
+  ylab("Count")
+```
+
+In `geom_smooth()` we specify a new data source - the version of `data_total` before the earlier processing in this code. You'll note that we dropped the total column in the second line of this code, so we can't use the data that we piped into the main `ggplot()` command.
+
+### Palettes
+As well as the whole-graph changes to appearance that we explored earlier when we set graph themes, we can also just tweak the colours appearing in our graph using palettes:
+
+```{r}
+
+data_total %>%
+  dplyr::select(!total) %>%
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names)) +
+  geom_smooth(data=data_total, aes(x=date, y=total)) +
+  labs(title = "Stacked bar of counts by date with total trend", fill="Count type") +
+  xlab("Date") +
+  ylab("Count") + 
+  scale_fill_manual(values=c("#999999", "#E69F00", "#2299FF"))
+```
+
+Here, we've manually specified three colours using the `scale_fill_manual()` command, and specifying the colours that we want to use. This is okay if you're using custom colours in a small number of graphs, but if you're trying to make lots of graphs a much better option is to produce a variable that contains a suitable list of colour values that you can then call in each of your graphs. To demonstrate using NES's corporate colour-scheme:
+
+```{r}
+
+# create a variable NEScol containing hex values for NES colours
+NEScol <- c("#004380", "#0096DC", "#6C2383", "#007188", "#00AFAA", "#80BA27", "#3FA535", "#FFDD00", "#F39200", "#B10933", "#BD006A")
+
+data_total %>%
+  dplyr::select(!total) %>%
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names)) +
+  geom_smooth(data=data_total, aes(x=date, y=total)) +
+  labs(title = "Stacked bar of counts by date with total trend", fill="Count type") +
+  xlab("Date") +
+  ylab("Count") + 
+  scale_fill_manual(values=NEScol)
+
+data_total %>% 
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  ggplot() +
+  geom_col(aes(x=date, y=count, fill=names)) +
+  facet_wrap(~ names) +
+  scale_fill_manual(values=NEScol)
+```
+  
+`ggplot2` is an enormously powerful package. But that power means that it's complicated, and can be hard to learn for new users. The density of the documentation also doesn't help the new user as much as it might, as the [creators of the package have identified](https://github.com/tidyverse/ggplot2/issues/4770). I'd suggest taking the different graph recipes from the two ggplot2 subsections as a basis for your own experimentation. If you think that producing more complex graphs will be an important part of your own report writing work, I would definitely recommend looking at the [ggplot2 book](https://ggplot2-book.org/index.html) to get a better sense of what might be done with the package.
+
+### Coord-flip
+A last word about a useful command: `coord_flip()`, which swaps your axes. Very helpful if you realise that you've got the dependence relationships between your variables backwards. It's just added in as a layer to your ggplot code, as follows:
+
+```{r}
+
+data_total %>% 
+  pivot_longer(!date, names_to = "names", values_to = "count") %>%
+  filter(date <= (min(date)+5)) %>%
+  ggplot() +
+  geom_col(aes(x=names, y=count, fill=names)) +
+  facet_wrap(~ date) +
+  coord_flip()
+```
+
+## XmR and run charts
+
+This section is just intended as a demonstration of the NHSRplotthedots package, which provides a ggplot-like approach to building XmR charts that follow the [NHS Plot The Dots](https://www.england.nhs.uk/wp-content/uploads/2019/12/making-data-count-getting-started-2019.pdf) logic. You can see that the approach is very similar to that we've taken in the previous section - take some data, `pivot_longer()`, and then plot. 
+
+```{r}
+data_total %>% 
+  pivot_longer(!date, names_to = "type", values_to="count", values_drop_na = TRUE) %>% 
+  filter(type == "count1") %>% 
+  ptd_spc(value_field = "count", date_field = date, improvement_direction = "increase") %>%
+  plot(x_axis_breaks = "1 month", main_title="XmR chart of count 1", theme =)
+
+```
+
+It's also worth looking at the excellent [runcharter package](https://johnmackintosh.github.io/runcharter/) if you need to produce series of run charts as this package allows faceted construction (like `facet_wrap()`).
+
+## DiagrammeR
+This is an interesting example of a very different kind of dynamic graph. Here, the structure of the graph remains the same, but the numerical counts will update as the data changes.
+
+```{r}
+DiagrammeR::grViz("
+digraph graph2 {
+
+// a graph statement, which applies to the whole graph
+graph [layout = dot]
+
+// node statements, which describe how each of the nodes work. Note the @@x - corresponding to substituted label text below
+node [shape = rectangle, width = 4, style = filled, fillcolor = beige]
+a [label = '@@1']
+b [label = '@@2']
+c [label = '@@3']
+d [label = '@@4']
+
+// edge statements, which describe how each of the nodes are connected
+a -> d
+b -> d
+c -> d
+
+}
+
+# Outside the main grViz bracket, the footnote-style substituted label text. [x] provides the text for @@x above.
+[1]: paste0('Count 1 total (sum = ', sum(data_total$count1), ')')
+[2]: paste0('Count 2 total (sum = ', sum(data_total$count2), ')')
+[3]: paste0('Count 3 total (sum = ', sum(data_total$count3), ')')
+[4]: paste0('Total (sum = ', sum(data_total$total), ')')
+")
+
+```
+
+If you've been delving into the more advanced functions found in Rmarkdown, you might recognise the way that the labels are put together - it's the same general syntax used for footnotes.
+
+## Adding images to RMarkdown
+If you've been following along in the source code, you'll have noticed that the images in this report are included using `include_graphics()`. This command is well worth understanding, because it not only allows you to include ordinary images (photos or page graphics), but also allows you to include other kinds of images in your RMarkdown report. For example, it might not be possible to automate all aspects of your report production. You might have data locked in proprietary systems, or better ways of producing some of your visualisations, and so on. In cases like these, you can use `include_graphics()` to pass your image into RMarkdown neatly so that your reader won't suspect that the image is any different from the other visualisations that your report contains.
+
+----
+
+To include a local image from the `img` directory of the project:
+
+```{r}
+knitr::include_graphics("img/header.png")
+```
+
+----
+
+To include an image from its URL:
+
+```{r}
+knitr::include_graphics("https://i.imgur.com/RkMmLXm.png")
+```
+
+----
+
+You can change the size of the image in pixels by setting the `out.width=` option in the chunk label:
+
+```{r out.width="300px"}
+knitr::include_graphics("img/header.png")
+```
+
+----
+
+And you can control figure alignment (and add a caption) again using the chunk options:
+
+```{r out.width="300px", fig.align='center', fig.cap='A centred image'}
+knitr::include_graphics("img/header.png")
+```
+
+----
+
+It might be more convenient to use the mini-chunk structure of `r knitr::include_graphics("img/button.png")` for small, inline images.
+
+----
+
+#### Exercises
+
+1. Try adding a new image from a URL below (you can use https://i.imgur.com/RkMmLXm.png if you haven't anything more interesting to hand). Note that you'll need a direct image link to the image itself, rather than to the webpage that it's sitting on. Look for .png, .gif, or .jpg at the end of the URL.
+
+2. Take the image below, and a) reduce the size to 200px width, right-align, and give it a suitable caption:
+
+```{r out.width="300px", fig.align='center', fig.cap='A centred image'}
+knitr::include_graphics("img/header.png")
+```
+
+----
+
+Some graphics formats won't knit properly to all outputs. .gif especially tends to cause trouble with .pdf output. You can escape this - at the price of omitting your image - using the `is_html_output()` command in the chunk header. This checks to see if your output format is .html, and if it then running the code in the chunk. This lets us include animations in the .html report, and leave them out of the static formats like .pdf:
+
+```{r eval=knitr::is_html_output(), echo=F, fig.align='center', fig.cap='Image credit: https://gfycat.com/defiantwateryblackfish-aleksandar-jovanovic-ronnie-osullivan'}
+knitr::include_graphics("https://thumbs.gfycat.com/DefiantWateryBlackfish-size_restricted.gif")
+```
+
+## Next steps {.tabset}
+
+#### Reading and resources
+
+##### More training
++ we have a [follow-on training course in R](https://github.com/bclarke-nes/Intermediate-R). Five sessions, in a similar format to this course, that will teach you the foundations of programming in R. Includes more dplyr, functions, iteration, purrr, and tidy evaluation.
+
+##### Docs
++ [Rstudio cheat sheets](https://www.rstudio.com/resources/cheatsheets/) are a brilliant quick-reference for many jobs in R. I particularly like and use the sheets for [`ggplot2`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization.pdf), [`dplyr`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf), and [`lubridate`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/lubridate.pdf).
+
+##### Books
++ [*R for data science* (r4ds)](r4ds.had.co.nz) is a brilliant wider introduction to using R for data analysis, particularly when used with...
++ ... the companion-piece [*Advanced R*](adv-r.had.co.nz)
++ [*ggplot2: elegant graphics for data analysis*](https://ggplot2-book.org/index.html) is extremely helpful to go beyond simple recipes for drawing graphs in ggplot2
++ the [*Rmarkdown Cookbook*](https://bookdown.org/yihui/rmarkdown/r-code.html) is a great helper and reference for Rmarkdown
++ [*Think Like A Programmer*](https://nostarch.com/thinklikeaprogrammer) is not R-specific, but instead teaches a range of helpful techniques for translating your work into effective code. You might find this helpful if you don't have much coding experience, particularly if your analysis requires advanced R skills (no open-access version available)
++ [The Epidemiologist's R handbook](https://epirhandbook.com/en/) is a new and comprehensive set of resources for epidemiological work in R. Many of their examples can be adapted to other areas of health and care
+
+##### Packages
++ [phsmethods](https://github.com/Public-Health-Scotland/phsmethods/blob/master/README.md) is Public Health Scotland's R package that has helpful functions for analysts in Scotland. For instance, tools for working with CHI, or area matching from Scottish postcodes
+
+#### Alternatives to R/Rmarkdown
+
++ Microsoft's PowerBI. This is more focused on building real-time dashboards, and it's intended to be a low-code way of working that should be a fairly natural step for staff with lots of Excel experience. **We have supporting resources under development for PowerBI, which I'll link here when completed**.
++ R + Shiny is the best R-based way of building real-time dashboards (and will hopefully be something we will support from the KIND Learning Network in the future)
++ If you're getting on well with R/Rmarkdown, but would rather build a dashboard than a report, [Flexdashboard](https://pkgs.rstudio.com/flexdashboard/) looks great. To get started, there's an [example](https://www.themillerlab.io/post/flexdashboards/mcc_fake_cohort_dashboard_for_post.html#outcomes-by-stage) and a [walkthrough by the Miller Lab](https://www.themillerlab.io/post/flexdashboards/)
