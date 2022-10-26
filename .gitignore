@@ -10,7 +10,7 @@
 /*.tex
 /*.log
 demo_files/*.*
-/knit_list.R
+knit_list.R
 
 # History files
 .Rhistory
