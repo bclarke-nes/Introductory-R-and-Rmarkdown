@@ -29,7 +29,7 @@ install.packages(setdiff("pacman", rownames(installed.packages())))
 
 library("pacman")
 
-p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl,stringr,glue)
+p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl,stringr,glue, knitr)
 
 # avoiding tidyverse as loading in RStudio Cloud potentially runs out of memory 
 
@@ -42,10 +42,7 @@ data_total <- read_csv("data/data.csv") %>%
 
 ## Introduction
 
-Welcome to the final session of this introductory training in R and Rmarkdown. This session concentrates on drawing graphs. Graphs are a really important part of report writing. Nearly all of this session will be spent getting to grips with the general purpose graph-drawing package called `ggplot2`. You can generate many different types of graph (bar, column, line, scatter...) using this package, and so we'll use it to demonstrate some of the general principles of graph drawing in R. We'll also have very brief looks at two other aspects of graph drawing. First, we'll introduce a pair of specialist packages for drawing other kinds of graphs. These are:
-
-- an NHS-specific package called `NHSplotthedots` for producing XmR/run charts
-- a diagram-drawing package called `DiagrammeR` which we'll use to draw a dynamic flowchart
+Welcome to the final session of this introductory training in R and Rmarkdown. This session concentrates on drawing graphs. Graphs are a really important part of report writing. Nearly all of this session will be spent getting to grips with the general purpose graph-drawing package called `ggplot2`. You can generate many different types of graph (bar, column, line, scatter...) using this package, and so we'll use it to demonstrate some of the general principles of graph drawing in R.
 
 Second, to cover cases where R won't produce the kind of graph you need, we'll also introduce some ways of including static images (like other graphs) in your Rmarkdown.
 
@@ -67,7 +64,6 @@ Let's start with a minimal example using our `data_total` tibble, plotting an XY
 data_total %>%
   ggplot() +
   geom_point(aes(x=count1, y=count2))
-
 ```
 
 Here, the code works as follows:
@@ -134,18 +130,15 @@ data_total %>%
   ggplot() +
   geom_col(aes(x=date, y=count2))
 
-
 data_total %>%
   ggplot() +
   geom_line(aes(x=date, y=count3)) +
   geom_smooth(aes(x=date, y=count3))
-
 ```
 
 The line graph above has a smoothed conditional mean with 95% CI added via `+` and `geom_smooth()`. We can continue to add elements to ggplot using `+` - so below I'll add some labels (`xlab` and `ylab`), a title (`labs(title="...")`), and a smoothed mean line to our first plot via `geom_smooth()`. I'll also change the colour of the dots using `colour="#004380"` in the `geom_point()` call.
 
 ```{r}
-
 data_total %>%
   ggplot() +
   geom_point(aes(x=count1, y=count2), colour="#004380") +
@@ -180,7 +173,6 @@ That's very pretty! But perhaps not the most useful graph in the world. In the n
 The secret to most useful visualisations is to get the data into the right format. Here's an example, based on using `dplyr` from the tidyverse to select parts of the data (i.e. excluding the total column), and then reformatting the demo tibble data. This should all be familiar from the data processing section, but the difference here is that we're building our data work into our graph drawing. This allows us to ask ggplot2 to plot counts for each day automatically, using the `fill` option to set each type of count as a different colour. This avoids the kind of repetition from the exercise at the end of the last section.
 
 ```{r}
-
 data_total2 <- data_total %>%
   dplyr::select(!total) %>%
   pivot_longer(!date, names_to = "names", values_to = "count")
@@ -193,7 +185,6 @@ data_total2 %>%
   labs(title = "Stacked bar of counts by date", fill="Count type") +
   xlab("Date") +
   ylab("Count")
-
 ```
 
 Most of this code should be very familiar to you by now. We have a couple of lines of `dplyr` to organise our data, `head()` to have a quick look at it, and finally `ggplot()` and `geom_col()` - with a slight tweak to ensure that we have stacked columns - to plot the graph. The one new command is `pivot_longer()`. This is really useful when drawing more complex graphs, and could do with some explanation.
@@ -204,7 +195,7 @@ let's look again at the structure of our `data_total`.
 ```{r}
 data_total %>%
   head() %>%
-  knitr::kable()
+  kable()
 ```             
 
 In the data, we have several different observations per date. This makes some of the plotting functions that we might want to do awkward, because we don't have a good way of specifying to ggplot how it should handle data in different columns (like assigning everything in the count1 column a certain colour). `pivot_longer` allows us to work round this problem by re-shaping our data. Let's use it, and have a look at the results:
@@ -213,7 +204,7 @@ In the data, we have several different observations per date. This makes some of
 data_total %>%
   pivot_longer(!date, names_to = "names", values_to = "count") %>%
   head(n=12) %>%
-  knitr::kable()
+  kable()
 ```  
 
 As the name suggests, `pivot_longer` has made our data longer. Instead of four columns of counts + total, we now have only two: one with the name of the count, and the other with the value of that count on that date. This means that we handle data that contains several different kinds of value in a more highly automated way:
@@ -243,7 +234,6 @@ Note that the changes to `demo_total` that we do in this commands are only tempo
 It's worth noting that you can use multiple data sources in one ggplot area. For example, we can take the first section of code above, and add back in a smoothed mean line from the original tibble:
 
 ```{r}
-
 data_total %>%
   dplyr::select(!total) %>%
   pivot_longer(!date, names_to = "names", values_to = "count") %>%
@@ -261,7 +251,6 @@ In `geom_smooth()` we specify a new data source - the version of `data_total` be
 As well as the whole-graph changes to appearance that we explored earlier when we set graph themes, we can also just tweak the colours appearing in our graph using palettes:
 
 ```{r}
-
 data_total %>%
   dplyr::select(!total) %>%
   pivot_longer(!date, names_to = "names", values_to = "count") %>%
@@ -277,7 +266,6 @@ data_total %>%
 Here, we've manually specified three colours using the `scale_fill_manual()` command, and specifying the colours that we want to use. This is okay if you're using custom colours in a small number of graphs, but if you're trying to make lots of graphs a much better option is to produce a variable that contains a suitable list of colour values that you can then call in each of your graphs. To demonstrate using NES's corporate colour-scheme:
 
 ```{r}
-
 # create a variable NEScol containing hex values for NES colours
 NEScol <- c("#004380", "#0096DC", "#6C2383", "#007188", "#00AFAA", "#80BA27", "#3FA535", "#FFDD00", "#F39200", "#B10933", "#BD006A")
 
@@ -306,7 +294,6 @@ data_total %>%
 A last word about a useful command: `coord_flip()`, which swaps your axes. Very helpful if you realise that you've got the dependence relationships between your variables backwards. It's just added in as a layer to your ggplot code, as follows:
 
 ```{r}
-
 data_total %>% 
   pivot_longer(!date, names_to = "names", values_to = "count") %>%
   filter(date <= (min(date)+5)) %>%
@@ -316,56 +303,6 @@ data_total %>%
   coord_flip()
 ```
 
-## XmR and run charts
-
-This section is just intended as a demonstration of the NHSRplotthedots package, which provides a ggplot-like approach to building XmR charts that follow the [NHS Plot The Dots](https://www.england.nhs.uk/wp-content/uploads/2019/12/making-data-count-getting-started-2019.pdf) logic. You can see that the approach is very similar to that we've taken in the previous section - take some data, `pivot_longer()`, and then plot. 
-
-```{r}
-data_total %>% 
-  pivot_longer(!date, names_to = "type", values_to="count", values_drop_na = TRUE) %>% 
-  filter(type == "count1") %>% 
-  ptd_spc(value_field = "count", date_field = date, improvement_direction = "increase") %>%
-  plot(x_axis_breaks = "1 month", main_title="XmR chart of count 1", theme =)
-
-```
-
-It's also worth looking at the excellent [runcharter package](https://johnmackintosh.github.io/runcharter/) if you need to produce series of run charts as this package allows faceted construction (like `facet_wrap()`).
-
-## DiagrammeR
-This is an interesting example of a very different kind of dynamic graph. Here, the structure of the graph remains the same, but the numerical counts will update as the data changes.
-
-```{r}
-DiagrammeR::grViz("
-digraph graph2 {
-
-// a graph statement, which applies to the whole graph
-graph [layout = dot]
-
-// node statements, which describe how each of the nodes work. Note the @@x - corresponding to substituted label text below
-node [shape = rectangle, width = 4, style = filled, fillcolor = beige]
-a [label = '@@1']
-b [label = '@@2']
-c [label = '@@3']
-d [label = '@@4']
-
-// edge statements, which describe how each of the nodes are connected
-a -> d
-b -> d
-c -> d
-
-}
-
-# Outside the main grViz bracket, the footnote-style substituted label text. [x] provides the text for @@x above.
-[1]: paste0('Count 1 total (sum = ', sum(data_total$count1), ')')
-[2]: paste0('Count 2 total (sum = ', sum(data_total$count2), ')')
-[3]: paste0('Count 3 total (sum = ', sum(data_total$count3), ')')
-[4]: paste0('Total (sum = ', sum(data_total$total), ')')
-")
-
-```
-
-If you've been delving into the more advanced functions found in Rmarkdown, you might recognise the way that the labels are put together - it's the same general syntax used for footnotes.
-
 ## Adding images to RMarkdown
 If you've been following along in the source code, you'll have noticed that the images in this report are included using `include_graphics()`. This command is well worth understanding, because it not only allows you to include ordinary images (photos or page graphics), but also allows you to include other kinds of images in your RMarkdown report. For example, it might not be possible to automate all aspects of your report production. You might have data locked in proprietary systems, or better ways of producing some of your visualisations, and so on. In cases like these, you can use `include_graphics()` to pass your image into RMarkdown neatly so that your reader won't suspect that the image is any different from the other visualisations that your report contains.
 
@@ -374,7 +311,7 @@ If you've been following along in the source code, you'll have noticed that the 
 To include a local image from the `img` directory of the project:
 
 ```{r}
-knitr::include_graphics("img/header.png")
+include_graphics("img/header.png")
 ```
 
 ----
@@ -382,7 +319,7 @@ knitr::include_graphics("img/header.png")
 To include an image from its URL:
 
 ```{r}
-knitr::include_graphics("https://i.imgur.com/RkMmLXm.png")
+include_graphics("https://i.imgur.com/RkMmLXm.png")
 ```
 
 ----
@@ -390,7 +327,7 @@ knitr::include_graphics("https://i.imgur.com/RkMmLXm.png")
 You can change the size of the image in pixels by setting the `out.width=` option in the chunk label:
 
 ```{r out.width="300px"}
-knitr::include_graphics("img/header.png")
+include_graphics("img/header.png")
 ```
 
 ----
@@ -398,12 +335,12 @@ knitr::include_graphics("img/header.png")
 And you can control figure alignment (and add a caption) again using the chunk options:
 
 ```{r out.width="300px", fig.align='center', fig.cap='A centred image'}
-knitr::include_graphics("img/header.png")
+include_graphics("img/header.png")
 ```
 
 ----
 
-It might be more convenient to use the mini-chunk structure of `r knitr::include_graphics("img/button.png")` for small, inline images.
+It might be more convenient to use the mini-chunk structure of `r include_graphics("img/button.png")` for small, inline images.
 
 ----
 
@@ -414,7 +351,7 @@ It might be more convenient to use the mini-chunk structure of `r knitr::include
 2. Take the image below, and a) reduce the size to 200px width, right-align, and give it a suitable caption:
 
 ```{r out.width="300px", fig.align='center', fig.cap='A centred image'}
-knitr::include_graphics("img/header.png")
+include_graphics("img/header.png")
 ```
 
 ----
@@ -422,7 +359,7 @@ knitr::include_graphics("img/header.png")
 Some graphics formats won't knit properly to all outputs. .gif especially tends to cause trouble with .pdf output. You can escape this - at the price of omitting your image - using the `is_html_output()` command in the chunk header. This checks to see if your output format is .html, and if it then running the code in the chunk. This lets us include animations in the .html report, and leave them out of the static formats like .pdf:
 
 ```{r eval=knitr::is_html_output(), echo=F, fig.align='center', fig.cap='Image credit: https://gfycat.com/defiantwateryblackfish-aleksandar-jovanovic-ronnie-osullivan'}
-knitr::include_graphics("https://thumbs.gfycat.com/DefiantWateryBlackfish-size_restricted.gif")
+include_graphics("https://thumbs.gfycat.com/DefiantWateryBlackfish-size_restricted.gif")
 ```
 
 ## Next steps {.tabset}

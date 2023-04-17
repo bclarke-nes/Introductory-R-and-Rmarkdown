@@ -28,12 +28,14 @@ install.packages(setdiff("pacman", rownames(installed.packages())))
 
 library("pacman")
 
-p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl,stringr,glue)
+p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl,stringr,glue,knitr)
 
 # avoiding tidyverse as loading in RStudio Cloud potentially runs out of memory 
 ```
 
-Welcome to the first session of this introductory training in R and Rmarkdown. In this session, we will give an introduction to the tools that we'll use over the next three sessions. Some ground rules of this and the future training sessions:
+Welcome to the first session of this introductory R and Rmarkdown training. In this session, we will give an introduction to the tools that you'll use to write R and Rmarkdown. 
+
+Some ground rules for this training session:
 
 1. The training is **interactive**. You'll be working on code, answering questions, and helping other trainees. Do please ask questions whenever you like, or for extra clarification if anything isn't as clear as you'd like it to be. 
 
@@ -48,7 +50,7 @@ Let's make an html page with the instructions for this session:
 1. Select the *Knit to html* option from the menu at the top of the code pane. You can select any of the output formats, although I'd suggest sticking with .html (webpage) while working through the training.
 
 ```{r, echo=F, out.width = "400px", fig.align = 'center'}
-knitr::include_graphics("img/knitr_options.png")
+include_graphics("img/knitr_options.png")
 ```
 
 **or**
@@ -58,20 +60,51 @@ knitr::include_graphics("img/knitr_options.png")
 2. You'll get a warning about required packages. Just agree to this, as you'll need the packages to knit your document properly.
 
 ```{r, echo=F, out.width = "400px", fig.align = 'center'}
-knitr::include_graphics("img/packages.png")
+include_graphics("img/packages.png")
 ```
 
 3. Once you've had the document pop-up, try reknitting again (so step 1) after selecting the `Preview in viewer pane` option from the options menu at the top of the code pane. This will keep the output document in the viewer pane rather than in a pop-up:
    
 ```{r, echo=F, out.width = "400px", fig.align = 'center'}
- knitr::include_graphics("img/pivp.png")
+ include_graphics("img/pivp.png")
 ```
 
 ## What will be be covering?
 
-Let's look at the main parts of this training course. In today's session, we'll spend some time getting used to Posit Cloud, and explore some ways of making yourself at home in it. We'll then move on to introduce Rmarkdown. Rmarkdown is the way that we produce neatly-formatted text in these reports. So *this text*, the document headings, and most of the other material that you see in these materials is made in Rmarkdown.
+Let's look at the main parts of this training course. In today's session, we'll spend some time getting used to Posit Cloud, and explore some ways of making yourself at home in it. We'll then move on to introduce the parts of an Rmarkdown document. We'll have a quick look at the three parts of an Rmarkdown document, before concentrating on how to read and write Rmarkdown.
 
-Once we've introduced Rmarkdown, we'll then spend the next two sessions introducing R, and showing you how to work with data. For example, we'll load some data into R and tidy it:
+### Making yourself at home in Posit Cloud 
+
+#### Exercise
+Let's start by making Posit Cloud feel a bit less intimidating. Four things to try:
+
+1. Look at the four panes. What's going on in each?
+
+1. Have a look through the files pane to get a sense of how the project files fit together.
+
+1. Use the minimize/maximise buttons (`r include_graphics("img/minmax.png")`) in the upper right-hand corners of the four panes to hide the `Console/Terminal/...` and `Environment/History/...` panes for now to simplify the view.
+
+1. Try some of the appearance options in the global options menu (*Tools / Global Options*) - you could set a whole theme, change the size of the text in the interface, and lots of other tweaks
+
+1. Try using the outline menu (`r include_graphics("img/outline.png")`) in the top right-hand corner of the source pane to get an overview of this source code
+
+It's useful to try and switch between the code pane and the viewer pane to see how the report works. You might find it helpful to minimise the Console and Environment panes for this tutorial as they're less important at this stage. 
+
+### Anatomy of an Rmarkdown document
+
+We need three elements to make an Rmarkdown document:
+
+1. some [YAML](https://en.wikipedia.org/wiki/YAML) to set the document options
+2. some Rmarkdown, containing text and formatting
+3. some R chunks, containing the code that does our analysis
+
+These are easiest to see if you create a new Rmarkdown document: *File >> New File >> R markdown ...*
+
+```{r echo=FALSE}
+include_graphics("img/rmd_anat.png")
+```
+
+In this training, we won't talk too much about the YAML as Posit mainly takes care of it for us. We'll spend most of this first session thinking about Rmarkdown, and most of the next three sessions looking at R. Just as a taster at this point, let's have a quick play with some example R chunks now before we start concentrating on the Rmarkdown. To load some data into R and tidy it:
 
 ```{r}
 # this is a chunk of R code that loads some data, and converts the date format
@@ -91,7 +124,7 @@ We'll also learn how to manipulate and display data, including producing summari
 data %>%
   mutate(total = count1 + count2 + count3) %>%
   head() %>%
-  knitr::kable(caption="Some vital data")
+  kable(caption="Some vital data")
 ```
 
 We'll draw graphs with that data and show how they can fit into your report:
@@ -121,22 +154,7 @@ data %>%
   theme(axis.text = element_text(size = 6), axis.title = element_text(size = 7))
 ```
 
-## Making yourself at home in Posit Cloud 
 
-### Exercise
-Let's start by making Posit Cloud feel a bit less intimidating. Four things to try:
-
-1. Look at the four panes. What's going on in each?
-
-1. Have a look through the files pane to get a sense of how the project files fit together.
-
-1. Use the minimize/maximise buttons (`r knitr::include_graphics("img/minmax.png")`) in the upper right-hand corners of the four panes to hide the `Console/Terminal/...` and `Environment/History/...` panes for now to simplify the view.
-
-1. Try some of the appearance options in the global options menu (*Tools / Global Options*) - you could set a whole theme, change the size of the text in the interface, and lots of other tweaks
-
-1. Try using the outline menu (`r knitr::include_graphics("img/outline.png")`) in the top right-hand corner of the source pane to get an overview of this source code
-
-It's useful to try and switch between the code pane and the viewer pane to see how the report works. You might find it helpful to minimise the Console and Environment panes for this tutorial as they're less important at this stage. 
 
 ## Rmarkdown
 
@@ -216,7 +234,7 @@ Try knitting this document to each of the three formats in the knit menu.
 In Posit Cloud, you can select which output format you'd like your report to be rendered as:
 
 ```{r, echo=F, out.width = "400px", fig.align = 'center'}
-knitr::include_graphics("img/knitr_options.png")
+include_graphics("img/knitr_options.png")
 ```
 
 Try these different formats out now. I'd recommend sticking with html while you're working on a report, though, just because it tends to render most quickly, and plays nicely with other aspects of the workflow while you're writing.
@@ -278,7 +296,7 @@ This simplifies some of the image handling in this document to allow pandoc (tha
  
 One last important point about Rmarkdown: we need to tell Posit Cloud where our Rmarkdown ends, and our R code begins. We do this using code chunks. Code chunks in Rmarkdown start and end with a triple backtick:
    
-`r knitr::include_graphics("img/backs.png")`
+`r include_graphics("img/backs.png")`
  
 If you look at the code pane, you'll see that most of our R commands are wrapped-up in triple backticks, sometimes with some additional options following inside the {curly brackets}. These backticks are the way that we mark our R code, thus telling RStudio Cloud to interpret it as R, rather than RMarkdown. We call these sections of code ```chunks```. In what's ahead, one of the most common problems come from chunks, and so one of the first things to check if a command doesn't work as expected is that it's properly in place in a chunk.
  
@@ -296,12 +314,12 @@ Apart from the backticks and the R code itself, there are also some options in {
 + `message=FALSE`: whether to show information messages about how your code is running
 + we've also explored some options relating to image size and alignment in the graph section, such as  `out.width = "400px"`, and `fig.align = 'center'`
 
-Setting all the chunk options can become very involved. The [Rmarkdown Cookbook](https://bookdown.org/yihui/rmarkdown/r-code.html) is a great helper and reference for that kind of work. In general, it's best to keep them as simple as possible. You might just begin with default chunks. A useful shortcut to insert a new R chunk is `ctrl + alt + i`, or you can use the button at the top right of the code pane `r knitr::include_graphics("img/chunk.png")`, and only add the options as you need them.
+Setting all the chunk options can become very involved. The [Rmarkdown Cookbook](https://bookdown.org/yihui/rmarkdown/r-code.html) is a great helper and reference for that kind of work. In general, it's best to keep them as simple as possible. You might just begin with default chunks. A useful shortcut to insert a new R chunk is `ctrl + alt + i`, or you can use the button at the top right of the code pane `r include_graphics("img/chunk.png")`, and only add the options as you need them.
 
 There are also some useful hints in the [knitr documentation](https://yihui.org/knitr/options/). But for now, I'll suggest that you skip trying to figure it all out in favour of spending our time on some of the more interesting areas of this training. 
 
 ### Exercise
-1. Create a new code chunk now, and adjust some of the options using the chunk options menu: `r knitr::include_graphics("img/chunk_opts.png")`
+1. Create a new code chunk now, and adjust some of the options using the chunk options menu: `r include_graphics("img/chunk_opts.png")`
 
 2. Once you've created your new chunk, copy-and-paste the following code into it:
 ```{verbatim}

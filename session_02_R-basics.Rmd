@@ -27,13 +27,15 @@ install.packages(setdiff("pacman", rownames(installed.packages())))
 
 library("pacman")
 
-p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl,stringr,glue)
+p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl,stringr,glue, knitr)
 
 # avoiding tidyverse as loading in RStudio Cloud potentially runs out of memory 
 ```
 ## Introduction
 
-Welcome to the second session of this introductory training in R and Rmarkdown. In this session, we'll give a quick introduction to R. A reminder of the ground rules for this session:
+Welcome to the second session of this introductory training in R and Rmarkdown. In this session, we'll introduce R, including the basis of loading data. 
+
+A reminder of the ground rules for this session:
 
 1. The training is **interactive**. You'll be working on code, answering questions, and helping other trainees. Do please ask questions whenever you like, or for extra clarification if anything isn't as clear as you'd like it to be. 
 
@@ -52,10 +54,15 @@ Once we've introduced these building blocks, we'll go on to use them to load som
 
 ### Exercise
 
-Here's a chunk of R code. By the end of this session, you'll have a much clearer idea of the various parts of this code, and how the parts fit together. For now, though, let's try and work out what the various parts of the code do. We'll pause the session for a minute to let you think about it, and then we'll have a group discussion about the parts of this code:
+Here is a chunk of R code. By the end of this session, you'll have a much clearer idea of the various parts of this code, and how the parts fit together. For now, though, let's try two things. First, we want to run the code. Follow these steps to run the code:
+
+1. Run all the code above this point, using either the `Run all chunks above` button, or using `crtl+alt+shift+p`
+2. Then run the code itself, using either the run button at the top right of the chunk, or using `ctrl+enter`. 
+
+Once you've run the code, try to understand what it is doing, and how it is doing it. We'll pause the session for a minute to let you think about it, and then we'll have a group discussion about the parts of this code:
 
 ```{r eval=F}
-data <- read_csv("data/data.csv") %>% 
+read_csv("data/data.csv") %>% 
   mutate(date = dmy(date)) 
 ```
 
@@ -72,7 +79,7 @@ In the work that we'll do in this training, we will be using lots of different f
 
 In the code above, we were asking `sum()` to give us the total of the group of numbers in the brackets. Those numbers are our noun that the verb (`sum()`) will act on. 
 
-To show the result, of your code, you need to run it. There are two ways that we'll introduce now, and explain later. The first, and easiest, is to press *ctrl+enter* while your cursor is somewhere on the line of code that you want to run. The alternative is to press the small green button at the right-hand side of the section of code that you're working on `r knitr::include_graphics("img/run_chunk.png")`
+To show the result, of your code, you need to run it. There are two ways that we'll introduce now, and explain later. The first, and easiest, is to press *ctrl+enter* while your cursor is somewhere on the line of code that you want to run. The alternative is to press the small green button at the right-hand side of the section of code that you're working on `r include_graphics("img/run_chunk.png")`
 
 #### Exercise
 
@@ -83,12 +90,20 @@ Above, we found the total of the numbers 1-5. Can you find the total of the numb
 sum(1,2,3,4,5)
 ```
 
-`mean()` is a function that works like `sum()`. If you give it some numbers in the brackets, it will give you the average of those numbers. Can you update the code below so that we get the average of the numbers, rather than the total?
+#### Exercise
+
+Now let's try something that won't work properly. What happens when we use the `mean()` function to find the average of the numbers 1-5?
+
+```{r eval=FALSE}
+mean(1,2,3,4,5)
+```
+
+Now try combining 1-5 using the `c()` function, then finding the mean:
 
 ```{r}
 # write your code below
-sum(1,2,3,4,5)
 ```
+
 
 ----
 
@@ -99,7 +114,7 @@ Now that you've had a chance to try a function for yourself, it's time to move o
 some_numbers <- c(1,2,3,4,5)
 sum(some_numbers)
 ```
-That's useful because we can then re-use that list of numbers in other places:
+That's useful because we can then re-use that list of numbers in other places. `mean()` is a function that works like `sum()`. If you supply it with a `some_numbers`, it will return the average of those numbers:
 
 ```{r}
 mean(some_numbers)
@@ -137,7 +152,7 @@ new_numbers <- some_numbers
 You can keep track of this using the *Environment* pane, in the top-right hand corner. 
 
 ```{r echo=F}
-knitr::include_graphics("img/enviro.png")
+include_graphics("img/enviro.png")
 ```
 
 As well as the preview of the contents that you get in the *Environment* pane, you can see what's inside a variable in R by just typing the name:
@@ -196,6 +211,8 @@ round(mean(cumsum(some_numbers * 1.3)),0)
 
 Be sure to keep a careful eye on the brackets - they need to match up, so that every **(** has a corresponding **)**, and it's very easy to inadvertently add an extra one. If you do this, R will fall over and print a cross-looking error message in the console pane. If this happens, don't worry too much - these kinds of error are usually easy to fix.
 
+Using rainbow brackets (`Code >> Rainbow Parentheses`) is a great way of helping keep your brackets paired.
+
 ### The pipe
 ` %>%` - also called [the pipe](https://r4ds.had.co.nz/pipes.html) - is a way of chaining commands together. As we've seen above, nesting several functions together with brackets can get quite messy. We can use the pipe to simplify our code to do many operations in sequence on some set of data. One important fact to know: the pipe doesn't work in all R code. To explain why, we need to digress a bit into how R works.
 
@@ -203,16 +220,7 @@ Be sure to keep a careful eye on the brackets - they need to match up, so that e
 R uses packages, which are plug-ins that offer useful functions. We need to add these packages to R to help us do some of our tasks. We've actually added them already in the first few lines of this report. Let's have a look at this code, which here includes some explanatory comments:
 
 ```{verbatim}
-# if pacman is missing, installs pacman, which helps us manage packages
-install.packages(setdiff("pacman", rownames(installed.packages())))
-
-# loads pacman
-library("pacman")
-
-#loads required packages
-p_load(tidyr,readr,DiagrammeR,ggplot2,dplyr,lubridate,NHSRplotthedots,readxl, stringr)
-
-# Comments are useful - add comments as you work! R comments start with a #, comments in RMarkdown start <!-- and end -->
+<<pre-setup>>
 
 ```
 
@@ -229,7 +237,7 @@ There's a lot that might be said about packages here, but this is probably bette
 
 ```{r eval=F}
 data <- read_csv("data/data.csv") %>%
-  mutate(dates = dmy(dates)) %>%
+  mutate(date = dmy(date)) %>%
   mutate(total = count1+count2+count3)
 ```
 
