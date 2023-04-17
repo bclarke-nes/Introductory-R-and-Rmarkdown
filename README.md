@@ -7,23 +7,11 @@ Brendan Clarke
 
 ## Introduction
 
-Dynamic reports are data-driven documents that can be periodically
-updated as their underlying data changes.
+This is an introductory [R](https://www.r-project.org/) and [Rmarkdown](http://rmarkdown.rstudio.com) training course using [Posit Cloud](https://rstudio.cloud). It runs as a series of four interactive sessions, and is designed for those without previous programming experience working in health, care, and housing across Scotland. 
 
-This training provides a brief introduction to writing dynamic reports
-using [R](https://www.r-project.org/),
-[Rmarkdown](http://rmarkdown.rstudio.com), and [Posit
-Cloud](https://rstudio.cloud) (previously known as RStudio Cloud). It
-runs as a series of four interactive sessions, and is designed for those
-without previous programming experience working in health, care, and
-housing across Scotland. It is intended as a starting point for
-automating your report writing processes, with the aim of replacing,
-enhancing, or simplifying, manual report writing. The training also
-covers ways of producing reports in a variety of formats including .pdf,
-.docx (Word format), and .html (webpage).
+It is intended as a starting point for automating your report writing processes, with the aim of replacing, enhancing, or simplifying, manual report writing. The training also covers ways of producing reports in a variety of formats including .pdf, .docx (Word format), and .html (webpage).
 
-Some examples of routine reports that might be targets for re-working in
-a dynamic format:
+Some examples of routine reports that might be targets for re-working in a dynamic format:
 
 - service-use reports (admission figures, bed utilisation)
 - annual reports (public health annual reports)
@@ -176,7 +164,7 @@ you should be fine. The demonstration has been tested on Windows 10,
 Windows 11, and Ubuntu Linux 21.04 without platform-specific
 difficulties.
 
-It is extremely helpful, although not essential, to have a multi-monitor
+It is **extremely** helpful, although not essential, to have a multi-monitor
 setup. That way you can run the demonstration in one screen, and the
 Teams call on the other.
 
@@ -204,7 +192,7 @@ and then open the `demo.Rmd` file from the file pane.
 <img src="img/rsc_create.png" width="200px" style="display: block; margin: auto;" />
 
 Several users have reported difficulties completing this account
-creation process. A quick workaround is to create the account from your
+creation process, particularly if they use a VPN. A quick workaround is to create the account from your
 phone (or other non-NHS device). You can then log-in using your new
 credentials from your NHS computer.
 
