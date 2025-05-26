@@ -3,18 +3,18 @@ title: "![](img/header.png) Introductory R and Rmarkdown"
 date: "`r Sys.Date()`"
 subtitle: 'Session 1: introduction'
 output:
+  pdf_document:
+    toc: no
+    toc_depth: '2'
+  word_document:
+    toc: no
+    toc_depth: '2'
   html_document:
     toc: no
     toc_depth: 2
     number_sections: no
     toc_float:
       collapsed: no
-  word_document:
-    toc: no
-    toc_depth: '2'
-  pdf_document:
-    toc: no
-    toc_depth: '2'
 always_allow_html: yes
 ---
 

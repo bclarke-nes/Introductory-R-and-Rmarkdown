@@ -68,7 +68,7 @@ data_total %>%
 
 Here, the code works as follows:
 
-- `data_total %>% ggplot()` - `ggplot2()` starts a new plot area, and we associate that new plot area with the `data_total` tibble using the pipe
+- `data_total %>% ggplot()` - `ggplot()` starts a new plot area, and we associate that new plot area with the `data_total` tibble using the pipe
 - `geom_point()` tells ggplot2 that we want an XY scatter drawn on our plot area
 - the crux of the code is the `(aes(x=count1, y=count2))`. Here, `aes` means *set the aesthetics of this graph as follows...*. So it's here that we tell R which columns from the `data_total` tibble we should use to plot the points specified in `geom_point`
 - finally, the `+` then chains together commands to produce a single plot. Unlike the `%>%`, `+` doesn't pass the result of one command to the next. Instead, `+` is just a way of connecting lots of different operations that we want to perform to a single plot area. This is part of the design philosophy of ggplot2, which treats the elements of a graph as [layers that can be built up](https://rpubs.com/hadley/ggplot2-layers) to produce complex and useful visualisations. We'll explore lots of other ggplot2 options later, but first we'll look at how to place your graph into your report.
