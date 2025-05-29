@@ -3,7 +3,11 @@
 Brendan Clarke
 2022-10-11
 
-# 
+# Archived
+
+This repository is now archived. Please see the current version at [https://github.com/NES-DEW/Introductory-R-and-Rmarkdown](https://github.com/NES-DEW/Introductory-R-and-Rmarkdown)
+
+
 
 ## Introduction
 
